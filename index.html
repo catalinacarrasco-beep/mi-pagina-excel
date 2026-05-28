@@ -38,6 +38,22 @@
   .kpi-delta{font-size:.8rem;font-weight:600;margin-top:.3rem;}
   .kpi-delta.pos{color:var(--positive);} .kpi-delta.neg{color:var(--negative);}
 
+  .top-cats-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:2rem;}
+  .top-cats-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+  .top-cats-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;}
+  .top-cats-subtitle{font-size:.75rem;color:var(--muted);}
+  .top-cats-list{display:flex;flex-direction:column;gap:.6rem;}
+  .top-cat-row{display:flex;align-items:center;gap:1rem;}
+  .top-cat-rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:24px;flex-shrink:0;text-align:center;}
+  .top-cat-rank.first{color:var(--accent3);}
+  .top-cat-rank.second{color:#aaa;}
+  .top-cat-rank.third{color:#cd7f32;}
+  .top-cat-info{flex:1;}
+  .top-cat-name{font-size:.85rem;font-weight:600;color:var(--text);}
+  .top-cat-bar-track{height:6px;background:var(--surface2);border-radius:3px;margin-top:.3rem;overflow:hidden;}
+  .top-cat-bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+  .top-cat-val{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;text-align:right;min-width:110px;}
+  .top-cat-pct{font-size:.72rem;color:var(--muted);text-align:right;min-width:50px;}
   .controls{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
   .controls label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
   .month-btns{display:flex;gap:.4rem;flex-wrap:wrap;}
@@ -59,6 +75,9 @@
   tr.cat-row{border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
   tr.cat-row:hover{background:#1a1e28;}
   tr.cat-row td{padding:.75rem 1rem;font-size:.85rem;font-weight:600;color:#fff;text-align:right;}
+  tr.cat-row td.cell-pos{color:var(--positive);}
+  tr.cat-row td.cell-neg{color:var(--negative);}
+  tr.cat-row td.cell-zero{color:#333;}
   tr.cat-row td:first-child{text-align:left;display:flex;align-items:center;gap:.5rem;}
   .expand-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);font-size:.65rem;transition:transform .2s;flex-shrink:0;color:var(--muted);}
   tr.cat-row.expanded .expand-icon{transform:rotate(90deg);color:var(--accent);}
@@ -111,6 +130,7 @@
 
 <main>
   <div class="kpis" id="kpis"></div>
+  <div class="top-cats-card" id="topCats"></div>
   <div class="controls">
     <label>Mes:</label>
     <div class="month-btns" id="monthBtns"></div>
@@ -166,7 +186,48 @@ function fmt(n){if(n===0)return'$-';return'$'+Math.abs(Math.round(n)).toLocaleSt
 function fmtSigned(n){if(n===0)return'-';const s='$'+Math.abs(Math.round(n)).toLocaleString('es-CL');return n>0?'+'+s:'-'+s;}
 function colorClass(n){if(n>0)return'cell-pos';if(n<0)return'cell-neg';return'cell-zero';}
 
-function renderAll(){renderKPIs();renderMonthBtns();renderTable();renderChart();document.getElementById('footerVendedor').textContent='Vendedor: '+currentVendedor.charAt(0)+currentVendedor.slice(1).toLowerCase();}
+function renderAll(){renderKPIs();renderMonthBtns();renderTopCats();renderTable();renderChart();document.getElementById('footerVendedor').textContent='Vendedor: '+currentVendedor.charAt(0)+currentVendedor.slice(1).toLowerCase();}
+
+function renderTopCats(){
+  const d=RESUMEN[currentVendedor];
+  const color=COLORS[currentVendedor];
+  // Sum all months with data (non-zero) per category
+  const totals=CATS.map(cat=>{
+    const total=d.v2026[cat].reduce((a,b)=>a+b,0);
+    return {cat, total};
+  }).filter(r=>r.total>0).sort((a,b)=>b.total-a.total);
+
+  if(!totals.length){document.getElementById('topCats').innerHTML='';return;}
+  const grandTotal=totals.reduce((a,b)=>a+b.total,0);
+  const top=totals.slice(0,5);
+  const maxVal=top[0].total;
+  const ranks=['first','second','third','',''];
+
+  document.getElementById('topCats').innerHTML=`
+    <div class="top-cats-header">
+      <div>
+        <div class="top-cats-title">Top Categorías — Acumulado 2026</div>
+        <div class="top-cats-subtitle">Total acumulado hasta la fecha por categoría</div>
+      </div>
+    </div>
+    <div class="top-cats-list">
+      ${top.map((r,i)=>{
+        const pct=(r.total/grandTotal*100).toFixed(1);
+        const barW=(r.total/maxVal*100).toFixed(1);
+        return `<div class="top-cat-row">
+          <div class="top-cat-rank ${ranks[i]}">${i+1}</div>
+          <div class="top-cat-info">
+            <div class="top-cat-name">${r.cat}</div>
+            <div class="top-cat-bar-track">
+              <div class="top-cat-bar-fill" style="width:${barW}%;background:${color}"></div>
+            </div>
+          </div>
+          <div class="top-cat-val">${fmt(r.total)}</div>
+          <div class="top-cat-pct">${pct}%</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
 
 function renderKPIs(){
   const d=RESUMEN[currentVendedor], color=COLORS[currentVendedor], mi=currentMonth;
