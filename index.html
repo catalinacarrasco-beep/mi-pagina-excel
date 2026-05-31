@@ -43,26 +43,12 @@ main{padding:2rem 3rem;}
 .top-cat-bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);}
 .top-cat-val{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;text-align:right;min-width:110px;}
 .top-cat-pct{font-size:.72rem;color:var(--muted);text-align:right;min-width:50px;}
-.period-bar{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;position:relative;}
-.period-info{font-size:.75rem;color:var(--muted);}
-.period-btn{display:flex;align-items:center;gap:.5rem;padding:.45rem 1rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.85rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.period-btn:hover{border-color:var(--accent);}
-.period-dot{width:7px;height:7px;border-radius:50%;background:var(--positive);flex-shrink:0;}
-.period-arrow{font-size:.7rem;color:var(--muted);}
-.period-dropdown{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:100;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;width:300px;box-shadow:0 8px 32px rgba(0,0,0,.6);}
-.period-dropdown.open{display:block;}
-.pd-section{margin-bottom:1rem;}
-.pd-section-title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.6rem;}
-.pd-quick{display:flex;flex-wrap:wrap;gap:.4rem;}
-.pd-qbtn{padding:.3rem .65rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.pd-qbtn:hover{border-color:#444;color:var(--text);}
-.pd-qbtn.sel{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
-.pd-months{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;}
-.pd-mbtn{padding:.4rem .3rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center;}
-.pd-mbtn:hover{border-color:#444;color:var(--text);}
-.pd-mbtn.sel{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
-.pd-apply{width:100%;padding:.55rem;border-radius:6px;border:none;background:var(--accent);color:#000;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:.4rem;}
-.pd-apply:hover{opacity:.85;}
+.controls{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.controls label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+.month-btns{display:flex;gap:.4rem;flex-wrap:wrap;}
+.month-btn{padding:.35rem .7rem;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.month-btn:hover{border-color:#444;color:var(--text);}
+.month-btn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:2rem;}
 .table-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.5rem;}
 .table-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;}
@@ -122,32 +108,9 @@ footer p{font-size:.75rem;color:var(--muted);}
 <main>
   <div class="kpis" id="kpis"></div>
   <div class="top-cats-card" id="topCats"></div>
-  <div class="period-bar">
-    <span class="period-info" id="periodInfo">Datos al 29/05/2026</span>
-    <div style="position:relative">
-      <button class="period-btn" id="periodBtn" onclick="toggleDropdown()">
-        <span class="period-dot"></span>
-        <span id="periodLabel">Ene — May 2026</span>
-        <span class="period-arrow" id="periodArrow">▼</span>
-      </button>
-      <div class="period-dropdown" id="periodDropdown">
-        <div class="pd-section">
-          <div class="pd-section-title">Acceso Rápido</div>
-          <div class="pd-quick">
-            <button class="pd-qbtn" onclick="setQuick('all')">Año completo</button>
-            <button class="pd-qbtn" onclick="setQuick('q1')">Q1</button>
-            <button class="pd-qbtn" onclick="setQuick('q2')">Q2</button>
-            <button class="pd-qbtn" onclick="setQuick('q3')">Q3</button>
-            <button class="pd-qbtn" onclick="setQuick('q4')">Q4</button>
-          </div>
-        </div>
-        <div class="pd-section">
-          <div class="pd-section-title">Selección Personalizada</div>
-          <div class="pd-months" id="pdMonths"></div>
-        </div>
-        <button class="pd-apply" onclick="applySelection()">Aplicar selección</button>
-      </div>
-    </div>
+  <div class="controls">
+    <label>Mes:</label>
+    <div class="month-btns" id="monthBtns"></div>
   </div>
   <div class="table-wrap">
     <div class="table-header">
@@ -175,8 +138,7 @@ const RESUMEN={"ALEJANDRA": {"v26": {"BLOQUEADO": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const CATS=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 const COLORS={ALEJANDRA:'#00e5ff',MARCELO:'#ff3d6b',JOEL:'#ffe000'};
-let currentVendedor='ALEJANDRA',currentView='valores';
-let selectedMonths=new Set([0,1,2,3,4]);
+let currentVendedor='ALEJANDRA',currentMonth=0,currentView='valores';
 let expandedCats=new Set();
 
 function fmt(n){if(!n||n===0)return'$-';return'$'+Math.abs(Math.round(n)).toLocaleString('es-CL');}
@@ -187,14 +149,9 @@ function renderAll(){renderKPIs();renderTopCats();renderMonthBtns();renderTable(
   document.getElementById('footerVendedor').textContent='Vendedor: '+currentVendedor.charAt(0)+currentVendedor.slice(1).toLowerCase();}
 
 function renderKPIs(){
-  const d=RESUMEN[currentVendedor],color=COLORS[currentVendedor];
-  const months=[...selectedMonths].sort((a,b)=>a-b);
-  const mi=months.length>0?months[months.length-1]:0;
-  const periodLabel=document.getElementById('periodLabel')?.textContent||'';
+  const d=RESUMEN[currentVendedor],color=COLORS[currentVendedor],mi=currentMonth;
   let tot26=0;CATS.forEach(c=>{d.v26[c].forEach(v=>tot26+=v);});
-  let m26=0,m25=0;CATS.forEach(c=>{
-    months.forEach(mi=>{m26+=d.v26[c][mi];m25+=d.v25[c][mi];});
-  });
+  let m26=0,m25=0;CATS.forEach(c=>{m26+=d.v26[c][mi];m25+=d.v25[c][mi];});
   const diff=m26-m25,pct=m25?((m26-m25)/Math.abs(m25)*100):0;
   let bcat='',bval=-Infinity;CATS.forEach(c=>{const v=d.v26[c][mi];if(v>bval){bval=v;bcat=c;}});
   document.getElementById('kpis').innerHTML=[
@@ -211,7 +168,7 @@ function renderKPIs(){
 
 function renderTopCats(){
   const d=RESUMEN[currentVendedor],color=COLORS[currentVendedor];
-  const mths=[...selectedMonths];const tots=CATS.map(c=>({c,t:mths.reduce((s,m)=>s+d.v26[c][m],0)})).filter(r=>r.t>0).sort((a,b)=>b.t-a.t);
+  const tots=CATS.map(c=>({c,t:d.v26[c].reduce((a,b)=>a+b,0)})).filter(r=>r.t>0).sort((a,b)=>b.t-a.t);
   if(!tots.length){document.getElementById('topCats').innerHTML='';return;}
   const gt=tots.reduce((a,b)=>a+b.t,0),top5=tots.slice(0,5),mx=top5[0].t;
   const ranks=['first','second','third','',''];
@@ -233,57 +190,17 @@ function renderTopCats(){
     </div>`;}
 
 function renderMonthBtns(){
-  const mnames=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  document.getElementById('pdMonths').innerHTML=mnames.map((m,i)=>
-    `<button class="pd-mbtn ${selectedMonths.has(i)?'sel':''}" onclick="toggleMonth(${i})">${m}</button>`).join('');
-  // Update label
-  const sorted=[...selectedMonths].sort((a,b)=>a-b);
-  if(sorted.length===0) document.getElementById('periodLabel').textContent='Sin selección';
-  else if(sorted.length===12) document.getElementById('periodLabel').textContent='Año completo 2026';
-  else if(JSON.stringify(sorted)===JSON.stringify([0,1,2])) document.getElementById('periodLabel').textContent='Q1 2026';
-  else if(JSON.stringify(sorted)===JSON.stringify([3,4,5])) document.getElementById('periodLabel').textContent='Q2 2026';
-  else if(JSON.stringify(sorted)===JSON.stringify([6,7,8])) document.getElementById('periodLabel').textContent='Q3 2026';
-  else if(JSON.stringify(sorted)===JSON.stringify([9,10,11])) document.getElementById('periodLabel').textContent='Q4 2026';
-  else if(sorted.length===1) document.getElementById('periodLabel').textContent=mnames[sorted[0]]+' 2026';
-  else document.getElementById('periodLabel').textContent=mnames[sorted[0]]+' – '+mnames[sorted[sorted.length-1]]+' 2026';
-}
-function toggleDropdown(){
-  const dd=document.getElementById('periodDropdown');
-  dd.classList.toggle('open');
-  document.getElementById('periodArrow').textContent=dd.classList.contains('open')?'▲':'▼';
-}
-function toggleMonth(i){
-  if(selectedMonths.has(i))selectedMonths.delete(i);
-  else selectedMonths.add(i);
-  renderMonthBtns();
-}
-function setQuick(q){
-  selectedMonths.clear();
-  if(q==='all'){for(let i=0;i<12;i++)selectedMonths.add(i);}
-  else if(q==='q1'){[0,1,2].forEach(i=>selectedMonths.add(i));}
-  else if(q==='q2'){[3,4,5].forEach(i=>selectedMonths.add(i));}
-  else if(q==='q3'){[6,7,8].forEach(i=>selectedMonths.add(i));}
-  else if(q==='q4'){[9,10,11].forEach(i=>selectedMonths.add(i));}
-  renderMonthBtns();
-}
-function applySelection(){
-  toggleDropdown();
-  renderAll();
-}
+  document.getElementById('monthBtns').innerHTML=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m,i)=>
+    `<button class="month-btn ${i===currentMonth?'active':''}" onclick="setMonth(${i})">${m}</button>`).join('');}
 
 function renderTable(){
-  const d=RESUMEN[currentVendedor];
-  const months=[...selectedMonths].sort((a,b)=>a-b);
-  const mi=months.length>0?months[months.length-1]:0;
+  const d=RESUMEN[currentVendedor],mi=currentMonth;
   const det26=DETAIL_2026[currentVendedor]||{};
   const det25=DETAIL_2025[currentVendedor]||{};
-  const mnames2=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const sorted2=[...selectedMonths].sort((a,b)=>a-b);
-  const periodStr=sorted2.length===1?MESES[sorted2[0]]:sorted2.length>1?mnames2[sorted2[0]]+' – '+mnames2[sorted2[sorted2.length-1]]:'Sin datos';
-  document.getElementById('tableTitle').textContent=(currentView==='valores'?'Ventas por Categoría — ':'Diferencia $ por Categoría — ')+periodStr;
+  document.getElementById('tableTitle').textContent=(currentView==='valores'?'Ventas por Categoría — ':'Diferencia $ por Categoría — ')+MESES[mi];
   let html=`<table><thead><tr><th>Categoría / Producto</th><th>2026</th><th>2025</th><th>Diferencia</th></tr></thead><tbody>`;
   CATS.forEach(cat=>{
-    let v26=0,v25=0;months.forEach(m=>{v26+=d.v26[cat][m];v25+=d.v25[cat][m];});
+    const v26=d.v26[cat][mi],v25=d.v25[cat][mi];
     if(v26===0&&v25===0)return;
     const df=v26-v25,isE=expandedCats.has(cat);
     const prods26=det26[cat]||[],prods25=det25[cat]||[];
@@ -297,7 +214,8 @@ function renderTable(){
       allCodes.forEach(cod=>{
         const p26=prods26.find(p=>p.cod===cod);
         const p25=prods25.find(p=>p.cod===cod);
-        let val26=0,val25=0;months.forEach(m=>{val26+=p26&&m<p26.vals.length?p26.vals[m]:0;val25+=p25&&m<p25.vals.length?p25.vals[m]:0;});
+        const val26=p26&&mi<p26.vals.length?p26.vals[mi]:0;
+        const val25=p25&&mi<p25.vals.length?p25.vals[mi]:0;
         if(val26===0&&val25===0)return;
         const pdiff=val26-val25;
         const desc=(p26||p25).desc;
@@ -313,14 +231,9 @@ function renderTable(){
   document.getElementById('tableContainer').innerHTML=html;}
 
 function renderChart(){
-  const d=RESUMEN[currentVendedor],color=COLORS[currentVendedor];
-  const months=[...selectedMonths].sort((a,b)=>a-b);
-  const mi=months.length>0?months[months.length-1]:0;
-  const mn2=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const s2=[...selectedMonths].sort((a,b)=>a-b);
-  const ps=s2.length===1?MESES[s2[0]]:s2.length>1?mn2[s2[0]]+' – '+mn2[s2[s2.length-1]]:'Período';
-  document.getElementById('chartTitle').textContent='Ventas 2026 — '+ps;
-  const rows=CATS.map(c=>({c,v:months.reduce((s,m)=>s+d.v26[c][m],0)})).filter(r=>r.v>0).sort((a,b)=>b.v-a.v);
+  const d=RESUMEN[currentVendedor],mi=currentMonth,color=COLORS[currentVendedor];
+  document.getElementById('chartTitle').textContent='Ventas 2026 — '+MESES[mi];
+  const rows=CATS.map(c=>({c,v:d.v26[c][mi]})).filter(r=>r.v>0).sort((a,b)=>b.v-a.v);
   if(!rows.length){document.getElementById('barChart').innerHTML='<p style="color:var(--muted);font-size:.85rem">Sin datos para este mes</p>';return;}
   const mx=rows[0].v;
   document.getElementById('barChart').innerHTML=rows.map(r=>{
@@ -333,17 +246,9 @@ function renderChart(){
 
 function toggleCat(cat){if(expandedCats.has(cat))expandedCats.delete(cat);else expandedCats.add(cat);renderTable();}
 function setVendedor(v,el){currentVendedor=v;expandedCats.clear();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
-// setMonth replaced by multi-select
+function setMonth(i){currentMonth=i;renderAll();}
 function setView(v,el){currentView=v;document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTable();}
 renderAll();
-document.addEventListener('click',function(e){
-  const dd=document.getElementById('periodDropdown');
-  const btn=document.getElementById('periodBtn');
-  if(dd&&btn&&!dd.contains(e.target)&&!btn.contains(e.target)){
-    dd.classList.remove('open');
-    document.getElementById('periodArrow').textContent='▼';
-  }
-});
 </script>
 </body>
 </html>
