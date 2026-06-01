@@ -239,12 +239,22 @@ function renderTable(){
       <td style="color:var(--muted)">${fmt(v25)}</td>
       <td class="${cc(df)}">${fmtS(df)}</td></tr>`;
     if(isE){
-      allCodes.forEach(cod=>{
+      // Build product rows with diff, then sort
+      const prodRows = allCodes.map(cod=>{
         const p26=prods26.find(p=>p.cod===cod);
         const p25=prods25.find(p=>p.cod===cod);
         const val26=p26?sumMonths(p26.vals):0;
         const val25=p25?sumMonths(p25.vals):0;
         const pdiff=val26-val25,desc=(p26||p25).desc;
+        return {cod,desc,val26,val25,pdiff};
+      });
+      // Positives desc, then zeros, then negatives asc (most negative last)
+      prodRows.sort((a,b)=>{
+        if(a.pdiff>=0 && b.pdiff>=0) return b.pdiff-a.pdiff;
+        if(a.pdiff<0 && b.pdiff<0) return b.pdiff-a.pdiff;
+        return b.pdiff>=0?1:-1;
+      });
+      prodRows.forEach(({cod,desc,val26,val25,pdiff})=>{
         html+=`<tr class="prod-row visible">
           <td><span class="prod-code">${cod}</span><span class="prod-desc">${desc}</span></td>
           <td class="${val26>0?'cell-pos':'cell-zero'}">${fmt(val26)}</td>
