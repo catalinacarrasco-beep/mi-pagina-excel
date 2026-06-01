@@ -249,8 +249,22 @@ function renderTable(){
       });
     }
   });
-  html+='</tbody></table>';
-  document.getElementById('tableContainer').innerHTML=html;}
+  // TOTAL GENERAL — siempre visible
+  let totG26=0,totG25=0;
+  CATS.forEach(cat=>{totG26+=sumMonths(d.v26[cat]);totG25+=sumMonths(d.v25[cat]);});
+  const totDiff=totG26-totG25;
+  html+=`</tbody>
+    <tfoot>
+      <tr style="border-top:2px solid #444;background:var(--surface2);">
+        <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;color:#fff;text-align:left;letter-spacing:.05em;">TOTAL GENERAL</td>
+        <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;color:#fff;text-align:right;">${fmt(totG26)}</td>
+        <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;color:var(--muted);text-align:right;">${fmt(totG25)}</td>
+        <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;text-align:right;" class="${cc(totDiff)}">${fmtS(totDiff)}</td>
+      </tr>
+    </tfoot>
+  </table>`;
+  document.getElementById('tableContainer').innerHTML=html;
+}
 
 function toggleCat(cat){if(expandedCats.has(cat))expandedCats.delete(cat);else expandedCats.add(cat);renderTable();}
 function setVendedor(v,el){currentVendedor=v;expandedCats.clear();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
