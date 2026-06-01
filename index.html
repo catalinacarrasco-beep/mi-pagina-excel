@@ -243,7 +243,14 @@ function renderTable(){
   document.getElementById('tableTitle').textContent=
     (currentView==='valores'?'Ventas por Categoría — ':'Diferencia $ por Categoría — ')+periodStr()+' 2026';
   let html=`<table><thead><tr><th>Categoría / Producto</th><th>2026</th><th>2025</th><th>Diferencia</th></tr></thead><tbody>`;
-  getCats().forEach(cat=>{
+  const sortedCats=getCats().slice().sort((a,b)=>{
+    const da=sumMonths(d.v26[a])-sumMonths(d.v25[a]);
+    const db=sumMonths(d.v26[b])-sumMonths(d.v25[b]);
+    if(da>=0&&db>=0)return db-da;
+    if(da<0&&db<0)return db-da;
+    return da>=0?-1:1;
+  });
+  sortedCats.forEach(cat=>{
     const v26=sumMonths(d.v26[cat]),v25=sumMonths(d.v25[cat]);
     if(v26===0&&v25===0)return;
     const df=v26-v25,isE=expandedCats.has(cat);
