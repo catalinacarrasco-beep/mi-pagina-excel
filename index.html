@@ -18,9 +18,15 @@ header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:fl
 .tab{padding:.75rem 2rem;cursor:pointer;font-size:.9rem;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.05em;text-transform:uppercase;}
 .tab:hover{color:var(--text);}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.tab[data-v="MARCELO"].active{color:var(--accent2);border-bottom-color:var(--accent2);}
-.tab[data-v="JOEL"].active{color:var(--accent3);border-bottom-color:var(--accent3);}
-.tab[data-v="GENERAL"].active{color:var(--accent4);border-bottom-color:var(--accent4);}
+.tab[data-v="SUBDIST"].active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab[data-v="GENERAL"].active{color:var(--accent);border-bottom-color:var(--accent);}
+.subtabs{display:flex;padding:.6rem 3rem 0;background:var(--surface);border-bottom:1px solid var(--border);gap:.25rem;}
+.subtab{padding:.5rem 1.5rem;cursor:pointer;font-size:.8rem;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.05em;text-transform:uppercase;border-radius:4px 4px 0 0;}
+.subtab:hover{color:var(--text);}
+.subtab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--surface2);}
+.subtab[data-v="ALEJANDRA"].active{color:#b8ecf8;border-bottom-color:#b8ecf8;}
+.subtab[data-v="MARCELO"].active{color:#caf2fb;border-bottom-color:#caf2fb;}
+.subtab[data-v="JOEL"].active{color:#dcf7fd;border-bottom-color:#dcf7fd;}
 main{padding:2rem 3rem;}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;}
@@ -170,10 +176,13 @@ footer{padding-left:1.2rem;padding-right:1.2rem;}}
   <div class="year-badge">2026 vs 2025</div>
 </header>
 <div class="tabs">
-  <div class="tab" data-v="GENERAL" onclick="setVendedor('GENERAL',this)">General</div>
-  <div class="tab active" data-v="ALEJANDRA" onclick="setVendedor('ALEJANDRA',this)">Alejandra</div>
-  <div class="tab" data-v="MARCELO" onclick="setVendedor('MARCELO',this)">Marcelo</div>
-  <div class="tab" data-v="JOEL" onclick="setVendedor('JOEL',this)">Joel</div>
+  <div class="tab" data-v="GENERAL" onclick="setMainTab('GENERAL',this)">General</div>
+  <div class="tab active" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
+</div>
+<div class="subtabs" id="subtabs">
+  <div class="subtab active" data-v="ALEJANDRA" onclick="setVendedor('ALEJANDRA',this)">Alejandra</div>
+  <div class="subtab" data-v="MARCELO" onclick="setVendedor('MARCELO',this)">Marcelo</div>
+  <div class="subtab" data-v="JOEL" onclick="setVendedor('JOEL',this)">Joel</div>
 </div>
 <main>
   <div class="kpis" id="kpis"></div>
@@ -257,6 +266,11 @@ function renderAll(){
   renderKPIs();renderTopCats();renderMonthBtns();renderTable();
   document.getElementById('footerVendedor').textContent='Vista: '+NAMES[currentVendedor];
   if(mainView==='clientes') renderClientes();}
+
+// Init — start on Sub Distribución / Alejandra
+document.getElementById('subtabs').style.display='flex';
+document.querySelector('.tab[data-v="SUBDIST"]').classList.add('active');
+document.querySelector('.tab[data-v="GENERAL"]').classList.remove('active');
 
 function renderKPIs(){
   const d=RESUMEN[currentVendedor],color=COLORS[currentVendedor],months=getMonths();
@@ -524,7 +538,32 @@ function renderClientes(){
 }
 
 function toggleCat(cat){if(expandedCats.has(cat))expandedCats.delete(cat);else expandedCats.add(cat);renderTable();}
-function setVendedor(v,el){currentVendedor=v;expandedCats.clear();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
+function setMainTab(v, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const subtabs = document.getElementById('subtabs');
+  if(v==='GENERAL'){
+    subtabs.style.display='none';
+    currentVendedor='GENERAL';
+    expandedCats.clear();
+    renderAll();
+  } else {
+    subtabs.style.display='flex';
+    const firstSub = subtabs.querySelector('.subtab');
+    document.querySelectorAll('.subtab').forEach(t=>t.classList.remove('active'));
+    firstSub.classList.add('active');
+    currentVendedor = firstSub.dataset.v;
+    expandedCats.clear();
+    renderAll();
+  }
+}
+function setVendedor(v,el){
+  currentVendedor=v;
+  expandedCats.clear();
+  document.querySelectorAll('.subtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
 function setView(v,el){currentView=v;document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTable();}
 renderAll();
 </script>
