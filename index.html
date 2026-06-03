@@ -360,7 +360,7 @@ function renderTable(){
   });
   sortedCats.forEach(cat=>{
     const v26=sumMonths(d.v26[cat]),v25=sumMonths(d.v25[cat]);
-    if(v26===0&&v25===0&&cat!=='INDUSTRIAL')return;
+
     const df=v26-v25,isE=expandedCats.has(cat);
     const prods26=det26[cat]||[], prods25=det25[cat]||[];
     const allCodes=[...new Set([...prods26.map(p=>p.cod),...prods25.map(p=>p.cod)])];
