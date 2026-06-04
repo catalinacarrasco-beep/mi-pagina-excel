@@ -257,10 +257,14 @@ const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'Genera
 
 let currentVendedor='ALEJANDRA', currentView='valores';
 let selectedMonths=new Set([0]);
-let expandedCats=new Set();
 
 
-if(!n||n===0)return'-';const s='$'+Math.abs(Math.round(n)).toLocaleString('es-CL');return n>0?'+'+s:'-'+s;}
+
+
+
+
+function fmt(n){if(!n||n===0)return'$-';const abs='$'+Math.abs(Math.round(n)).toLocaleString('es-CL');return n<0?'-'+abs:abs;}
+function fmtS(n){if(!n||n===0)return'-';const s='$'+Math.abs(Math.round(n)).toLocaleString('es-CL');return n>0?'+'+s:'-'+s;}
 function cc(n){return n>0?'cell-pos':n<0?'cell-neg':'cell-zero';}
 function getMonths(){return [...selectedMonths].sort((a,b)=>a-b);}
 function sumMonths(arr){return getMonths().reduce((s,i)=>s+(arr&&arr[i]?arr[i]:0),0);}
