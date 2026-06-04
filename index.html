@@ -263,6 +263,8 @@ let selectedMonths=new Set([0]);
 
 
 
+
+let expandedCats=new Set();
 function fmt(n){if(!n||n===0)return'$-';const abs='$'+Math.abs(Math.round(n)).toLocaleString('es-CL');return n<0?'-'+abs:abs;}
 function fmtS(n){if(!n||n===0)return'-';const s='$'+Math.abs(Math.round(n)).toLocaleString('es-CL');return n>0?'+'+s:'-'+s;}
 function cc(n){return n>0?'cell-pos':n<0?'cell-neg':'cell-zero';}
