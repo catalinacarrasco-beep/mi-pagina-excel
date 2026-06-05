@@ -211,8 +211,7 @@ footer{padding-left:1.2rem;padding-right:1.2rem;}}
     <div class="table-header">
       <span class="table-title" id="tableTitle">Detalle por categoría</span>
       <div class="view-toggle">
-        <button class="vt-btn active" onclick="setView('valores',this)">$ Valores</button>
-        <button class="vt-btn" onclick="setView('diferencia',this)">Δ Diferencia</button>
+
       </div>
     </div>
 
@@ -354,16 +353,20 @@ function toggleAll(){
 function renderTable(){
   const d=RESUMEN[currentVendedor];
   const det26=getDetail26(), det25=getDetail25();
-  document.getElementById('tableTitle').textContent=
-    (currentView==='valores'?'Ventas por Categoría — ':'Diferencia $ por Categoría — ')+periodStr()+' 2026';
-  let html=`<table><thead><tr><th>Categoría / Producto</th><th>2026</th><th>2025</th><th>Diferencia</th></tr></thead><tbody>`;
   const sortedCats=getCats().slice().sort((a,b)=>{
     const da=sumMonths(d.v26[a])-sumMonths(d.v25[a]);
     const db=sumMonths(d.v26[b])-sumMonths(d.v25[b]);
+    if(diffSort==='az') return a.localeCompare(b);
+    if(diffSort==='asc') return da-db;
+    // desc: positives desc, then negatives desc
     if(da>=0&&db>=0)return db-da;
     if(da<0&&db<0)return db-da;
     return da>=0?-1:1;
   });
+  document.getElementById('tableTitle').textContent=
+    (currentView==='valores'?'Ventas por Categoría — ':'Diferencia $ por Categoría — ')+periodStr()+' 2026';
+  let html=`<table><thead><tr><th>Categoría / Producto</th><th>2026</th><th>2025</th><th>Diferencia</th></tr></thead><tbody>`;
+
   sortedCats.forEach(cat=>{
     const v26=sumMonths(d.v26[cat]),v25=sumMonths(d.v25[cat]);
 
@@ -618,7 +621,23 @@ function setVendedor(v,el){
   el.classList.add('active');
   renderAll();
 }
-function setView(v,el){currentView=v;document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTable();}
+let diffSort='desc'; // desc=mayor a menor, asc=menor a mayor, az=alfabético
+const diffSortLabels={desc:'▲ Mayor dif.',asc:'▼ Menor dif.',az:'AZ Alfabético'};
+const diffSortCycle={desc:'asc',asc:'az',az:'desc'};
+function setView(v,el){
+  currentView=v;
+  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  if(v==='diferencia'){el.textContent='Δ '+diffSortLabels[diffSort];}
+  else{document.getElementById('btnDif').textContent='Δ Diferencia';}
+  renderTable();
+}
+function cycleDiffSort(){
+  diffSort=diffSortCycle[diffSort];
+  const btn=document.getElementById('btnDif');
+  btn.textContent='Δ '+diffSortLabels[diffSort];
+  if(currentView==='diferencia') renderTable();
+}
 renderAll();
 </script>
 </body>
