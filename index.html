@@ -210,9 +210,11 @@ footer{padding-left:1.2rem;padding-right:1.2rem;}}
   <div class="table-wrap">
     <div class="table-header">
       <span class="table-title" id="tableTitle">Detalle por categoría</span>
-
+      <div class="view-toggle">
+        <button class="vt-btn active" onclick="setView('valores',this)">$ Valores</button>
+        <button id="btnDif" class="vt-btn" onclick="if(currentView==='diferencia'){cycleDiffSort();}else{setView('diferencia',this);}">&#916; Diferencia</button>
+      </div>
     </div>
-
     <div id="tableContainer"></div>
   </div>
 </main>
