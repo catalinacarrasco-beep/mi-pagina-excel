@@ -189,8 +189,8 @@ footer{padding-left:1.2rem;padding-right:1.2rem;}}
   </div>
 </header>
 <div class="tabs">
-  <div class="tab" data-v="GENERAL" onclick="setMainTab('GENERAL',this)">General</div>
-  <div class="tab active" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
+  <div class="tab active" data-v="GENERAL" onclick="setMainTab('GENERAL',this)">General</div>
+  <div class="tab" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
 </div>
 <div class="subtabs" id="subtabs">
   <div class="subtab active" data-v="ALEJANDRA" onclick="setVendedor('ALEJANDRA',this)">Alejandra</div>
@@ -257,7 +257,7 @@ function getCats(){return currentVendedor==='GENERAL'?CATS_GENERAL:CATS_VENDOR;}
 const COLORS={ALEJANDRA:'#3ba8d4',MARCELO:'#3ba8d4',JOEL:'#3ba8d4',GENERAL:'#3ba8d4'};
 const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'General'};
 
-let currentVendedor='ALEJANDRA', currentView='valores';
+
 let selectedMonths=new Set([0]);
 
 
@@ -288,9 +288,9 @@ function renderAll(){
   if(mainView==='clientes') renderClientes();}
 
 // Init — start on Sub Distribución / Alejandra
-document.getElementById('subtabs').style.display='flex';
-document.querySelector('.tab[data-v="SUBDIST"]').classList.add('active');
-document.querySelector('.tab[data-v="GENERAL"]').classList.remove('active');
+document.getElementById('subtabs').style.display='none';
+document.querySelector('.tab[data-v="GENERAL"]').classList.add('active');
+document.querySelector('.tab[data-v="SUBDIST"]').classList.remove('active');
 
 function renderKPIs(){
   const d=RESUMEN[currentVendedor],color=COLORS[currentVendedor],months=getMonths();
