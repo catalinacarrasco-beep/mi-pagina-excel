@@ -287,10 +287,7 @@ function renderAll(){
   document.getElementById('footerVendedor').textContent='Vista: '+NAMES[currentVendedor];
   if(mainView==='clientes') renderClientes();}
 
-// Init — start on Sub Distribución / Alejandra
-document.getElementById('subtabs').style.display='none';
-document.querySelector('.tab[data-v="GENERAL"]').classList.add('active');
-document.querySelector('.tab[data-v="SUBDIST"]').classList.remove('active');
+
 
 function renderKPIs(){
   const d=RESUMEN[currentVendedor],color=COLORS[currentVendedor],months=getMonths();
@@ -641,7 +638,6 @@ function cycleDiffSort(){
   btn.textContent='Δ '+diffSortLabels[diffSort];
   if(currentView==='diferencia') renderTable();
 }
-renderAll();
-</script>
+
 </body>
 </html>
