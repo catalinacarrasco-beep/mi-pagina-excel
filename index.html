@@ -628,12 +628,5 @@ function setView(v,el){
   else{document.getElementById('btnDif').textContent='Δ Diferencia';}
   renderTable();
 }
-function cycleDiffSort(){
-  diffSort=diffSortCycle[diffSort];
-  const btn=document.getElementById('btnDif');
-  btn.textContent='Δ '+diffSortLabels[diffSort];
-  if(currentView==='diferencia') renderTable();
-}
 
-</body>
 </html>
