@@ -27,10 +27,14 @@ header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:fl
 .subtab[data-v="ALEJANDRA"].active{color:#b8ecf8;border-bottom-color:#b8ecf8;}
 .subtab[data-v="MARCELO"].active{color:#caf2fb;border-bottom-color:#caf2fb;}
 .subtab[data-v="JOEL"].active{color:#dcf7fd;border-bottom-color:#dcf7fd;}
-.subtab[data-v="OSCAR"].active{color:#ffd9a3;border-bottom-color:#ffd9a3;}
-.subtab[data-v="DIEGO"].active{color:#ffe7c2;border-bottom-color:#ffe7c2;}
-.subtab[data-v="SANDRA"].active{color:#fff0d6;border-bottom-color:#fff0d6;}
-.tab[data-v="EXTRAS"].active{color:#f5a623;border-bottom-color:#f5a623;}
+.subtab[data-v="OSCAR"].active{color:#b8ecf8;border-bottom-color:#b8ecf8;}
+.subtab[data-v="DIEGO"].active{color:#caf2fb;border-bottom-color:#caf2fb;}
+.subtab[data-v="SANDRA"].active{color:#dcf7fd;border-bottom-color:#dcf7fd;}
+.subtab[data-v="SODIMAC"].active{color:#b8ecf8;border-bottom-color:#b8ecf8;}
+.subtab[data-v="IMPERIAL"].active{color:#caf2fb;border-bottom-color:#caf2fb;}
+.subtab[data-v="CONSTRUMART"].active{color:#dcf7fd;border-bottom-color:#dcf7fd;}
+.subtab[data-v="CHILEMAT"].active{color:#b8ecf8;border-bottom-color:#b8ecf8;}
+.subtab[data-v="MERCADO LIBRE"].active{color:#caf2fb;border-bottom-color:#caf2fb;}
 main{padding:2rem 3rem;}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;}
@@ -277,7 +281,7 @@ const MESES_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov'
 const CATS_VENDOR=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 const CATS_GENERAL=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 function getCats(){return currentVendedor==='GENERAL'?CATS_GENERAL:CATS_VENDOR;}
-const COLORS={ALEJANDRA:'#3ba8d4',MARCELO:'#3ba8d4',JOEL:'#3ba8d4',GENERAL:'#3ba8d4',OSCAR:'#f5a623',DIEGO:'#f5a623',SANDRA:'#f5a623'};
+const COLORS={ALEJANDRA:'#3ba8d4',MARCELO:'#3ba8d4',JOEL:'#3ba8d4',GENERAL:'#3ba8d4',OSCAR:'#3ba8d4',DIEGO:'#3ba8d4',SANDRA:'#3ba8d4'};
 const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'General',OSCAR:'Oscar',DIEGO:'Diego',SANDRA:'Sandra'};
 
 let currentVendedor='GENERAL', currentView='valores';
