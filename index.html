@@ -425,7 +425,36 @@ function renderTable(){
         if(a.pdiff<0 && b.pdiff<0) return b.pdiff-a.pdiff;
         return b.pdiff>=0?1:-1;
       });
-
+      if(cat==='PLACAS MURALES'){
+        const groups=[
+          {label:'CLIO · PLATA',  color:'#5abfe8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('plat')},
+          {label:'CLIO · BLANCO', color:'#b8ecf8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('blanc')},
+          {label:'PRIMMUS',       color:'#3ba8d4', test:r=>r.desc.toLowerCase().includes('primmus')},
+          {label:'OTROS',         color:'#555',    test:r=>true},
+        ];
+        const assigned=new Set();
+        groups.forEach(g=>{
+          const gRows=prodRows.filter(r=>!assigned.has(r.cod)&&g.test(r));
+          if(!gRows.length) return;
+          gRows.forEach(r=>assigned.add(r.cod));
+          html+=`<tr class="prod-row visible" data-cat="${catId}"><td colspan="4" style="padding:.22rem 1rem .22rem 2.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;color:`+g.color+`;background:#0a0c10;border-top:1px solid #222;border-left:3px solid `+g.color+`">`+g.label+`</td></tr>`;
+          gRows.forEach(({cod,desc,val26,val25,pdiff})=>{
+            html+=`<tr class="prod-row visible" data-cat="${catId}">
+              <td style="border-left:3px solid `+g.color+`"><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
+              <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
+              <td style="color:#555">${fmt(val25)}</td>
+              <td class="${cc(pdiff)}">${fmtS(pdiff)}</td></tr>`;
+          });
+        });
+      } else {
+      prodRows.forEach(({cod,desc,val26,val25,pdiff})=>{
+        html+=`<tr class="prod-row visible" data-cat="${catId}">
+          <td><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
+          <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
+          <td style="color:#555">${fmt(val25)}</td>
+          <td class="${cc(pdiff)}">${fmtS(pdiff)}</td></tr>`;
+      });
+      }
     }
   });
   let totG26=0,totG25=0;
