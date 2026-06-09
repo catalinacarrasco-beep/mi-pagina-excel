@@ -425,13 +425,7 @@ function renderTable(){
         if(a.pdiff<0 && b.pdiff<0) return b.pdiff-a.pdiff;
         return b.pdiff>=0?1:-1;
       });
-      prodRows.forEach(({cod,desc,val26,val25,pdiff})=>{
-        html+=`<tr class="prod-row visible" data-cat="${catId}">
-          <td><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
-          <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
-          <td style="color:#555">${fmt(val25)}</td>
-          <td class="${cc(pdiff)}">${fmtS(pdiff)}</td></tr>`;
-      });
+
     }
   });
   let totG26=0,totG25=0;
