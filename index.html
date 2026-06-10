@@ -444,7 +444,7 @@ function renderTable(){
           const gV25=gRows.reduce((s,r)=>s+r.val25,0);
           const gDiff=gV26-gV25;
           html+=`<tr class="prod-row visible subcat-header" data-cat="${catId}" data-gid="${gId}" onclick="event.stopPropagation();togglePlacaGroup('${gId}')" style="cursor:pointer;border-top:2px solid `+g.color+`;border-left:3px solid `+g.color+`;background:#111518;">
-            <td style="padding:.35rem 1rem .35rem 2rem;font-size:.7rem;font-weight:700;letter-spacing:.08em;color:`+g.color+`;"><span id="pgicon_${gId}" style="margin-right:.4rem;font-size:.6rem">`+(gOpen?'▼':'▶')+`</span>`+g.label+`</td>
+            <td style="padding:.35rem 1rem .35rem 2rem;font-size:.7rem;font-weight:700;letter-spacing:.08em;color:`+g.color+`;"><span id="pgicon_${gId}" style="margin-right:.4rem;font-size:.6rem">`+(gOpen?'▼':'▶')+`</span>`+g.label+`<span style="margin-left:auto;display:inline-flex;align-items:center;gap:.2rem"><button onclick="event.stopPropagation();toggleGroupSearch('${gId}')" title="Buscar" style="background:none;border:none;color:`+g.color+`;cursor:pointer;font-size:.75rem;padding:0 .2rem;opacity:.7">⌕</button><input id="gi-${gId}" type="text" placeholder="buscar..." oninput="filterPlacaGroup('${gId}',this.value)" onclick="event.stopPropagation()" style="width:0;opacity:0;background:transparent;border:none;border-bottom:1px solid transparent;padding:.1rem .2rem;color:var(--text);font-size:.72rem;font-family:inherit;outline:none;transition:width .25s,opacity .25s,border-color .25s;"><span id="gc-${gId}" style="font-size:.65rem;color:#555;min-width:24px;"></span></span></td>
             <td style="color:${gV26>0?'var(--text)':'var(--muted)'};font-weight:600;font-size:.78rem">${fmt(gV26)}</td>
             <td style="color:#555;font-size:.78rem">${fmt(gV25)}</td>
             <td class="${cc(gDiff)}" style="font-size:.78rem">${fmtS(gDiff)}</td></tr>`;
@@ -830,6 +830,29 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+
+function toggleGroupSearch(gId){
+  const inp = document.getElementById('gi-'+gId);
+  if(!inp) return;
+  const open = inp.style.width === '110px';
+  inp.style.width = open ? '0' : '110px';
+  inp.style.opacity = open ? '0' : '1';
+  inp.style.borderBottomColor = open ? 'transparent' : '#555';
+  if(!open){ inp.focus(); } else { inp.value=''; filterPlacaGroup(gId,''); }
+}
+function filterPlacaGroup(gId, q){
+  const term = q.trim().toLowerCase();
+  const rows = document.querySelectorAll('.subprod-row[data-gid="'+gId+'"]');
+  let shown=0;
+  rows.forEach(r=>{
+    const txt = r.textContent.toLowerCase();
+    const visible = !term || txt.includes(term);
+    r.style.display = visible ? 'table-row' : 'none';
+    if(visible) shown++;
+  });
+  const cnt = document.getElementById('gc-'+gId);
+  if(cnt) cnt.textContent = term && rows.length ? shown+'/'+rows.length : '';
+}
 function togglePlacaGroup(gId){
   if(!window._placasOpen) window._placasOpen={};
   window._placasOpen[gId]=!window._placasOpen[gId];
