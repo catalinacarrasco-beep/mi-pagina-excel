@@ -430,16 +430,26 @@ function renderTable(){
           {label:'CLIO · PLATA',  color:'#5abfe8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('plat')},
           {label:'CLIO · BLANCO', color:'#b8ecf8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('blanc')},
           {label:'PRIMMUS',       color:'#3ba8d4', test:r=>r.desc.toLowerCase().includes('primmus')},
-          {label:'OTROS',         color:'#555',    test:r=>true},
+          {label:'OTROS',         color:'#aaaaaa', test:r=>true},
         ];
         const assigned=new Set();
+        if(!window._placasOpen) window._placasOpen={};
         groups.forEach(g=>{
           const gRows=prodRows.filter(r=>!assigned.has(r.cod)&&g.test(r));
           if(!gRows.length) return;
           gRows.forEach(r=>assigned.add(r.cod));
-          html+=`<tr class="prod-row visible" data-cat="${catId}"><td colspan="4" style="padding:.22rem 1rem .22rem 2.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;color:`+g.color+`;background:#0a0c10;border-top:1px solid #222;border-left:3px solid `+g.color+`">`+g.label+`</td></tr>`;
+          const gId='placa_'+catId+'_'+g.label.replace(/[^a-z0-9]/gi,'_');
+          const gOpen=window._placasOpen[gId]||false;
+          const gV26=gRows.reduce((s,r)=>s+r.val26,0);
+          const gV25=gRows.reduce((s,r)=>s+r.val25,0);
+          const gDiff=gV26-gV25;
+          html+=`<tr class="prod-row visible subcat-header" data-cat="${catId}" data-gid="${gId}" onclick="event.stopPropagation();togglePlacaGroup('${gId}')" style="cursor:pointer;border-top:2px solid `+g.color+`;border-left:3px solid `+g.color+`;background:#111518;">
+            <td style="padding:.35rem 1rem .35rem 2rem;font-size:.7rem;font-weight:700;letter-spacing:.08em;color:`+g.color+`;"><span id="pgicon_${gId}" style="margin-right:.4rem;font-size:.6rem">`+(gOpen?'▼':'▶')+`</span>`+g.label+`</td>
+            <td style="color:${gV26>0?'var(--text)':'var(--muted)'};font-weight:600;font-size:.78rem">${fmt(gV26)}</td>
+            <td style="color:#555;font-size:.78rem">${fmt(gV25)}</td>
+            <td class="${cc(gDiff)}" style="font-size:.78rem">${fmtS(gDiff)}</td></tr>`;
           gRows.forEach(({cod,desc,val26,val25,pdiff})=>{
-            html+=`<tr class="prod-row visible" data-cat="${catId}">
+            html+=`<tr class="prod-row subprod-row" data-cat="${catId}" data-gid="${gId}" style="display:${gOpen?'table-row':'none'};border-left:3px solid `+g.color+`">
               <td style="border-left:3px solid `+g.color+`"><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
               <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
               <td style="color:#555">${fmt(val25)}</td>
@@ -819,6 +829,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+function togglePlacaGroup(gId){
+  if(!window._placasOpen) window._placasOpen={};
+  window._placasOpen[gId]=!window._placasOpen[gId];
+  const open=window._placasOpen[gId];
+  // Toggle icon
+  const icon=document.getElementById('pgicon_'+gId);
+  if(icon) icon.textContent=open?'▼':'▶';
+  // Toggle product rows
+  document.querySelectorAll('.subprod-row[data-gid="'+gId+'"]').forEach(row=>{
+    row.style.display=open?'table-row':'none';
+  });
+}
 </script>
 </body>
 </html>
