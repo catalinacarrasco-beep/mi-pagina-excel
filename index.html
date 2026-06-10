@@ -437,9 +437,9 @@ function renderTable(){
           const gRows=prodRows.filter(r=>!assigned.has(r.cod)&&g.test(r));
           if(!gRows.length) return;
           gRows.forEach(r=>assigned.add(r.cod));
-          html+=`<tr class="prod-row visible" data-cat="${catId}"><td colspan="4" style="padding:.22rem 1rem .22rem 2.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;color:`+g.color+`;background:#0a0c10;border-top:1px solid #222;border-left:3px solid `+g.color+`">`+g.label+`</td></tr>`;
-          gRows.forEach(({cod,desc,val26,val25,pdiff})=>{
-            html+=`<tr class="prod-row visible" data-cat="${catId}">
+          html+=`<tr class="prod-row visible pmg-header" data-cat="${catId}" data-group-id="${catId}_${groups.indexOf(g)}"><td colspan="4" style="padding:.22rem 1rem .22rem 2.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;color:`+g.color+`;background:#0a0c10;border-top:1px solid #222;border-left:3px solid `+g.color+`;cursor:pointer;"><span class="pmg-expand-icon" style="display:inline-block;margin-right:.5rem;transition:transform .2s;">▶</span>`+g.label+`</td></tr>`;
+          gRows.forEach(({cod,desc,val26,val25,pdiff},idx)=>{
+            html+=`<tr class="prod-row visible pmg-item" data-cat="${catId}" data-group="${catId}_${groups.indexOf(g)}" style="display:none;">
               <td style="border-left:3px solid `+g.color+`"><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
               <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
               <td style="color:#555">${fmt(val25)}</td>
@@ -727,6 +727,25 @@ function cycleDiffSort(){
   if(currentView==='diferencia') renderTable();
 }
 renderAll();
+</script>
+
+<script>
+/**
+ * PLACAS MURALES - Sistema de Expandibles
+ */
+document.addEventListener('DOMContentLoaded', function() {
+  const headers = document.querySelectorAll('.pmg-header');
+  headers.forEach(header => {
+    header.addEventListener('click', function(e) {
+      const groupId = this.dataset.groupId;
+      const icon = this.querySelector('.pmg-expand-icon');
+      const items = document.querySelectorAll('[data-group="'+groupId+'"]');
+      const isHidden = items[0]?.style.display === 'none';
+      items.forEach(item => {item.style.display = isHidden ? 'table-row' : 'none';});
+      if(icon) icon.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+    });
+  });
+});
 </script>
 </body>
 </html>
