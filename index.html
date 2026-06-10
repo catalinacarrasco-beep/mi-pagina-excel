@@ -198,9 +198,12 @@ footer{padding-left:1.2rem;padding-right:1.2rem;}}
   .kpi-card .label{font-size:.62rem;}
   .kpi-card .value{font-size:1rem;}
   .kpi-card .sub{font-size:.65rem;}
-  table{font-size:.72rem;}
-  th,td{padding:.35rem .4rem;}
-  th:nth-child(3),td:nth-child(3){display:none;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;}
+  table{font-size:.72rem;min-width:340px;width:100%;}
+  th,td{padding:.35rem .5rem;white-space:nowrap;}
+  td:first-child,th:first-child{white-space:normal;max-width:130px;font-size:.7rem;}
+  .cat-title{white-space:normal !important;font-size:.72rem;}
+  .table-title{font-size:.85rem !important;white-space:normal;}
   .sort-bar{flex-wrap:wrap;gap:.3rem;padding:.4rem .5rem;font-size:.72rem;}
   footer{padding:.6rem .75rem;font-size:.68rem;flex-direction:column;gap:.15rem;text-align:center;}
 }
