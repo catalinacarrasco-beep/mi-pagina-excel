@@ -433,13 +433,13 @@ function renderTable(){
           {label:'OTROS',         color:'#555',    test:r=>true},
         ];
         const assigned=new Set();
-        groups.forEach(g=>{
+        groups.forEach((g,gi)=>{
           const gRows=prodRows.filter(r=>!assigned.has(r.cod)&&g.test(r));
           if(!gRows.length) return;
           gRows.forEach(r=>assigned.add(r.cod));
-          html+=`<tr class="prod-row visible pmg-header" data-cat="${catId}" data-group-id="${catId}_${groups.indexOf(g)}"><td colspan="4" style="padding:.22rem 1rem .22rem 2.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;color:`+g.color+`;background:#0a0c10;border-top:1px solid #222;border-left:3px solid `+g.color+`;cursor:pointer;"><span class="pmg-expand-icon" style="display:inline-block;margin-right:.5rem;transition:transform .2s;">▶</span>`+g.label+`</td></tr>`;
-          gRows.forEach(({cod,desc,val26,val25,pdiff},idx)=>{
-            html+=`<tr class="prod-row visible pmg-item" data-cat="${catId}" data-group="${catId}_${groups.indexOf(g)}" style="display:none;">
+          html+=`<tr class="prod-row visible pmg-header" data-cat="${catId}"><td colspan="4" style="padding:.22rem 1rem .22rem 2.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;color:`+g.color+`;background:#0a0c10;border-top:1px solid #222;border-left:3px solid `+g.color+`">`+g.label+`</td></tr>`;
+          gRows.forEach(({cod,desc,val26,val25,pdiff})=>{
+            html+=`<tr class="prod-row visible pmg-item" data-cat="${catId}" data-group="`+catId+"_"+gi+`">
               <td style="border-left:3px solid `+g.color+`"><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
               <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
               <td style="color:#555">${fmt(val25)}</td>
@@ -730,16 +730,49 @@ renderAll();
 </script>
 
 <script>
-/**
- * PLACAS MURALES - Sistema de Expandibles
- */
 document.addEventListener('DOMContentLoaded', function() {
+  // Calcular y mostrar subtotales de PLACAS MURALES
   const headers = document.querySelectorAll('.pmg-header');
   headers.forEach(header => {
-    header.addEventListener('click', function(e) {
-      const groupId = this.dataset.groupId;
+    const groupId = header.dataset.groupId;
+    const items = document.querySelectorAll('[data-group="' + groupId + '"]');
+    
+    if(!items.length) return;
+    
+    let tot26 = 0, tot25 = 0;
+    items.forEach(item => {
+      const cells = item.querySelectorAll('td');
+      if(cells.length >= 4) {
+        const v26 = cells[1]?.textContent || '';
+        const v25 = cells[2]?.textContent || '';
+        // Extraer números
+        const n26 = parseInt(v26.replace(/[^0-9-]/g, '')) || 0;
+        const n25 = parseInt(v25.replace(/[^0-9-]/g, '')) || 0;
+        tot26 += n26;
+        tot25 += n25;
+      }
+    });
+    
+    // Actualizar encabezado
+    const headerCells = header.querySelectorAll('td');
+    if(headerCells.length >= 4) {
+      headerCells[1].style.color = '#5abfe8';
+      headerCells[1].style.fontWeight = '600';
+      headerCells[1].textContent = (tot26/1).toLocaleString('es-CL');
+      headerCells[2].style.color = '#888';
+      headerCells[2].style.fontWeight = '600';
+      headerCells[2].textContent = (tot25/1).toLocaleString('es-CL');
+      const diff = tot26 - tot25;
+      headerCells[3].style.fontWeight = '600';
+      headerCells[3].textContent = (diff >= 0 ? '+' : '') + (diff/1).toLocaleString('es-CL');
+      if(diff >= 0) headerCells[3].style.color = '#2e9e6a';
+      else headerCells[3].style.color = '#c05050';
+    }
+    
+    // Expandible
+    header.style.cursor = 'pointer';
+    header.addEventListener('click', function() {
       const icon = this.querySelector('.pmg-expand-icon');
-      const items = document.querySelectorAll('[data-group="'+groupId+'"]');
       const isHidden = items[0]?.style.display === 'none';
       items.forEach(item => {item.style.display = isHidden ? 'table-row' : 'none';});
       if(icon) icon.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
