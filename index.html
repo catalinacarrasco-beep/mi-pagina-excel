@@ -183,6 +183,11 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cb-val{width:100px;font-size:.75rem;color:var(--muted);text-align:left;flex-shrink:0;}
 footer{padding-left:1.2rem;padding-right:1.2rem;}}
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#3ba8d4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ventas Grantt">
 </head>
 <body>
 <header>
@@ -863,6 +868,13 @@ function togglePlacaGroup(gId){
   // Toggle product rows
   document.querySelectorAll('.subprod-row[data-gid="'+gId+'"]').forEach(row=>{
     row.style.display=open?'table-row':'none';
+  });
+}
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/service-worker.js');
   });
 }
 </script>
