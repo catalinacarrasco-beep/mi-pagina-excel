@@ -506,7 +506,7 @@ function renderTable(){
     <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;color:var(--muted);text-align:right;">${fmt(totG25)}</td>
     <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;text-align:right;" class="${cc(totDiff)}">${fmtS(totDiff)}</td>
   </tr></tfoot></table>`;
-  document.getElementById('tableContainer').innerHTML=html;}
+  document.getElementById('tableContainer').innerHTML='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%">'+html+'</div>';}
 
 
 function showTip(e, cod, desc, el){
