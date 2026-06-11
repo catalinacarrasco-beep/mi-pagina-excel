@@ -459,7 +459,7 @@ function renderTable(){
         const groups=[
           {label:'CLIO · PLATA',  color:'#5abfe8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('plat')},
           {label:'CLIO · BLANCO', color:'#b8ecf8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('blanc')},
-          {label:'PRIMMUS',       color:'#3ba8d4', test:r=>r.desc.toLowerCase().includes('primmus')},
+          {label:'PRIMMUS',       color:'#3ba8d4', test:r=>r.desc.toLowerCase().includes('primmus')||r.cod==='5249'},
           {label:'OTROS',         color:'#aaaaaa', test:r=>true},
         ];
         const assigned=new Set();
