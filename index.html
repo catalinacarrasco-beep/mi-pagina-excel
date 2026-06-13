@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Dashboard Ventas 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#12151e;--surface:#1a1f2e;--surface2:#222840;--border:#2a3045;--accent:#3ba8d4;--accent2:#3ba8d4;--accent3:#3ba8d4;--accent4:#3ba8d4;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+html{width:100%;max-width:100%;overflow-x:hidden;}body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;width:100%;max-width:100%;}
 header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:linear-gradient(135deg,#12151e 60%,#151d2e);}
 .header-left h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);letter-spacing:.04em;line-height:1;color:#fff;}
 .header-left h1 span{color:var(--accent);}
@@ -35,7 +35,7 @@ header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:fl
 .subtab[data-v="CONSTRUMART"].active{color:#dcf7fd;border-bottom-color:#dcf7fd;}
 .subtab[data-v="MERCADO LIBRE"].active{color:#caf2fb;border-bottom-color:#caf2fb;}
 main{padding:2rem 3rem;}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:1rem;margin-bottom:2rem;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kpi-color,var(--accent));}
 .kpi-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;}
@@ -182,79 +182,30 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cb-val{width:100px;font-size:.75rem;color:var(--muted);text-align:left;flex-shrink:0;}
 footer{padding-left:1.2rem;padding-right:1.2rem;}}
 @media(max-width:768px){
-  /* Header */
   header{padding:.75rem 1rem;flex-direction:column;align-items:flex-start;gap:.4rem;}
   .header-left h1{font-size:1.8rem;}
   .year-badge{font-size:.9rem;padding:.25rem .7rem;}
   .header-left p{font-size:.75rem;}
-  
-  /* Tabs */
   .tabs{padding:.4rem .5rem 0;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
   .tabs::-webkit-scrollbar{display:none;}
   .tab{padding:.5rem .75rem;font-size:.7rem;white-space:nowrap;}
   .subtabs{padding:.3rem .5rem 0;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
   .subtabs::-webkit-scrollbar{display:none;}
   .subtab{padding:.35rem .7rem;font-size:.68rem;white-space:nowrap;}
-  
-  /* Main area - full width, no horizontal overflow */
-  main{padding:.6rem .6rem;width:100%;box-sizing:border-box;overflow-x:hidden;}
-  
-  /* KPI cards - 1 column full width */
+  main{padding:.75rem .75rem;}
   .kpis{grid-template-columns:1fr;gap:.5rem;margin-bottom:.75rem;}
-  .kpi-card{padding:.75rem 1rem;width:100%;box-sizing:border-box;}
-  .kpi-value{font-size:1.6rem;}
-  .kpi-sub{font-size:.7rem;}
-  
-  /* Top categories card - full width */
-  .top-cats-card{width:100%;box-sizing:border-box;padding:1rem;}
-  .top-cat-row{display:grid;grid-template-columns:20px 1fr auto auto;gap:6px;align-items:center;width:100%;box-sizing:border-box;}
-  .top-cat-info{min-width:0;overflow:hidden;}
-  .top-cat-name{font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .top-cat-val{min-width:90px;font-size:.78rem;}
-  .top-cat-pct{min-width:38px;font-size:.7rem;}
-  
-  /* Table wrapper - full width, scroll only if needed */
-  .table-wrap{overflow-x:hidden;width:100%;box-sizing:border-box;}
-  .table-header{padding:.6rem .75rem;flex-wrap:wrap;gap:.4rem;}
-  .table-title{font-size:.9rem;white-space:normal;}
-  
-  /* Table itself - NO min-width, adapt to screen */
-  table{font-size:.72rem;min-width:unset !important;width:100%;table-layout:fixed;}
-  thead th{padding:.4rem .4rem;font-size:.64rem;letter-spacing:.04em;}
-  thead th:first-child{width:45% !important;}
-  thead th:not(:first-child){width:auto;}
-  th,td{padding:.35rem .4rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  td:first-child,th:first-child{white-space:normal;text-overflow:clip;font-size:.7rem;}
+  .kpi-card{padding:.6rem .75rem;}
+  .kpi-card .label{font-size:.62rem;}
+  .kpi-card .value{font-size:1rem;}
+  .kpi-card .sub{font-size:.65rem;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;}
+  table{font-size:.72rem;min-width:340px;width:100%;}
+  th,td{padding:.35rem .5rem;white-space:nowrap;}
+  td:first-child,th:first-child{white-space:normal;max-width:130px;font-size:.7rem;}
   .cat-title{white-space:normal !important;font-size:.72rem;}
-  
-  /* Product rows */
-  tr.prod-row td{padding:.4rem .4rem .4rem 1.2rem;font-size:.68rem;}
-  .prod-code{font-size:.6rem;}
-  
-  /* Controls - month buttons wrap nicely */
-  .controls{gap:.35rem;margin-bottom:1rem;}
-  .month-btn{padding:.3rem .5rem;font-size:.72rem;}
-  .btn-all{padding:.3rem .65rem;font-size:.72rem;}
-  
-  /* View toggle */
-  .view-toggle-main{margin-bottom:1rem;gap:.4rem;}
-  .vtm-btn{padding:.4rem .9rem;font-size:.78rem;}
-  
-  /* Client bars */
-  .client-bars{padding:.75rem;}
-  .cb-row{gap:.4rem;}
-  .cb-name{width:110px;font-size:.68rem;}
-  .cb-val{width:75px;font-size:.68rem;}
-  
-  /* Footer */
-  footer{padding:.6rem .75rem;font-size:.68rem;flex-direction:column;gap:.15rem;text-align:center;}
-  
-  /* Global overflow fix */
-  body{overflow-x:hidden;}
-  *{box-sizing:border-box;}
-  
-  /* Ranking top cats bar chart labels */
+  .table-title{font-size:.85rem !important;white-space:normal;}
   .sort-bar{flex-wrap:wrap;gap:.3rem;padding:.4rem .5rem;font-size:.72rem;}
+  footer{padding:.6rem .75rem;font-size:.68rem;flex-direction:column;gap:.15rem;text-align:center;}
 }
 </style>
 <link rel="manifest" href="/manifest.json">
@@ -555,7 +506,7 @@ function renderTable(){
     <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;color:var(--muted);text-align:right;">${fmt(totG25)}</td>
     <td style="padding:.9rem 1rem;font-size:.9rem;font-weight:700;text-align:right;" class="${cc(totDiff)}">${fmtS(totDiff)}</td>
   </tr></tfoot></table>`;
-  document.getElementById('tableContainer').innerHTML='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%">'+html+'</div>';}
+  document.getElementById('tableContainer').innerHTML='<div style="overflow-x:hidden;width:100%;max-width:100%">'+html+'</div>';}
 
 
 function showTip(e, cod, desc, el){
