@@ -1,4 +1,4 @@
-const CACHE = 'ventas-v2';
+const CACHE = 'ventas-v3';
 
 // On install, cache the main page
 self.addEventListener('install', e => {
