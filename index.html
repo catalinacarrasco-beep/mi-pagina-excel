@@ -613,7 +613,7 @@ function renderTable(){
             html+=`<tr class="prod-row subprod-row" data-cat="${catId}" data-gid="${gId}" style="display:${gOpen?'table-row':'none'};border-left:3px solid `+g.color+`">
               <td style="border-left:3px solid `+g.color+`"><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
               <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
-              <td style="color:#555">${fmt(val25)}</td>
+              <td style="color:#6e7a8a">${fmt(val25)}</td>
               <td class="${cc(pdiff)}">${fmtS(pdiff)}</td></tr>`;
           });
         });
@@ -622,7 +622,7 @@ function renderTable(){
         html+=`<tr class="prod-row visible" data-cat="${catId}">
           <td><span class="prod-code">${cod}</span><span class="prod-desc" onmouseenter="showTip(event,'${cod.replace(/'/g,'&#39;')}','${desc.replace(/'/g,'&#39;').replace(/`/g,'&#96;')}',this)" onmouseleave="hideTip()">${desc}</span></td>
           <td style="color:${val26>0?'var(--text)':'var(--muted)'}">${fmt(val26)}</td>
-          <td style="color:#555">${fmt(val25)}</td>
+          <td style="color:#6e7a8a">${fmt(val25)}</td>
           <td class="${cc(pdiff)}">${fmtS(pdiff)}</td></tr>`;
       });
       }
