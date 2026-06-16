@@ -237,46 +237,50 @@ footer p{font-size:.75rem;color:var(--muted);}
   position:fixed;top:0;left:0;width:100%;height:100%;
   background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2.5rem;z-index:1000;
+  gap:3rem;z-index:1000;
   opacity:1;transition:opacity .35s ease;
 }
 #homeScreen .home-logo{
   text-align:center;
 }
 #homeScreen .home-logo h1{
-  font-family:'Bebas Neue',sans-serif;font-size:3rem;
-  letter-spacing:.2em;color:var(--accent);margin:0;
+  font-family:'DM Sans',sans-serif;font-size:2.8rem;font-weight:300;
+  letter-spacing:.5em;color:#e8eaf0;margin:0;
+}
+#homeScreen .home-logo .home-line{
+  width:36px;height:1px;background:var(--accent);margin:.9rem auto;
 }
 #homeScreen .home-logo p{
-  font-size:.8rem;color:var(--muted);letter-spacing:.08em;margin-top:.3rem;
+  font-size:.65rem;color:#3a4a5a;letter-spacing:.25em;text-transform:uppercase;margin:0;
 }
 #homeScreen .home-cards{
-  display:flex;gap:1.5rem;
+  display:flex;gap:1rem;
 }
 #homeScreen .home-card{
-  width:220px;padding:2.5rem 1.5rem;border-radius:16px;
-  display:flex;flex-direction:column;align-items:center;gap:1rem;
-  cursor:pointer;transition:transform .15s,box-shadow .15s;
-  text-decoration:none;
+  width:200px;padding:2rem 1.5rem;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;gap:1.2rem;
+  cursor:pointer;transition:transform .2s ease,opacity .2s ease;
+  text-decoration:none;position:relative;overflow:hidden;border:1px solid;
 }
-#homeScreen .home-card:hover{transform:translateY(-4px);}
-#homeScreen .home-card.ventas{
-  background:var(--accent);
+#homeScreen .home-card:hover{transform:translateY(-5px);}
+#homeScreen .home-card.ventas{background:var(--accent);border-color:var(--accent);}
+#homeScreen .home-card.cobranza{background:transparent;border-color:#2a3a4a;}
+#homeScreen .home-card .hc-corner{
+  position:absolute;top:0;right:0;width:40px;height:40px;border-bottom-left-radius:12px;
 }
-#homeScreen .home-card.cobranza{
-  background:var(--surface);border:1px solid var(--border);
-}
-#homeScreen .home-card svg{width:48px;height:48px;}
+#homeScreen .home-card.ventas .hc-corner{background:rgba(255,255,255,.12);}
+#homeScreen .home-card.cobranza .hc-corner{background:rgba(59,168,212,.07);}
+#homeScreen .home-card svg{width:44px;height:44px;}
 #homeScreen .home-card .hc-title{
-  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.12em;
+  font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500;
 }
-#homeScreen .home-card.ventas .hc-title{color:#fff;}
-#homeScreen .home-card.cobranza .hc-title{color:var(--accent);}
+#homeScreen .home-card.ventas .hc-title{color:rgba(255,255,255,.9);}
+#homeScreen .home-card.cobranza .hc-title{color:#7cc8e8;}
 #homeScreen .home-card .hc-sub{
-  font-size:.72rem;text-align:center;line-height:1.5;
+  font-size:.68rem;text-align:center;line-height:1.6;
 }
-#homeScreen .home-card.ventas .hc-sub{color:rgba(255,255,255,.7);}
-#homeScreen .home-card.cobranza .hc-sub{color:var(--muted);}
+#homeScreen .home-card.ventas .hc-sub{color:rgba(255,255,255,.6);}
+#homeScreen .home-card.cobranza .hc-sub{color:#3a4a5a;}
 /* Pantalla próximamente */
 #proximamente{
   position:fixed;top:0;left:0;width:100%;height:100%;
@@ -312,27 +316,30 @@ footer p{font-size:.75rem;color:var(--muted);}
 <div id="homeScreen">
   <div class="home-logo">
     <h1>GRANTT</h1>
-    <p>Selecciona un módulo</p>
+    <div class="home-line"></div>
+    <p>Panel de gestión</p>
   </div>
   <div class="home-cards">
     <div class="home-card ventas" onclick="enterVentas()">
+      <div class="hc-corner"></div>
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="28" width="8" height="14" rx="2" fill="rgba(255,255,255,0.9)"/>
-        <rect x="20" y="18" width="8" height="24" rx="2" fill="rgba(255,255,255,0.9)"/>
-        <rect x="34" y="8" width="8" height="34" rx="2" fill="rgba(255,255,255,0.9)"/>
+        <rect x="6" y="28" width="8" height="14" rx="2" fill="rgba(255,255,255,0.85)"/>
+        <rect x="20" y="18" width="8" height="24" rx="2" fill="rgba(255,255,255,0.85)"/>
+        <rect x="34" y="8" width="8" height="34" rx="2" fill="rgba(255,255,255,0.85)"/>
       </svg>
-      <div class="hc-title">VENTAS</div>
-      <div class="hc-sub">Dashboard comparativo 2026 vs 2025 por vendedor y categoría</div>
+      <div class="hc-title">Ventas</div>
+      <div class="hc-sub">Comparativo anual por vendedor y categoría</div>
     </div>
     <div class="home-card cobranza" onclick="enterCobranza()">
+      <div class="hc-corner"></div>
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="8" width="28" height="34" rx="3" stroke="#3ba8d4" stroke-width="2.5"/>
-        <line x1="16" y1="18" x2="32" y2="18" stroke="#3ba8d4" stroke-width="2" stroke-linecap="round"/>
-        <line x1="16" y1="24" x2="32" y2="24" stroke="#3ba8d4" stroke-width="2" stroke-linecap="round"/>
-        <line x1="16" y1="30" x2="24" y2="30" stroke="#3ba8d4" stroke-width="2" stroke-linecap="round"/>
+        <rect x="10" y="8" width="28" height="34" rx="3" stroke="#3ba8d4" stroke-width="2"/>
+        <line x1="16" y1="18" x2="32" y2="18" stroke="#3ba8d4" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="24" x2="32" y2="24" stroke="#3ba8d4" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="30" x2="24" y2="30" stroke="#3ba8d4" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      <div class="hc-title">COBRANZA</div>
-      <div class="hc-sub">Seguimiento de facturas y estados de pago por cliente</div>
+      <div class="hc-title">Cobranza</div>
+      <div class="hc-sub">Facturas y estados de pago por cliente</div>
     </div>
   </div>
 </div>
