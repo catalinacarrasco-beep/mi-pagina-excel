@@ -238,6 +238,7 @@ footer p{font-size:.75rem;color:var(--muted);}
   background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:2.5rem;z-index:1000;
+  opacity:1;transition:opacity .35s ease;
 }
 #homeScreen .home-logo{
   text-align:center;
@@ -282,6 +283,7 @@ footer p{font-size:.75rem;color:var(--muted);}
   background:var(--bg);
   display:none;flex-direction:column;align-items:center;justify-content:center;
   gap:1.5rem;z-index:1000;
+  opacity:0;transition:opacity .35s ease;
 }
 #proximamente .prox-icon{font-size:3rem;}
 #proximamente h2{
@@ -1042,16 +1044,26 @@ if('serviceWorker' in navigator){
 }
 
 // ── HOME NAVIGATION ──────────────────────────
+function fadeOut(el, cb){
+  el.style.opacity='0';
+  setTimeout(()=>{ el.style.display='none'; if(cb) cb(); }, 350);
+}
+function fadeIn(el){
+  el.style.display='flex';
+  requestAnimationFrame(()=>{ el.style.opacity='1'; });
+}
 function enterVentas(){
-  document.getElementById('homeScreen').style.display='none';
+  fadeOut(document.getElementById('homeScreen'));
 }
 function enterCobranza(){
-  document.getElementById('homeScreen').style.display='none';
-  document.getElementById('proximamente').style.display='flex';
+  fadeOut(document.getElementById('homeScreen'), ()=>{
+    fadeIn(document.getElementById('proximamente'));
+  });
 }
 function volverHome(){
-  document.getElementById('proximamente').style.display='none';
-  document.getElementById('homeScreen').style.display='flex';
+  fadeOut(document.getElementById('proximamente'), ()=>{
+    fadeIn(document.getElementById('homeScreen'));
+  });
 }
 </script>
 </body>
