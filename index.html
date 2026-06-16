@@ -588,10 +588,10 @@ function renderTable(){
       });
       if(cat==='PLACAS MURALES'){
         const groups=[
-          {label:'CLIO · PLATA',  color:'#5abfe8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('plat')},
-          {label:'CLIO · BLANCO', color:'#b8ecf8', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('blanc')},
-          {label:'PRIMMUS',       color:'#3ba8d4', test:r=>r.desc.toLowerCase().includes('primmus')||r.cod==='5249'},
-          {label:'OTROS',         color:'#aaaaaa', test:r=>true},
+          {label:'CLIO · PLATA',  color:'#4a7d90', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('plat')},
+          {label:'CLIO · BLANCO', color:'#6a9aaa', test:r=>r.desc.toLowerCase().includes('clio')&&r.desc.toLowerCase().includes('blanc')},
+          {label:'PRIMMUS',       color:'#2d7a96', test:r=>r.desc.toLowerCase().includes('primmus')||r.cod==='5249'},
+          {label:'OTROS',         color:'#666f7a', test:r=>true},
         ];
         const assigned=new Set();
         if(!window._placasOpen) window._placasOpen={};
