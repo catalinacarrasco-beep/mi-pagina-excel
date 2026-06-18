@@ -1,10 +1,8 @@
-const CACHE = 'ventas-v4';
-
+const CACHE = 'ventas-v5';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
 });
-
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -12,7 +10,6 @@ self.addEventListener('activate', e => {
     ).then(() => self.clients.claim())
   );
 });
-
 self.addEventListener('fetch', e => {
   e.respondWith(
     fetch(e.request)
