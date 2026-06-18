@@ -362,7 +362,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ms-pill-cerr{background:#1a2a3a;color:#4a90d4;}
 .ms-bar-wrap{height:6px;border-radius:3px;background:#1a2535;min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;}
-.ms-obs{font-size:.68rem;color:var(--muted);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ms-obs{font-size:.68rem;color:var(--muted);max-width:220px;line-height:1.4;}
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3ba8d4">
@@ -469,42 +469,42 @@ footer p{font-size:.75rem;color:var(--muted);}
             <td>10/06/2026</td><td>—</td>
             <td><div style="font-size:.68rem;color:#f0a830;">En trámite</div></td>
             <td><span class="ms-pill ms-pill-proc">En proceso</span></td>
-            <td class="ms-obs" title="Muestras ya fueron retiradas, en espera de certificación">Muestras retiradas, en espera de cert...</td>
+            <td class="ms-obs" onmouseenter="showObsTip(event,'Muestras ya fueron retiradas, en espera de certificación')" onmouseleave="hideTip()" style="cursor:default;">Muestras retiradas, en espera de cert...</td>
           </tr>
           <tr data-factura="CH-GR-SE2507 PRIMMUS" data-estado="CERRADO">
             <td><div style="font-weight:500;">CH-GR-SE2507 PRIMMUS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599203</div></td>
             <td>11/05/2026</td><td>10/06/2026</td>
             <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:100%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">22 días hábiles</div></td>
             <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, BD actualizada</td>
           </tr>
           <tr data-factura="06-25 SR2512385 CLIO AEREO" data-estado="CERRADO">
             <td><div style="font-weight:500;">06-25 SR2512385 CLIO AEREO</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598912</div></td>
             <td>05/05/2026</td><td>20/05/2026</td>
             <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:54%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">12 días hábiles</div></td>
             <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, BD actualizada</td>
           </tr>
           <tr data-factura="05-25 SR2511310 CLIO PLACAS 10/16A" data-estado="CERRADO">
             <td><div style="font-weight:500;">05-25 SR2511310 CLIO PLACAS 10/16A</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598385</div></td>
             <td>24/04/2026</td><td>15/05/2026</td>
             <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:72%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">16 días hábiles</div></td>
             <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, BD actualizada</td>
           </tr>
           <tr data-factura="25FS-1201-2 PORTALAMPARAS" data-estado="CERRADO">
             <td><div style="font-weight:500;">25FS-1201-2 PORTALAMPARAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 597740</div></td>
             <td>17/04/2026</td><td>07/05/2026</td>
             <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:68%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">15 días hábiles</div></td>
             <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, BD actualizada</td>
           </tr>
           <tr data-factura="I260010 YLK" data-estado="CERRADO">
             <td><div style="font-weight:500;">I260010 YLK</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599774</div></td>
             <td>19/05/2026</td><td>10/06/2026</td>
             <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:77%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">17 días hábiles</div></td>
             <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, BD actualizada</td>
           </tr>
         </tbody>
       </table>
@@ -524,7 +524,7 @@ footer p{font-size:.75rem;color:var(--muted);}
             <td>14/05/2026</td><td>22/05/2026</td>
             <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:31%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">7 días hábiles</div></td>
             <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, BD actualizada</td>
           </tr>
         </tbody>
       </table>
@@ -533,6 +533,12 @@ footer p{font-size:.75rem;color:var(--muted);}
 </div>
 
 <script>
+function showObsTip(e, obs){
+  var tip = document.getElementById('prodTooltip');
+  tip.innerHTML = '<div style="font-size:.78rem;color:var(--text);max-width:280px;line-height:1.5;">' + obs + '</div>';
+  tip.style.display='block';
+  positionTip(e);
+}
 function msFilter(){
   const txt = document.getElementById('ms-filter-factura').value.toLowerCase();
   const est = document.getElementById('ms-filter-estado').value;
