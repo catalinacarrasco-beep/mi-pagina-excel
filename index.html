@@ -360,7 +360,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ms-pill{display:inline-block;font-size:.6rem;font-weight:500;padding:2px 9px;border-radius:20px;}
 .ms-pill-proc{background:#2a3a1a;color:#4db870;}
 .ms-pill-cerr{background:#1a2a3a;color:#4a90d4;}
-.ms-bar-wrap{height:5px;border-radius:3px;background:var(--border);min-width:60px;}
+.ms-bar-wrap{height:6px;border-radius:3px;background:#1a2535;min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;}
 .ms-obs{font-size:.68rem;color:var(--muted);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 </style>
@@ -429,78 +429,131 @@ footer p{font-size:.75rem;color:var(--muted);}
     <div class="ms-kpis">
       <div class="ms-kpi"><div class="kv" style="color:#f0a830;">1</div><div class="kl">En proceso</div></div>
       <div class="ms-kpi"><div class="kv" style="color:#4a90d4;">6</div><div class="kl">Cerrados</div></div>
-      <div class="ms-kpi"><div class="kv">15</div><div class="kl">Días hábiles promedio</div></div>
+      <div class="ms-kpi"><div class="kv">16</div><div class="kl">Días hábiles promedio</div></div>
       <div class="ms-kpi"><div class="kv">22</div><div class="kl">Días hábiles máximo</div></div>
     </div>
-    <div class="ms-table-wrap">
+
+    <!-- Filtros -->
+    <div style="display:flex;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;">
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <span style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">Factura</span>
+        <input id="ms-filter-factura" type="text" placeholder="Buscar..." oninput="msFilter()"
+          style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);width:160px;outline:none;"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <span style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">Estado</span>
+        <select id="ms-filter-estado" onchange="msFilter()"
+          style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);outline:none;">
+          <option value="">Todos</option>
+          <option value="EN PROCESO">En proceso</option>
+          <option value="CERRADO">Cerrado</option>
+        </select>
+      </div>
+      <button onclick="msClearFilters()"
+        style="font-size:.65rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;letter-spacing:.05em;">
+        Limpiar
+      </button>
+    </div>
+
+    <!-- Tabla SEGUIMIENTO -->
+    <div class="ms-table-wrap" style="margin-bottom:1.5rem;">
       <div class="ms-section-hdr">Para seguimiento</div>
-      <table class="ms-tbl">
+      <table class="ms-tbl" id="ms-tbl-seg">
         <thead><tr>
           <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th>
           <th>Días hábiles</th><th>Estado</th><th>Observaciones</th>
         </tr></thead>
-        <tbody><tr>
-      <td><div style="font-weight:500;">FS 2026-0301-3 PORTALÁMPRAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 601182</div></td>
-      <td>10/06/2026</td>
-      <td>—</td>
-      <td><div style="font-size:.68rem;color:#f0a830;">En trámite</div></td>
-      <td><span class="ms-pill ms-pill-proc">En proceso</span></td>
-      <td class="ms-obs" title="Muestras ya fueron retiradas, en espera de certificación">Muestras ya fueron retiradas, en espera de ce...</td>
-    </tr><tr>
-      <td><div style="font-weight:500;">CH-GR-SE2507 PRIMMUS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599203</div></td>
-      <td>11/05/2026</td>
-      <td>10/06/2026</td>
-      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:100%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">22 días hábiles</div></td>
-      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
-    </tr><tr>
-      <td><div style="font-weight:500;">06-25 SR2512385 CLIO AEREO</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598912</div></td>
-      <td>05/05/2026</td>
-      <td>20/05/2026</td>
-      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:54%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">12 días hábiles</div></td>
-      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
-    </tr><tr>
-      <td><div style="font-weight:500;">05-25 SR2511310 CLIO PLACAS 10/16A</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598385</div></td>
-      <td>24/04/2026</td>
-      <td>15/05/2026</td>
-      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:72%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">16 días hábiles</div></td>
-      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
-    </tr><tr>
-      <td><div style="font-weight:500;">25FS-1201-2 PORTALAMPARAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 597740</div></td>
-      <td>17/04/2026</td>
-      <td>07/05/2026</td>
-      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:68%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">15 días hábiles</div></td>
-      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
-    </tr><tr>
-      <td><div style="font-weight:500;">I260010 YLK</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599774</div></td>
-      <td>19/05/2026</td>
-      <td>10/06/2026</td>
-      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:77%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">17 días hábiles</div></td>
-      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
-    </tr></tbody>
+        <tbody>
+          <tr data-factura="FS 2026-0301-3 PORTALÁMPRAS" data-estado="EN PROCESO">
+            <td><div style="font-weight:500;">FS 2026-0301-3 PORTALÁMPRAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 601182</div></td>
+            <td>10/06/2026</td><td>—</td>
+            <td><div style="font-size:.68rem;color:#f0a830;">En trámite</div></td>
+            <td><span class="ms-pill ms-pill-proc">En proceso</span></td>
+            <td class="ms-obs" title="Muestras ya fueron retiradas, en espera de certificación">Muestras retiradas, en espera de cert...</td>
+          </tr>
+          <tr data-factura="CH-GR-SE2507 PRIMMUS" data-estado="CERRADO">
+            <td><div style="font-weight:500;">CH-GR-SE2507 PRIMMUS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599203</div></td>
+            <td>11/05/2026</td><td>10/06/2026</td>
+            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:100%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">22 días hábiles</div></td>
+            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+          </tr>
+          <tr data-factura="06-25 SR2512385 CLIO AEREO" data-estado="CERRADO">
+            <td><div style="font-weight:500;">06-25 SR2512385 CLIO AEREO</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598912</div></td>
+            <td>05/05/2026</td><td>20/05/2026</td>
+            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:54%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">12 días hábiles</div></td>
+            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+          </tr>
+          <tr data-factura="05-25 SR2511310 CLIO PLACAS 10/16A" data-estado="CERRADO">
+            <td><div style="font-weight:500;">05-25 SR2511310 CLIO PLACAS 10/16A</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598385</div></td>
+            <td>24/04/2026</td><td>15/05/2026</td>
+            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:72%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">16 días hábiles</div></td>
+            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+          </tr>
+          <tr data-factura="25FS-1201-2 PORTALAMPARAS" data-estado="CERRADO">
+            <td><div style="font-weight:500;">25FS-1201-2 PORTALAMPARAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 597740</div></td>
+            <td>17/04/2026</td><td>07/05/2026</td>
+            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:68%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">15 días hábiles</div></td>
+            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+          </tr>
+          <tr data-factura="I260010 YLK" data-estado="CERRADO">
+            <td><div style="font-weight:500;">I260010 YLK</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599774</div></td>
+            <td>19/05/2026</td><td>10/06/2026</td>
+            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:77%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">17 días hábiles</div></td>
+            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+          </tr>
+        </tbody>
       </table>
+    </div>
+
+    <!-- Tabla TIPO Y APROBACIÓN -->
+    <div class="ms-table-wrap">
       <div class="ms-section-hdr">Para tipo y aprobación</div>
-      <table class="ms-tbl">
+      <table class="ms-tbl" id="ms-tbl-tip">
         <thead><tr>
           <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th>
           <th>Días hábiles</th><th>Estado</th><th>Observaciones</th>
         </tr></thead>
-        <tbody><tr>
-      <td><div style="font-weight:500;">INTERRUPTORES SMART</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599603</div></td>
-      <td>14/05/2026</td>
-      <td>22/05/2026</td>
-      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:31%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">7 días hábiles</div></td>
-      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
-    </tr></tbody>
+        <tbody>
+          <tr data-factura="INTERRUPTORES SMART" data-estado="CERRADO">
+            <td><div style="font-weight:500;">INTERRUPTORES SMART</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599603</div></td>
+            <td>14/05/2026</td><td>22/05/2026</td>
+            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:31%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">7 días hábiles</div></td>
+            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+            <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, BD actualizada</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
 </div>
+
+<script>
+function msFilter(){
+  const txt = document.getElementById('ms-filter-factura').value.toLowerCase();
+  const est = document.getElementById('ms-filter-estado').value;
+  ['ms-tbl-seg','ms-tbl-tip'].forEach(id=>{
+    const tbl = document.getElementById(id);
+    if(!tbl) return;
+    tbl.querySelectorAll('tbody tr').forEach(row=>{
+      const fac = (row.dataset.factura||'').toLowerCase();
+      const est2 = row.dataset.estado||'';
+      const showFac = !txt || fac.includes(txt);
+      const showEst = !est || est2 === est;
+      row.style.display = (showFac && showEst) ? '' : 'none';
+    });
+  });
+}
+function msClearFilters(){
+  document.getElementById('ms-filter-factura').value='';
+  document.getElementById('ms-filter-estado').value='';
+  msFilter();
+}
+</script>
 
 <!-- PRÓXIMAMENTE -->
 <div id="proximamente">
