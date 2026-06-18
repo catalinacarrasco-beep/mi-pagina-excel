@@ -288,11 +288,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 /* Pantalla próximamente */
 #proximamente{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:var(--bg);
+  background:linear-gradient(135deg,#0d1b2a 60%,#0d1e2e);
   display:none;flex-direction:column;align-items:center;justify-content:center;
   gap:1.5rem;z-index:1000;
   opacity:0;transition:opacity .35s ease;
-  /* position:relative needed for absolute back button — using fixed which already contains it */
 }
 #proximamente .prox-icon{font-size:3rem;}
 #proximamente h2{
@@ -312,7 +311,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 /* ── MÓDULO MUESTRAS ──────────────────────── */
 #muestrasScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:var(--bg);overflow-y:auto;
+  background:linear-gradient(135deg,#0d1e16 60%,#0d2018);overflow-y:auto;
   display:none;flex-direction:column;
   z-index:1000;opacity:0;transition:opacity .35s ease;
 }
