@@ -1278,7 +1278,7 @@ function fadeOut(el, cb){
   setTimeout(()=>{ el.style.display='none'; if(cb) cb(); }, 350);
 }
 function fadeIn(el){
-  el.style.display='flex';
+  el.style.display = (el.id === 'ventasScreen') ? 'block' : 'flex';
   requestAnimationFrame(()=>{ el.style.opacity='1'; });
 }
 function enterVentas(){
