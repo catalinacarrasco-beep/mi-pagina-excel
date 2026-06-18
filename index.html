@@ -265,6 +265,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 #homeScreen .home-card:hover{transform:translateY(-5px);}
 #homeScreen .home-card.ventas{background:var(--accent);border-color:var(--accent);}
 #homeScreen .home-card.cobranza{background:transparent;border-color:#2a3a4a;}
+#homeScreen .home-card.muestras{background:transparent;border-color:#1e3a2a;}
+#homeScreen .home-card.muestras .hc-corner{background:rgba(45,180,122,.07);}
+#homeScreen .home-card.muestras .hc-title{color:#2db47a;}
+#homeScreen .home-card.muestras .hc-sub{color:#3a6a4a;}
 #homeScreen .home-card .hc-corner{
   position:absolute;top:0;right:0;width:40px;height:40px;border-bottom-left-radius:12px;
 }
@@ -303,6 +307,62 @@ footer p{font-size:.75rem;color:var(--muted);}
   transition:background .15s;
 }
 #proximamente button:hover{background:var(--surface);}
+
+/* ── MÓDULO MUESTRAS ──────────────────────── */
+#muestrasScreen{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:var(--bg);overflow-y:auto;
+  display:none;flex-direction:column;
+  z-index:1000;opacity:0;transition:opacity .35s ease;
+}
+#muestrasScreen .ms-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 2rem;border-bottom:1px solid var(--border);
+}
+#muestrasScreen .ms-header .ms-back{
+  font-size:.75rem;color:var(--muted);cursor:pointer;
+  letter-spacing:.08em;background:none;border:none;padding:0;
+  display:flex;align-items:center;gap:.4rem;
+}
+#muestrasScreen .ms-header .ms-back:hover{color:#2db47a;}
+#muestrasScreen .ms-header .ms-title{
+  font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:#2db47a;
+}
+#muestrasScreen .ms-body{padding:1.5rem 2rem 3rem;}
+#muestrasScreen .ms-kpis{display:flex;gap:1rem;margin-bottom:1.5rem;}
+#muestrasScreen .ms-kpi{
+  flex:1;background:var(--surface);border-radius:10px;
+  padding:.9rem 1.2rem;border:1px solid var(--border);
+}
+#muestrasScreen .ms-kpi .kv{font-size:1.8rem;font-weight:300;color:var(--text);}
+#muestrasScreen .ms-kpi .kl{font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem;}
+#muestrasScreen .ms-table-wrap{
+  background:var(--surface);border-radius:12px;
+  border:1px solid var(--border);overflow:hidden;
+}
+#muestrasScreen .ms-section-hdr{
+  padding:.6rem 1.2rem;font-size:.6rem;font-weight:500;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  background:var(--surface2);border-bottom:1px solid var(--border);
+}
+#muestrasScreen .ms-tbl{width:100%;border-collapse:collapse;}
+#muestrasScreen .ms-tbl th{
+  font-size:.6rem;font-weight:500;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;
+  padding:.5rem 1rem;text-align:left;border-bottom:1px solid var(--border);
+}
+#muestrasScreen .ms-tbl td{
+  padding:.65rem 1rem;font-size:.75rem;color:var(--text);
+  border-bottom:1px solid var(--border);vertical-align:middle;
+}
+#muestrasScreen .ms-tbl tr:last-child td{border-bottom:none;}
+#muestrasScreen .ms-tbl tr:hover td{background:var(--surface2);}
+.ms-pill{display:inline-block;font-size:.6rem;font-weight:500;padding:2px 9px;border-radius:20px;}
+.ms-pill-proc{background:#2a3a1a;color:#4db870;}
+.ms-pill-cerr{background:#1a2a3a;color:#4a90d4;}
+.ms-bar-wrap{height:5px;border-radius:3px;background:var(--border);min-width:60px;}
+.ms-bar-fill{height:100%;border-radius:3px;}
+.ms-obs{font-size:.68rem;color:var(--muted);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3ba8d4">
@@ -340,6 +400,104 @@ footer p{font-size:.75rem;color:var(--muted);}
       </svg>
       <div class="hc-title">Cobranza</div>
       <div class="hc-sub">Facturas y estados de pago por cliente</div>
+    </div>
+    <div class="home-card muestras" onclick="enterMuestras()">
+      <div class="hc-corner"></div>
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="20" width="32" height="22" rx="3" stroke="#2db47a" stroke-width="2"/>
+        <polyline points="16,20 16,10 32,10 32,20" stroke="#2db47a" stroke-width="2" stroke-linejoin="round"/>
+        <line x1="20" y1="10" x2="20" y2="6" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="28" y1="10" x2="28" y2="6" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="29" x2="32" y2="29" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="35" x2="26" y2="35" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="hc-title">Muestras</div>
+      <div class="hc-sub">Estado de certificaciones SEC</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MUESTRAS SCREEN -->
+<div id="muestrasScreen">
+  <div class="ms-header">
+    <button class="ms-back" onclick="volverHomeFromMuestras()">← Volver</button>
+    <div class="ms-title">Estado de Muestras</div>
+    <div style="width:80px;"></div>
+  </div>
+  <div class="ms-body">
+    <div class="ms-kpis">
+      <div class="ms-kpi"><div class="kv" style="color:#f0a830;">1</div><div class="kl">En proceso</div></div>
+      <div class="ms-kpi"><div class="kv" style="color:#4a90d4;">6</div><div class="kl">Cerrados</div></div>
+      <div class="ms-kpi"><div class="kv">15</div><div class="kl">Días hábiles promedio</div></div>
+      <div class="ms-kpi"><div class="kv">22</div><div class="kl">Días hábiles máximo</div></div>
+    </div>
+    <div class="ms-table-wrap">
+      <div class="ms-section-hdr">Para seguimiento</div>
+      <table class="ms-tbl">
+        <thead><tr>
+          <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th>
+          <th>Días hábiles</th><th>Estado</th><th>Observaciones</th>
+        </tr></thead>
+        <tbody><tr>
+      <td><div style="font-weight:500;">FS 2026-0301-3 PORTALÁMPRAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 601182</div></td>
+      <td>10/06/2026</td>
+      <td>—</td>
+      <td><div style="font-size:.68rem;color:#f0a830;">En trámite</div></td>
+      <td><span class="ms-pill ms-pill-proc">En proceso</span></td>
+      <td class="ms-obs" title="Muestras ya fueron retiradas, en espera de certificación">Muestras ya fueron retiradas, en espera de ce...</td>
+    </tr><tr>
+      <td><div style="font-weight:500;">CH-GR-SE2507 PRIMMUS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599203</div></td>
+      <td>11/05/2026</td>
+      <td>10/06/2026</td>
+      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:100%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">22 días hábiles</div></td>
+      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
+    </tr><tr>
+      <td><div style="font-weight:500;">06-25 SR2512385 CLIO AEREO</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598912</div></td>
+      <td>05/05/2026</td>
+      <td>20/05/2026</td>
+      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:54%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">12 días hábiles</div></td>
+      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
+    </tr><tr>
+      <td><div style="font-weight:500;">05-25 SR2511310 CLIO PLACAS 10/16A</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598385</div></td>
+      <td>24/04/2026</td>
+      <td>15/05/2026</td>
+      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:72%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">16 días hábiles</div></td>
+      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
+    </tr><tr>
+      <td><div style="font-weight:500;">25FS-1201-2 PORTALAMPARAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 597740</div></td>
+      <td>17/04/2026</td>
+      <td>07/05/2026</td>
+      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:68%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">15 días hábiles</div></td>
+      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
+    </tr><tr>
+      <td><div style="font-weight:500;">I260010 YLK</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599774</div></td>
+      <td>19/05/2026</td>
+      <td>10/06/2026</td>
+      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:77%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">17 días hábiles</div></td>
+      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
+    </tr></tbody>
+      </table>
+      <div class="ms-section-hdr">Para tipo y aprobación</div>
+      <table class="ms-tbl">
+        <thead><tr>
+          <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th>
+          <th>Días hábiles</th><th>Estado</th><th>Observaciones</th>
+        </tr></thead>
+        <tbody><tr>
+      <td><div style="font-weight:500;">INTERRUPTORES SMART</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599603</div></td>
+      <td>14/05/2026</td>
+      <td>22/05/2026</td>
+      <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:31%;background:#2db47a;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">7 días hábiles</div></td>
+      <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
+      <td class="ms-obs" title="Proceso cerrado, cambiado de carpeta y BD actualizada">Proceso cerrado, cambiado de carpeta y BD act...</td>
+    </tr></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -1067,8 +1225,18 @@ function enterCobranza(){
     fadeIn(document.getElementById('proximamente'));
   });
 }
+function enterMuestras(){
+  fadeOut(document.getElementById('homeScreen'), ()=>{
+    fadeIn(document.getElementById('muestrasScreen'));
+  });
+}
 function volverHome(){
   fadeOut(document.getElementById('proximamente'), ()=>{
+    fadeIn(document.getElementById('homeScreen'));
+  });
+}
+function volverHomeFromMuestras(){
+  fadeOut(document.getElementById('muestrasScreen'), ()=>{
     fadeIn(document.getElementById('homeScreen'));
   });
 }
