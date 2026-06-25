@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Ventas 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#12151e;--surface:#1a1f2e;--surface2:#222840;--border:#2a3045;--accent:#3ba8d4;--accent2:#3ba8d4;--accent3:#3ba8d4;--accent4:#3ba8d4;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -363,6 +363,29 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ms-bar-wrap{height:6px;border-radius:3px;background:#1a2535;min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;}
 .ms-obs{font-size:.68rem;color:var(--muted);line-height:1.5;}
+/* ── PANTALLA LOGIN ─────────────────────── */
+#loginScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,#dceef8 0%,#b8d8ef 55%,#8bbfdf 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2000;overflow:hidden;transition:opacity .35s ease;}
+.ls-sun{position:absolute;top:-20px;right:8%;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,#ffe87a 30%,#ffcc44 65%,transparent 75%);opacity:.8;}
+.ls-greeting{font-family:'Dancing Script',cursive;font-size:clamp(2.6rem,5.5vw,4.2rem);color:#1a3a5c;margin-bottom:2rem;text-align:center;position:relative;z-index:1;padding:0 1rem;}
+.ls-card{background:#fff;border-radius:16px;padding:2.5rem 2.5rem 2rem;width:min(420px,calc(100vw - 2.5rem));display:flex;flex-direction:column;align-items:center;box-shadow:0 8px 32px rgba(20,60,110,.14);position:relative;z-index:1;}
+.ls-logo{display:flex;align-items:center;gap:.6rem;margin-bottom:1.3rem;}
+.ls-logo-text{display:flex;flex-direction:column;line-height:1;}
+.ls-logo-name{font-family:'DM Sans',sans-serif;font-size:1.9rem;font-weight:800;color:#1a2540;letter-spacing:-.5px;}
+.ls-logo-tagline{font-size:.7rem;color:#3ba8d4;letter-spacing:.02em;margin-top:2px;}
+.ls-label{font-size:.68rem;letter-spacing:.2em;color:#3a5070;text-transform:uppercase;font-weight:500;margin-bottom:.8rem;}
+.ls-divider{width:32px;height:2px;background:#ccd8e4;border-radius:1px;margin-bottom:1.4rem;}
+.ls-form{width:100%;display:flex;flex-direction:column;gap:.75rem;}
+.ls-input{width:100%;padding:.82rem 1.1rem;border:1.5px solid #c8daea;border-radius:8px;background:#f5f8fb;font-size:.95rem;font-family:'DM Sans',sans-serif;color:#1a2540;outline:none;transition:border-color .15s;letter-spacing:.08em;}
+.ls-input:focus{border-color:#3ba8d4;background:#fff;}
+.ls-input.ls-shake{animation:lsShake .35s ease;}
+.ls-btn{width:100%;padding:.84rem;background:#3ba8d4;color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .15s,transform .1s;}
+.ls-btn:hover{background:#2a94c0;}
+.ls-btn:active{transform:scale(.98);}
+.ls-card-footer{font-size:.58rem;color:#8aa0b8;letter-spacing:.12em;text-transform:uppercase;margin-top:1.4rem;}
+.ls-waves{position:absolute;bottom:0;left:0;right:0;line-height:0;pointer-events:none;}
+@keyframes lsShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@media(prefers-reduced-motion:reduce){#loginScreen{transition:none}.ls-input.ls-shake{animation:none}}
+@media(max-width:480px){.ls-greeting{font-size:2.2rem;margin-bottom:1.5rem;}.ls-card{padding:2rem 1.5rem 1.5rem;}}
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3ba8d4">
@@ -371,6 +394,35 @@ footer p{font-size:.75rem;color:var(--muted);}
 <meta name="apple-mobile-web-app-title" content="Ventas Grantt">
 </head>
 <body>
+<div id="loginScreen">
+  <div class="ls-sun"></div>
+  <h1 class="ls-greeting" id="lsGreeting">Buenas tardes</h1>
+  <div class="ls-card">
+    <div class="ls-logo">
+      <svg width="46" height="46" viewBox="0 0 46 46" fill="none" aria-hidden="true">
+        <path d="M 32,8 A 19,19 0 1,0 42,23 L 23,23" stroke="#3ba8d4" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="ls-logo-text">
+        <span class="ls-logo-name">rantt</span>
+        <span class="ls-logo-tagline">Enciende tu energía</span>
+      </div>
+    </div>
+    <div class="ls-label">Dashboard Comercial</div>
+    <div class="ls-divider"></div>
+    <form class="ls-form" onsubmit="lsSubmit(event)">
+      <input type="password" id="lsPass" class="ls-input" placeholder="Contraseña" autocomplete="current-password">
+      <button type="submit" class="ls-btn">Ingresar</button>
+    </form>
+    <div class="ls-card-footer">Grantt ® · Información Confidencial</div>
+  </div>
+  <div class="ls-waves">
+    <svg viewBox="0 0 1440 130" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;display:block;height:130px">
+      <path d="M0,65 C360,105 720,25 1080,65 C1260,85 1380,55 1440,45 L1440,130 L0,130 Z" fill="#a8cfe0" opacity=".55"/>
+      <path d="M0,85 C300,45 600,105 900,80 C1100,60 1300,90 1440,72 L1440,130 L0,130 Z" fill="#5aafd8" opacity=".7"/>
+      <path d="M0,100 C220,72 460,118 700,98 C940,78 1200,112 1440,92 L1440,130 L0,130 Z" fill="#2a9fd4"/>
+    </svg>
+  </div>
+</div>
 
 <!-- HOME SCREEN -->
 <div id="homeScreen">
@@ -1299,6 +1351,12 @@ function volverHomeFromMuestras(){
     fadeIn(document.getElementById('homeScreen'));
   });
 }
+</script>
+<script>
+// ponytail: client-side password — change LS_PWD to update
+const LS_PWD='grantt2026';
+(function(){const h=new Date().getHours();document.getElementById('lsGreeting').textContent=h<6?'Buenas noches':h<12?'Buenos días':h<20?'Buenas tardes':'Buenas noches'})();
+function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');if(inp.value===LS_PWD){const ls=document.getElementById('loginScreen');ls.style.opacity='0';setTimeout(()=>ls.style.display='none',350);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
 </body>
 </html>
