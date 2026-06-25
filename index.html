@@ -715,8 +715,8 @@ function renderKPIs(){
   document.getElementById('kpis').innerHTML=[
     {l:label1,v:fmt(per26),s:'Período seleccionado',delta:null},
     {l:label2,v:fmt(per25),s:'Mismo período año anterior',delta:null},
-    {l:'Variación vs 2025',v:(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:diff},
-    {l:'Top Categoría',v:bcat||'-',s:bval>0?fmt(bval):'Sin ventas',delta:null},
+    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:(per26===0&&per25===0)?null:diff},
+    {l:'Top Categoría',v:bval>0?(bcat||'-'):'-',s:bval>0?fmt(bval):'Sin ventas',delta:null},
   ].map(k=>`<div class="kpi-card" style="--kpi-color:${color}">
     <div class="kpi-label">${k.l}</div>
     <div class="kpi-value">${k.v}</div>
@@ -727,7 +727,7 @@ function renderKPIs(){
 function renderTopCats(){
   const d=currentMainTab==='CANALES'?RESUMEN_CANALES[currentCanal]:(currentMainTab==='EXTRAS'?RESUMEN_EXTRAS[currentVendedor]:RESUMEN[currentVendedor]),color=COLORS[currentVendedor];
   const tots=getCats().map(c=>({c,t:sumMonths(d.v26[c])})).filter(r=>r.t>0).sort((a,b)=>b.t-a.t);
-  if(!tots.length){document.getElementById('topCats').innerHTML='';return;}
+  const _tcEl=document.getElementById('topCats');if(!tots.length){_tcEl.innerHTML='';_tcEl.style.display='none';return;}_tcEl.style.display='';
   const gt=tots.reduce((a,b)=>a+b.t,0),top5=tots.slice(0,5),mx=top5[0].t;
   const ranks=['first','second','third','',''];
   document.getElementById('topCats').innerHTML=`
@@ -1257,18 +1257,7 @@ function togglePlacaGroup(gId){
 </script>
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('/service-worker.js').then(reg => {
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if(newWorker.state === 'activated') {
-            window.location.reload();
-          }
-        });
-      });
-    });
-  });
+  navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister()));
 }
 
 // ── HOME NAVIGATION ──────────────────────────
@@ -1313,3 +1302,4 @@ function volverHomeFromMuestras(){
 </script>
 </body>
 </html>
+
