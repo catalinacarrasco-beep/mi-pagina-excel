@@ -2823,6 +2823,21 @@ const LS_PWD='gerenciaGrantt';
 
 function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');if(inp.value===LS_PWD){const ls=document.getElementById('loginScreen');ls.style.opacity='0';setTimeout(()=>ls.style.display='none',350);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
+<script>
+/* auto-reload cuando Vercel publica nueva versión */
+(function(){
+  var etag=null;
+  function check(){
+    fetch(location.href,{method:'HEAD',cache:'no-store'})
+      .then(function(r){
+        var e=r.headers.get('etag')||r.headers.get('last-modified');
+        if(etag&&e&&etag!==e){location.reload();}
+        else{etag=e;}
+      }).catch(function(){});
+  }
+  setTimeout(function(){check();setInterval(check,5*60*1000);},3000);
+})();
+</script>
 </body>
 </html>
 
