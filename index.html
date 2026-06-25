@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -263,7 +263,7 @@ footer p{font-size:.75rem;color:var(--muted);}
   text-decoration:none;position:relative;overflow:hidden;border:1px solid;
 }
 #homeScreen .home-card:hover{transform:translateY(-5px);}
-#homeScreen .home-card.ventas{background:var(--accent);border-color:var(--accent);}
+#homeScreen .home-card.ventas{background:#16395a;border-color:#1e5278;}
 #homeScreen .home-card.cobranza{background:#1a2e42;border-color:#2a4a62;}
 #homeScreen .home-card.muestras{background:#162a1e;border-color:#2a4a36;}
 #homeScreen .home-card.muestras .hc-corner{background:rgba(45,180,122,.07);}
@@ -381,7 +381,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ls-card{
   background:var(--surface);
   border-radius:12px;
-  border:1px solid var(--border);
+  border:1px solid rgba(59,168,212,.22);
   padding:2.5rem 2.5rem 2rem;
   width:min(400px,calc(100vw - 2.5rem));
   display:flex;flex-direction:column;align-items:center;
@@ -450,10 +450,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 <div id="loginScreen">
   <!-- Anillos concentricos: evoca data, radar, precision -->
   <svg class="ls-rings" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <circle cx="720" cy="450" r="200" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.06"/>
-    <circle cx="720" cy="450" r="370" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.05"/>
-    <circle cx="720" cy="450" r="540" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.04"/>
-    <circle cx="720" cy="450" r="710" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.03"/>
+    <circle cx="720" cy="450" r="200" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.13"/>
+    <circle cx="720" cy="450" r="370" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.10"/>
+    <circle cx="720" cy="450" r="540" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.08"/>
+    <circle cx="720" cy="450" r="710" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.06"/>
     <line x1="720" y1="0" x2="720" y2="900" stroke="#3ba8d4" stroke-width="1" opacity="0.025"/>
     <line x1="0" y1="450" x2="1440" y2="450" stroke="#3ba8d4" stroke-width="1" opacity="0.02"/>
   </svg>
@@ -467,6 +467,7 @@ footer p{font-size:.75rem;color:var(--muted);}
     <div class="ls-divider"></div>
     <form class="ls-form" onsubmit="lsSubmit(event)">
       <input type="password" id="lsPass" class="ls-input" placeholder="Contraseña" autocomplete="current-password">
+      <p id="lsErr" style="font-size:.7rem;color:#e05050;letter-spacing:.04em;min-height:1.1em;opacity:0;transition:opacity .2s;text-align:center;margin:-.1rem 0 -.2rem;">Contraseña incorrecta</p>
       <button type="submit" class="ls-btn">Ingresar</button>
     </form>
     <div class="ls-card-footer">Grantt ® · Información Confidencial</div>
@@ -672,7 +673,7 @@ function msClearFilters(){
 <div id="ventasScreen" style="display:none;opacity:0;transition:opacity .35s ease;">
 <header>
   <div class="header-left">
-    <h1>VENTAS <span>2026</span></h1>
+    <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
     <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
@@ -810,7 +811,7 @@ function renderKPIs(){
   document.getElementById('kpis').innerHTML=[
     {l:label1,v:fmt(per26),s:'Período seleccionado',delta:null},
     {l:label2,v:fmt(per25),s:'Mismo período año anterior',delta:null},
-    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:(per26===0&&per25===0)?null:diff},
+    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:null},
     {l:'Top Categoría',v:bval>0?(bcat||'-'):'-',s:bval>0?fmt(bval):'Sin ventas',delta:null},
   ].map(k=>`<div class="kpi-card" style="--kpi-color:${color}">
     <div class="kpi-label">${k.l}</div>
@@ -1660,7 +1661,7 @@ footer p{font-size:.75rem;color:var(--muted);}
   text-decoration:none;position:relative;overflow:hidden;border:1px solid;
 }
 #homeScreen .home-card:hover{transform:translateY(-5px);}
-#homeScreen .home-card.ventas{background:var(--accent);border-color:var(--accent);}
+#homeScreen .home-card.ventas{background:#16395a;border-color:#1e5278;}
 #homeScreen .home-card.cobranza{background:#1a2e42;border-color:#2a4a62;}
 #homeScreen .home-card.muestras{background:#162a1e;border-color:#2a4a36;}
 #homeScreen .home-card.muestras .hc-corner{background:rgba(45,180,122,.07);}
@@ -1778,7 +1779,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ls-card{
   background:var(--surface);
   border-radius:12px;
-  border:1px solid var(--border);
+  border:1px solid rgba(59,168,212,.22);
   padding:2.5rem 2.5rem 2rem;
   width:min(400px,calc(100vw - 2.5rem));
   display:flex;flex-direction:column;align-items:center;
@@ -1847,10 +1848,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 <div id="loginScreen">
   <!-- Anillos concentricos: evoca data, radar, precision -->
   <svg class="ls-rings" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <circle cx="720" cy="450" r="200" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.06"/>
-    <circle cx="720" cy="450" r="370" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.05"/>
-    <circle cx="720" cy="450" r="540" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.04"/>
-    <circle cx="720" cy="450" r="710" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.03"/>
+    <circle cx="720" cy="450" r="200" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.13"/>
+    <circle cx="720" cy="450" r="370" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.10"/>
+    <circle cx="720" cy="450" r="540" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.08"/>
+    <circle cx="720" cy="450" r="710" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.06"/>
     <line x1="720" y1="0" x2="720" y2="900" stroke="#3ba8d4" stroke-width="1" opacity="0.025"/>
     <line x1="0" y1="450" x2="1440" y2="450" stroke="#3ba8d4" stroke-width="1" opacity="0.02"/>
   </svg>
@@ -1864,6 +1865,7 @@ footer p{font-size:.75rem;color:var(--muted);}
     <div class="ls-divider"></div>
     <form class="ls-form" onsubmit="lsSubmit(event)">
       <input type="password" id="lsPass" class="ls-input" placeholder="Contraseña" autocomplete="current-password">
+      <p id="lsErr" style="font-size:.7rem;color:#e05050;letter-spacing:.04em;min-height:1.1em;opacity:0;transition:opacity .2s;text-align:center;margin:-.1rem 0 -.2rem;">Contraseña incorrecta</p>
       <button type="submit" class="ls-btn">Ingresar</button>
     </form>
     <div class="ls-card-footer">Grantt ® · Información Confidencial</div>
@@ -2069,7 +2071,7 @@ function msClearFilters(){
 <div id="ventasScreen" style="display:none;opacity:0;transition:opacity .35s ease;">
 <header>
   <div class="header-left">
-    <h1>VENTAS <span>2026</span></h1>
+    <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
     <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
@@ -2207,7 +2209,7 @@ function renderKPIs(){
   document.getElementById('kpis').innerHTML=[
     {l:label1,v:fmt(per26),s:'Período seleccionado',delta:null},
     {l:label2,v:fmt(per25),s:'Mismo período año anterior',delta:null},
-    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:(per26===0&&per25===0)?null:diff},
+    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:null},
     {l:'Top Categoría',v:bval>0?(bcat||'-'):'-',s:bval>0?fmt(bval):'Sin ventas',delta:null},
   ].map(k=>`<div class="kpi-card" style="--kpi-color:${color}">
     <div class="kpi-label">${k.l}</div>
@@ -2793,7 +2795,7 @@ function volverHomeFromMuestras(){
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
-function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');if(inp.value===LS_PWD){const ls=document.getElementById('loginScreen');ls.style.opacity='0';setTimeout(()=>ls.style.display='none',350);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
+function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');if(inp.value===LS_PWD){const ls=document.getElementById('loginScreen');ls.style.opacity='0';setTimeout(()=>ls.style.display='none',350);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
 </body>
 </html>
