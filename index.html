@@ -731,7 +731,7 @@ function msClearFilters(){
 <header>
   <div class="header-left">
     <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button></p>
+    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
     <div class="year-badge">2026 vs 2025</div>
@@ -772,7 +772,6 @@ function msClearFilters(){
   <div class="view-toggle-main">
     <button class="vtm-btn active" id="btnCats" onclick="setMainView('cats',this)">Categorías</button>
     <button class="vtm-btn" id="btnCli" onclick="setMainView('clientes',this)">Clientes</button>
-    <button class="btn-refresh" onclick="var r=this.querySelector('.ri');r.style.animation='spin-once .45s ease-out';r.addEventListener('animationend',function(){r.style.animation='';location.reload();},{once:true})"><span class="ri">↻</span> Actualizar</button>
   </div>
   <div id="catSection">
   <div class="table-wrap">
@@ -1698,7 +1697,7 @@ function msClearFilters(){
 <header>
   <div class="header-left">
     <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button></p>
+    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
     <div class="year-badge">2026 vs 2025</div>
@@ -1739,7 +1738,6 @@ function msClearFilters(){
   <div class="view-toggle-main">
     <button class="vtm-btn active" id="btnCats" onclick="setMainView('cats',this)">Categorías</button>
     <button class="vtm-btn" id="btnCli" onclick="setMainView('clientes',this)">Clientes</button>
-    <button class="btn-refresh" onclick="var r=this.querySelector('.ri');r.style.animation='spin-once .45s ease-out';r.addEventListener('animationend',function(){r.style.animation='';location.reload();},{once:true})"><span class="ri">↻</span> Actualizar</button>
   </div>
   <div id="catSection">
   <div class="table-wrap">
@@ -2422,17 +2420,32 @@ var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementB
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
+window._pageEtag=null;
 (function(){
-  var etag=null;
   function check(){
     fetch(location.href,{method:'HEAD',cache:'no-store'})
       .then(function(r){
         var e=r.headers.get('etag')||r.headers.get('last-modified');
-        if(e){if(etag&&e!==etag&&document.visibilityState!=='hidden'){location.reload();}etag=e;}
+        if(e){if(window._pageEtag&&e!==window._pageEtag&&document.visibilityState!=='hidden'){location.reload();}window._pageEtag=e;}
       }).catch(function(){});
   }
   setTimeout(function(){check();setInterval(check,5*60*1000);},3000);
 })();
+function checkAndRefresh(btn){
+  var orig=btn.textContent;
+  btn.textContent='Verificando...';btn.disabled=true;
+  fetch(location.href,{method:'HEAD',cache:'no-store'})
+    .then(function(r){
+      var e=r.headers.get('etag')||r.headers.get('last-modified');
+      if(e&&window._pageEtag&&e!==window._pageEtag){location.reload();}
+      else{
+        if(e)window._pageEtag=e;
+        btn.textContent='✓ Al día';
+        btn.style.color='var(--positive)';
+        setTimeout(function(){btn.textContent=orig;btn.style.color='';btn.disabled=false;},2000);
+      }
+    }).catch(function(){btn.textContent=orig;btn.disabled=false;});
+}
 </script>
 </body>
 </html>
