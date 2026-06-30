@@ -2728,16 +2728,11 @@ var STK_COLORS = {c:'#c05050', w:'#c07a18', l:'#3b82f6'};
 var STK_LABELS = {c:'CRÍTICO', w:'BAJO', l:'VIGILAR'};
 
 function renderStockBanner(){
-  var ban=document.getElementById('stkBanner')||document.getElementById('stkBanner2');
-  if(!ban)return;
+  var el=document.getElementById('stkDebug');
+  if(!el){el=document.createElement('div');el.id='stkDebug';el.style.cssText='position:fixed;top:10px;right:10px;z-index:9999;background:#ef4444;color:#fff;padding:10px 16px;border-radius:6px;font-weight:700;font-size:13px;';document.body.appendChild(el);}
   var sType=typeof STOCK;
-  var sLen=(sType!=='undefined')?Object.keys(STOCK).length:'N/A';
-  var products=buildStockAlerts(_stkThreshold);
-  ban.style.display='block';
-  ban.innerHTML='<div style="background:#1a1f2e;border:1px solid #c07a18;border-left:3px solid #c07a18;border-radius:6px;padding:8px 14px;font-size:.75rem;">'
-    +'<span style="color:#e8a020;font-weight:700;">⚠️ DEBUG: </span>'
-    +'<span style="color:#e8eaf0;">STOCK type='+sType+', keys='+sLen+', bajo umbral='+products.length+'</span>'
-    +'</div>';
+  var sLen=(sType!=='undefined')?Object.keys(STOCK).length:0;
+  el.textContent='STOCK type='+sType+' keys='+sLen;
 }
 
 function showStockView(){
