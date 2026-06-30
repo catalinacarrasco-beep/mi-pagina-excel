@@ -2245,7 +2245,8 @@ function getDetail25(){if(currentMainTab==='CANALES')return CANALES_DETAIL25[cur
 function renderAll(){
   renderKPIs();renderTopCats();renderMonthBtns();renderTable();
   document.getElementById('footerVendedor').textContent='Vista: '+NAMES[currentVendedor];
-  if(mainView==='clientes') renderClientes();}
+  if(mainView==='clientes') renderClientes();
+  renderStockBanner();}
 
 
 function renderKPIs(){
