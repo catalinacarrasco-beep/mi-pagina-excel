@@ -541,6 +541,48 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 .ms-row-edit:hover{background:rgba(255,255,255,.08);color:var(--text);}
 .ms-row-del:hover{background:rgba(244,67,54,.15);color:#f87171;}
 /* /ms-admin */
+
+/* ── STOCK ALERT ─────────────────────────────────────────────────────────── */
+main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
+#stkBanner{margin-bottom:1rem;}
+.stk-bar{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem;background:var(--surface);border:1px solid var(--border);border-left:3px solid #c07a18;border-radius:6px;cursor:pointer;transition:background .15s;}
+.stk-bar:hover{background:var(--surface2);}
+.stk-bar-txt{flex:1;}
+.stk-bar-title{font-size:.78rem;font-weight:700;color:#e8a020;letter-spacing:.02em;}
+.stk-bar-sub{font-size:.65rem;color:var(--muted);margin-top:.1rem;}
+.stk-bdg{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:10px;}
+.stk-bdg-c{background:rgba(192,80,80,.18);color:#c05050;}
+.stk-bdg-w{background:rgba(192,130,24,.18);color:#c07a18;}
+.stk-btn{font-size:.65rem;font-weight:700;color:var(--accent);background:rgba(59,168,212,.1);border:1px solid rgba(59,168,212,.25);border-radius:4px;padding:4px 10px;cursor:pointer;white-space:nowrap;letter-spacing:.02em;}
+.stk-btn:hover{background:rgba(59,168,212,.2);}
+#stkView{padding:0;}
+.stk-hdr{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:6px 6px 0 0;flex-wrap:wrap;}
+.stk-back{font-size:.7rem;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;}
+.stk-back:hover{color:var(--text);}
+.stk-hdr-title{font-size:.85rem;font-weight:700;letter-spacing:.02em;flex:1;}
+.stk-thr{display:flex;align-items:center;gap:.4rem;font-size:.7rem;color:var(--muted);}
+.stk-thr input{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.72rem;padding:3px 8px;width:60px;outline:none;text-align:center;}
+.stk-kpis{display:flex;border:1px solid var(--border);border-top:none;border-bottom:none;}
+.stk-kpi{flex:1;padding:.6rem 1rem;border-right:1px solid var(--border);}
+.stk-kpi:last-child{border-right:none;}
+.stk-kpi-n{font-size:1.35rem;font-weight:800;line-height:1;}
+.stk-kpi-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:.15rem;}
+.stk-table-wrap{border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px;overflow:hidden;}
+.stk-table{width:100%;border-collapse:collapse;}
+.stk-table th{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:.5rem .85rem;text-align:left;border-bottom:1px solid var(--border);background:var(--surface);}
+.stk-table td{font-size:.75rem;padding:.5rem .85rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.stk-table tr:last-child td{border-bottom:none;}
+.stk-table tr:hover td{background:rgba(255,255,255,.015);}
+.stk-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;}
+.stk-bar-mini{background:var(--surface2);border-radius:2px;height:4px;width:70px;overflow:hidden;display:inline-block;vertical-align:middle;}
+.stk-bar-fill{height:4px;border-radius:2px;}
+.stk-pill{font-size:.6rem;font-weight:600;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.06);color:var(--muted);}
+.stk-tag{font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:3px;}
+.stk-tag-c{background:rgba(192,80,80,.14);color:#c05050;}
+.stk-tag-w{background:rgba(192,130,24,.14);color:#c07a18;}
+.stk-tag-l{background:rgba(59,130,246,.1);color:#3b82f6;}
+.stk-legend{padding:.5rem .85rem;border-top:1px solid var(--border);display:flex;gap:12px;font-size:.6rem;color:var(--muted);background:var(--surface);}
+.stk-empty{padding:2rem;text-align:center;color:var(--muted);font-size:.8rem;}
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3ba8d4">
@@ -768,6 +810,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
   <div class="subtab" data-v="SANDRA" onclick="setExtras('SANDRA',this)">Sandra</div>
 </div>
 <main>
+<div id="stkBanner" style="display:none"></div>
+<div id="stkView" style="display:none"></div>
   <div class="kpis" id="kpis"></div>
   <div class="top-cats-card" id="topCats"></div>
   <div class="controls">
@@ -922,7 +966,8 @@ function renderAll(){
   var ms=document.getElementById('muestrasSection');if(ms)ms.style.display='none';
   renderKPIs();renderTopCats();renderMonthBtns();renderTable();
   document.getElementById('footerVendedor').textContent='Vista: '+NAMES[currentVendedor];
-  if(mainView==='clientes') renderClientes();}
+  if(mainView==='clientes') renderClientes();
+  renderStockBanner();}
 
 
 function renderKPIs(){
@@ -2643,6 +2688,145 @@ function cycleDiffSort(){
   if(currentView==='diferencia') renderTable();
 }
 renderAll();
+// ── STOCK ALERT ──────────────────────────────────────────────────────────────
+var _stkThreshold = 300;
+
+function normCodStk(cod){
+  var s = String(cod).trim().toLowerCase().replace(/\s+/g,'');
+  return s.replace(/^0+/,'') || s;
+}
+
+function buildStockAlerts(threshold){
+  // gather all products from DETAIL_GEN26 with name + category
+  var products = [];
+  if(typeof DETAIL_GEN26 !== 'undefined'){
+    Object.keys(DETAIL_GEN26).forEach(function(cat){
+      (DETAIL_GEN26[cat]||[]).forEach(function(p){
+        var nc = normCodStk(p.cod);
+        var qty = (typeof STOCK !== 'undefined') ? (STOCK[nc] !== undefined ? STOCK[nc] : -1) : -1;
+        if(qty < 0) return; // not in stock data
+        if(qty < threshold){
+          products.push({cod:p.cod, desc:p.desc, cat:cat, qty:qty});
+        }
+      });
+    });
+  }
+  // dedup by cod (same product may appear in multiple cats - keep first)
+  var seen = {};
+  products = products.filter(function(p){
+    if(seen[p.cod]) return false;
+    seen[p.cod] = true;
+    return true;
+  });
+  products.sort(function(a,b){ return a.qty - b.qty; });
+  return products;
+}
+
+function stkStatus(qty){
+  if(qty < 50) return 'c';
+  if(qty < 150) return 'w';
+  return 'l';
+}
+var STK_COLORS = {c:'#c05050', w:'#c07a18', l:'#3b82f6'};
+var STK_LABELS = {c:'CRÍTICO', w:'BAJO', l:'VIGILAR'};
+
+function renderStockBanner(){
+  var ban = document.getElementById('stkBanner');
+  if(!ban) return;
+  var products = buildStockAlerts(_stkThreshold);
+  if(!products.length){ ban.style.display='none'; return; }
+  var crit = products.filter(function(p){return p.qty < 50;}).length;
+  var low  = products.filter(function(p){return p.qty >= 50 && p.qty < 150;}).length;
+  var html = '<div class="stk-bar" onclick="showStockView()">'
+    + '<span style="font-size:.85rem">⚠️</span>'
+    + '<div class="stk-bar-txt">'
+    +   '<div class="stk-bar-title">Quiebre de stock</div>'
+    +   '<div class="stk-bar-sub">Umbral: '+_stkThreshold+' unidades · '+products.length+' productos afectados</div>'
+    + '</div>';
+  if(crit) html += '<span class="stk-bdg stk-bdg-c">'+crit+' crítico'+(crit>1?'s':'')+'</span>';
+  if(low)  html += '<span class="stk-bdg stk-bdg-w">'+low+' bajo'+(low>1?'s':'')+'</span>';
+  html += '<button class="stk-btn">Ver detalle →</button></div>';
+  ban.innerHTML = html;
+  ban.style.display = 'block';
+}
+
+function showStockView(){
+  var main = document.querySelector('#ventasScreen main');
+  if(!main) return;
+  main.classList.add('stk-active');
+  renderStockDetail();
+  document.getElementById('stkView').style.display = 'block';
+}
+
+function hideStockView(){
+  var main = document.querySelector('#ventasScreen main');
+  if(!main) return;
+  main.classList.remove('stk-active');
+  document.getElementById('stkView').style.display = 'none';
+}
+
+function renderStockDetail(){
+  var view = document.getElementById('stkView');
+  if(!view) return;
+  var products = buildStockAlerts(_stkThreshold);
+  var crit = products.filter(function(p){return p.qty < 50;}).length;
+  var low  = products.filter(function(p){return p.qty >= 50 && p.qty < 150;}).length;
+  var watch= products.filter(function(p){return p.qty >= 150;}).length;
+
+  var h = '<div class="stk-hdr">'
+    + '<button class="stk-back" onclick="hideStockView()">← Volver a ventas</button>'
+    + '<span class="stk-hdr-title">Stock bajo umbral</span>'
+    + '<div class="stk-thr"><span>Umbral:</span>'
+    + '<input type="number" id="stkThrInput" value="'+_stkThreshold+'" min="1" max="9999" onchange="stkSetThreshold(this.value)">'
+    + '<span>u.</span></div></div>';
+
+  h += '<div class="stk-kpis">'
+    + '<div class="stk-kpi"><div class="stk-kpi-n" style="color:#c05050">'+crit+'</div><div class="stk-kpi-l">Crítico &lt;50</div></div>'
+    + '<div class="stk-kpi"><div class="stk-kpi-n" style="color:#c07a18">'+low+'</div><div class="stk-kpi-l">Bajo &lt;150</div></div>'
+    + '<div class="stk-kpi"><div class="stk-kpi-n" style="color:#3b82f6">'+watch+'</div><div class="stk-kpi-l">Vigilar &lt;umbral</div></div>'
+    + '<div class="stk-kpi"><div class="stk-kpi-n" style="color:var(--text)">'+products.length+'</div><div class="stk-kpi-l">Total alertas</div></div>'
+    + '</div>';
+
+  h += '<div class="stk-table-wrap">';
+  if(!products.length){
+    h += '<div class="stk-empty">✓ Todos los productos están sobre el umbral de '+_stkThreshold+' unidades.</div>';
+  } else {
+    h += '<table class="stk-table"><thead><tr>'
+      + '<th>Producto</th><th>Cód.</th><th>Categoría</th><th>Stock</th><th>Nivel</th><th>Estado</th>'
+      + '</tr></thead><tbody>';
+    products.forEach(function(p){
+      var st = stkStatus(p.qty);
+      var col = STK_COLORS[st];
+      var pct = Math.min(100, Math.round(p.qty / _stkThreshold * 100));
+      h += '<tr>'
+        + '<td><span class="stk-dot" style="background:'+col+'"></span>'+(st==='c'?'<b>'+p.desc+'</b>':p.desc)+'</td>'
+        + '<td style="color:var(--muted);font-size:.65rem">'+p.cod+'</td>'
+        + '<td><span class="stk-pill">'+p.cat+'</span></td>'
+        + '<td><span style="font-weight:700;font-variant-numeric:tabular-nums;color:'+col+'">'+p.qty+'</span></td>'
+        + '<td><div class="stk-bar-mini"><div class="stk-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div></td>'
+        + '<td><span class="stk-tag stk-tag-'+st+'">'+STK_LABELS[st]+'</span></td>'
+        + '</tr>';
+    });
+    h += '</tbody></table>';
+    h += '<div class="stk-legend">'
+      + '<span><span class="stk-dot" style="background:#c05050;display:inline-block"></span>Crítico &lt;50 u.</span>'
+      + '<span><span class="stk-dot" style="background:#c07a18;display:inline-block"></span>Bajo &lt;150 u.</span>'
+      + '<span><span class="stk-dot" style="background:#3b82f6;display:inline-block"></span>Vigilar &lt;umbral</span>'
+      + '</div>';
+  }
+  h += '</div>';
+  view.innerHTML = h;
+}
+
+function stkSetThreshold(val){
+  var n = parseInt(val);
+  if(!n || n < 1) return;
+  _stkThreshold = n;
+  renderStockBanner();
+  renderStockDetail();
+}
+// ── /STOCK ALERT ──────────────────────────────────────────────────────────────
+
 </script>
 
 <script>
