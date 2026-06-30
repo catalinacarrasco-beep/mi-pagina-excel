@@ -2095,6 +2095,8 @@ function msClearFilters(){
   <div class="subtab" data-v="SANDRA" onclick="setExtras('SANDRA',this)">Sandra</div>
 </div>
 <main>
+<div id="stkBanner2" style="display:none"></div>
+<div id="stkView2" style="display:none"></div>
   <div class="kpis" id="kpis"></div>
   <div class="top-cats-card" id="topCats"></div>
   <div class="controls">
@@ -2726,7 +2728,7 @@ var STK_COLORS = {c:'#c05050', w:'#c07a18', l:'#3b82f6'};
 var STK_LABELS = {c:'CRÍTICO', w:'BAJO', l:'VIGILAR'};
 
 function renderStockBanner(){
-  var ban = document.getElementById('stkBanner');
+  var ban = document.getElementById('stkBanner') || document.getElementById('stkBanner2');
   if(!ban) return;
   var products = buildStockAlerts(_stkThreshold);
   if(!products.length){ ban.style.display='none'; return; }
@@ -2750,14 +2752,14 @@ function showStockView(){
   if(!main) return;
   main.classList.add('stk-active');
   renderStockDetail();
-  document.getElementById('stkView').style.display = 'block';
+  var sv=document.getElementById('stkView')||document.getElementById('stkView2');if(sv)sv.style.display='block';
 }
 
 function hideStockView(){
   var main = document.querySelector('#ventasScreen main');
   if(!main) return;
   main.classList.remove('stk-active');
-  document.getElementById('stkView').style.display = 'none';
+  var sv2=document.getElementById('stkView')||document.getElementById('stkView2');if(sv2)sv2.style.display='none';
 }
 
 function renderStockDetail(){
@@ -2968,6 +2970,7 @@ function enterVentas(){
   sessionStorage.setItem('gs_screen','ventas');
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('ventasScreen'));
+    setTimeout(function(){if(typeof renderStockBanner==='function')renderStockBanner();},80);
   });
 }
 function enterCobranza(){
