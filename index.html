@@ -956,6 +956,8 @@ function getDetail26(){if(currentMainTab==='CANALES')return CANALES_DETAIL26[cur
 function getDetail25(){if(currentMainTab==='CANALES')return CANALES_DETAIL25[currentCanal]||{};if(currentMainTab==='EXTRAS')return {};return currentVendedor==='GENERAL'?DETAIL_GEN25:(DETAIL_2025[currentVendedor]||{});}
 
 function renderAll(){
+  var mainEl=document.querySelector('main');if(mainEl)mainEl.style.display='';
+  var ms=document.getElementById('muestrasSection');if(ms)ms.style.display='none';
   renderKPIs();renderTopCats();renderMonthBtns();renderTable();
   document.getElementById('footerVendedor').textContent='Vista: '+NAMES[currentVendedor];
   if(mainView==='clientes') renderClientes();}
@@ -1309,12 +1311,12 @@ function filterCatProds(cat, q){
   if(cnt) cnt.textContent = term && rows.length ? shown+'/'+rows.length : '';
 }
 function _showSalesUI(show){
-  ['kpis','topCats','catSection','cliSection'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=show?'':'none';});
-  const ctrl=document.querySelector('.controls'),vtm=document.querySelector('.view-toggle-main');
-  if(ctrl)ctrl.style.display=show?'':'none';
-  if(vtm)vtm.style.display=show?'':'none';
-  const ms=document.getElementById('muestrasSection');
-  if(ms)ms.style.display=show?'none':'';
+  var mainEl=document.querySelector('main');
+  if(mainEl)mainEl.style.display=show?'':'none';
+  var cliEl=document.getElementById('cliSection');
+  if(cliEl&&show)cliEl.style.display='none'; // cliSection managed by setMainView
+  var ms=document.getElementById('muestrasSection');
+  if(ms)ms.style.display=show?'none':'block';
 }
 function setMainTab(v, el){
   sessionStorage.setItem('gs_tab',v);
