@@ -2780,6 +2780,7 @@ function enterCobranza(){
 }
 function enterMuestras(){
   sessionStorage.setItem('gs_screen','muestras');
+  if(typeof renderMuestrasScreen==='function') renderMuestrasScreen();
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('muestrasScreen'));
   });
