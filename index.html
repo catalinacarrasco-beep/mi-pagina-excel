@@ -1512,14 +1512,36 @@ function deleteMuestra(id){
 // ── /MUESTRAS ─────────────────────────────────────────────
 // ── STOCK ALERT ──────────────────────────────────────────────────────────────
 var _stkThreshold = 300;
+var _EXCL_CATS = new Set(['BLOQUEADO','BORNERAS','Proceso de Alimentos','OBSOLETO']);
+var _stkExcl = null;
+var _stkDescMap = null;
+
+function _stkBuildMaps(){
+  _stkExcl = new Set();
+  _stkDescMap = {};
+  if(typeof DETAIL_GEN26 === 'undefined') return;
+  Object.keys(DETAIL_GEN26).forEach(function(cat){
+    var prods = DETAIL_GEN26[cat]||[];
+    prods.forEach(function(p){
+      var nc = String(p.cod).trim().toLowerCase().replace(/\s+/g,'').replace(/^0+/,'') || String(p.cod);
+      if(_EXCL_CATS.has(cat)) _stkExcl.add(nc);
+      _stkDescMap[nc] = {desc: p.desc || p.cod, cat: cat};
+    });
+  });
+}
 
 function buildStockAlerts(threshold){
   if(typeof STOCK==='undefined') return[];
+  if(!_stkExcl) _stkBuildMaps();
   var products=[];
   Object.keys(STOCK).forEach(function(cod){
+    if(_stkExcl.has(cod)) return;
     var qty=STOCK[cod];
     if(typeof qty!=='number') qty=(qty&&qty.qty!==undefined)?qty.qty:0;
-    if(qty>=0&&qty<threshold) products.push({cod:cod,qty:qty});
+    if(qty>=0&&qty<threshold){
+      var meta = _stkDescMap[cod];
+      products.push({cod:cod, desc: meta ? meta.desc : cod, cat: meta ? meta.cat : '—', qty:qty});
+    }
   });
   products.sort(function(a,b){return a.qty-b.qty;});
   return products;
@@ -1590,14 +1612,15 @@ function renderStockDetail(){
     h+='<div class="stk-empty">✓ Todos los productos están sobre el umbral de '+_stkThreshold+' unidades.</div>';
   } else {
     h+='<table class="stk-table"><thead><tr>'
-      +'<th>Cód.</th><th>Stock</th><th>Nivel</th><th>Estado</th>'
+      +'<th>Descripción</th><th>Categoría</th><th>Stock</th><th>Nivel</th><th>Estado</th>'
       +'</tr></thead><tbody>';
     products.forEach(function(p){
       var st=stkStatus(p.qty);
       var col=STK_COLORS[st];
       var pct=Math.min(100,Math.round(p.qty/_stkThreshold*100));
       h+='<tr>'
-        +'<td><span class="stk-dot" style="background:'+col+'"></span>'+(st==='c'?'<b>'+p.cod+'</b>':p.cod)+'</td>'
+        +'<td><span class="stk-dot" style="background:'+col+'"></span>'+(st==='c'?'<b>'+p.desc+'</b>':p.desc)+'</td>'
+        +'<td><span class="stk-pill">'+p.cat+'</span></td>'
         +'<td><span style="font-weight:700;font-variant-numeric:tabular-nums;color:'+col+'">'+p.qty+'</span></td>'
         +'<td><div class="stk-bar-mini"><div class="stk-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div></td>'
         +'<td><span class="stk-tag stk-tag-'+st+'">'+STK_LABELS[st]+'</span></td>'
