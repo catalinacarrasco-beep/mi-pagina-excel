@@ -497,6 +497,45 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
   .kpis{grid-template-columns:1fr 1fr !important;gap:.5rem;}
 }
 /* /mobile-logo */
+/* muestras */
+#muestrasSection{padding:1.5rem 2rem;}
+.ms-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.ms-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:var(--text);}
+.ms-block{background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:1.5rem;overflow:hidden;}
+.ms-block-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border);}
+.ms-block-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:var(--accent);}
+.ms-add-btn{padding:.3rem .75rem;border-radius:4px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;transition:all .15s;}
+.ms-add-btn:hover{background:var(--accent);color:#fff;}
+.ms-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.ms-table th{padding:.5rem .75rem;text-align:left;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+.ms-table td{padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text);vertical-align:middle;}
+.ms-table tr:last-child td{border-bottom:none;}
+.ms-table tr:hover td{background:rgba(255,255,255,.03);}
+.ms-empty{padding:1.5rem;text-align:center;color:var(--muted);font-size:.8rem;}
+.ms-estado{display:inline-block;padding:3px 10px;border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:.04em;}
+.ms-estado.cerrado{background:rgba(74,222,128,.18);color:#4ade80;}
+.ms-estado.tramite{background:rgba(251,191,36,.18);color:#fbbf24;}
+.ms-estado.pendiente{background:rgba(148,163,184,.15);color:#94a3b8;}
+.ms-action-btn{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s;color:var(--muted);}
+.ms-action-btn:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.ms-dias{font-weight:600;color:var(--text);}
+.ms-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.ms-modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
+.ms-modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;margin-bottom:1.2rem;color:var(--text);}
+.ms-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.ms-form-group{display:flex;flex-direction:column;gap:.3rem;}
+.ms-form-group.full{grid-column:1/-1;}
+.ms-form-label{font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.ms-form-input{padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.ms-form-input:focus{border-color:var(--accent);}
+.ms-form-select{padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
+.ms-modal-actions{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.2rem;}
+.ms-btn-save{padding:.45rem 1.1rem;border-radius:5px;border:none;background:var(--accent);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.ms-btn-cancel{padding:.45rem 1.1rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+@media(max-width:600px){#muestrasSection{padding:.75rem;}
+.ms-form-grid{grid-template-columns:1fr;}
+.ms-table th:nth-child(3),.ms-table td:nth-child(3),.ms-table th:nth-child(5),.ms-table td:nth-child(5){display:none;}}
+/* /muestras */
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3ba8d4">
@@ -748,6 +787,7 @@ function msClearFilters(){
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
   <div class="tab" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
   <div class="tab" data-v="EXTRAS" onclick="setMainTab('EXTRAS',this)">Extras</div>
+  <div class="tab" data-v="MUESTRAS" onclick="setMainTab('MUESTRAS',this)">Muestras</div>
 </div>
 <div class="subtabs" id="canalTabs" style="display:none">
   <div class="subtab active" data-v="SODIMAC" onclick="setCanal('SODIMAC',this)">Sodimac</div>
@@ -802,6 +842,68 @@ function msClearFilters(){
       <div id="cliContent"></div>
     </div>
   </div>
+<div id="muestrasSection" style="display:none">
+  <div class="ms-header">
+    <span class="ms-title">Módulo Muestras</span>
+  </div>
+  <div class="ms-block">
+    <div class="ms-block-header">
+      <span class="ms-block-title">Para Seguimiento</span>
+      <button class="ms-add-btn" onclick="openMuestraModal(null,'SEGUIMIENTO')">+ Agregar</button>
+    </div>
+    <div id="msTable_SEGUIMIENTO"></div>
+  </div>
+  <div class="ms-block">
+    <div class="ms-block-header">
+      <span class="ms-block-title">Para Tipo y Aprobación</span>
+      <button class="ms-add-btn" onclick="openMuestraModal(null,'TIPO_APROBACION')">+ Agregar</button>
+    </div>
+    <div id="msTable_TIPO_APROBACION"></div>
+  </div>
+</div>
+<div id="muestraModalBg" class="ms-modal-bg" style="display:none" onclick="if(event.target===this)closeMuestraModal()">
+  <div class="ms-modal">
+    <div class="ms-modal-title" id="msTitulo">Nueva Muestra</div>
+    <div class="ms-form-grid">
+      <div class="ms-form-group full">
+        <label class="ms-form-label">Factura</label>
+        <input class="ms-form-input" id="msFactura" placeholder="Ej: CH-GR-SE2507 PRIMMUS">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">N° Cotización</label>
+        <input class="ms-form-input" id="msCotizacion" placeholder="Ej: 599203">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Fecha Cotización</label>
+        <input class="ms-form-input" id="msFechaCot" type="date">
+      </div>
+      <div class="ms-form-group" id="msRetiroGrp">
+        <label class="ms-form-label">Fecha Retiro Muestra</label>
+        <input class="ms-form-input" id="msFechaRetiro" type="date">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Fecha Entrega Certificado</label>
+        <input class="ms-form-input" id="msFechaEntrega" type="date">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Estado</label>
+        <select class="ms-form-select" id="msEstado">
+          <option value="EN TRAMITE">En Trámite</option>
+          <option value="CERRADO">Cerrado</option>
+          <option value="PENDIENTE">Pendiente</option>
+        </select>
+      </div>
+      <div class="ms-form-group full">
+        <label class="ms-form-label">Observaciones</label>
+        <input class="ms-form-input" id="msObs" placeholder="Ej: Proceso cerrado, BD actualizada">
+      </div>
+    </div>
+    <div class="ms-modal-actions">
+      <button class="ms-btn-cancel" onclick="closeMuestraModal()">Cancelar</button>
+      <button class="ms-btn-save" onclick="saveMuestra()">Guardar</button>
+    </div>
+  </div>
+</div>
 <div class="prod-tooltip" id="prodTooltip"></div>
 <footer>
   <p id="footerVendedor">Vista: Alejandra</p>
@@ -1206,6 +1308,14 @@ function filterCatProds(cat, q){
   const cnt = document.getElementById('cc-'+cat);
   if(cnt) cnt.textContent = term && rows.length ? shown+'/'+rows.length : '';
 }
+function _showSalesUI(show){
+  ['kpis','topCats','catSection','cliSection'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=show?'':'none';});
+  const ctrl=document.querySelector('.controls'),vtm=document.querySelector('.view-toggle-main');
+  if(ctrl)ctrl.style.display=show?'':'none';
+  if(vtm)vtm.style.display=show?'':'none';
+  const ms=document.getElementById('muestrasSection');
+  if(ms)ms.style.display=show?'none':'';
+}
 function setMainTab(v, el){
   sessionStorage.setItem('gs_tab',v);
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -1216,6 +1326,13 @@ function setMainTab(v, el){
   canalTabs.style.display='none';
   subtabs.style.display='none';
   extrasTabs.style.display='none';
+  if(v==='MUESTRAS'){
+    currentMainTab='MUESTRAS';
+    _showSalesUI(false);
+    renderMuestras();
+    return;
+  }
+  _showSalesUI(true);
   if(v==='CANALES'){
     canalTabs.style.display='flex';
     currentVendedor='GENERAL';
@@ -1299,6 +1416,91 @@ function cycleDiffSort(){
   if(currentView==='diferencia') renderTable();
 }
 renderAll();
+// ── MUESTRAS ──────────────────────────────────────────────
+const MS_KEY='grantt_muestras';
+let _msEditId=null,_msTipo=null;
+function msLoad(){try{return JSON.parse(localStorage.getItem(MS_KEY)||'[]');}catch{return[];}}
+function msSave(data){localStorage.setItem(MS_KEY,JSON.stringify(data));}
+function msId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function msDias(fCot,fEnt){if(!fCot||!fEnt)return'—';const d=Math.round((new Date(fEnt)-new Date(fCot))/86400000);return d>=0?d:'—';}
+function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN TRAMITE'?'tramite':'pendiente';}
+function msFormatDate(d){if(!d)return'—';const[y,m,dd]=d.split('-');return dd+'-'+m+'-'+y;}
+function renderMuestras(){
+  ['SEGUIMIENTO','TIPO_APROBACION'].forEach(function(tipo){
+    var rows=msLoad().filter(function(r){return r.tipo===tipo;});
+    var el=document.getElementById('msTable_'+tipo);
+    if(!el)return;
+    if(!rows.length){el.innerHTML='<div class="ms-empty">Sin registros. Haz clic en &quot;+ Agregar&quot; para comenzar.</div>';return;}
+    var showRetiro=tipo==='SEGUIMIENTO';
+    var tb='<table class="ms-table"><thead><tr><th>Factura</th><th>N° Cotiz.</th><th>F. Cotización</th>'+(showRetiro?'<th>F. Retiro Muestra</th>':'')+'<th>F. Entrega Cert.</th><th>Días</th><th>Estado</th><th>Observaciones</th><th></th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      var rid=r.id,rtipo=tipo;
+      tb+='<tr>'
+        +'<td>'+(r.factura||'—')+'</td>'
+        +'<td>'+(r.cotizacion||'—')+'</td>'
+        +'<td>'+msFormatDate(r.fechaCotizacion)+'</td>'
+        +(showRetiro?'<td>'+msFormatDate(r.fechaRetiro)+'</td>':'')
+        +'<td>'+msFormatDate(r.fechaEntrega)+'</td>'
+        +'<td><span class="ms-dias">'+msDias(r.fechaCotizacion,r.fechaEntrega)+'</span></td>'
+        +'<td><span class="ms-estado '+msEstadoClass(r.estado)+'">'+(r.estado||'—')+'</span></td>'
+        +'<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.observaciones||'')+'</td>'
+        +'<td style="white-space:nowrap">'
+          +'<button class="ms-action-btn" title="Editar" onclick="openMuestraModal(\''+rid+'\',\''+rtipo+'\')">&#9998;</button> '
+          +'<button class="ms-action-btn" title="Eliminar" onclick="deleteMuestra(\''+rid+'\')">&#128465;</button>'
+        +'</td></tr>';
+    });
+    tb+='</tbody></table>';
+    el.innerHTML=tb;
+  });
+}
+function openMuestraModal(id,tipo){
+  _msTipo=tipo;_msEditId=id||null;
+  var showRetiro=tipo==='SEGUIMIENTO';
+  document.getElementById('msRetiroGrp').style.display=showRetiro?'':'none';
+  document.getElementById('msTitulo').textContent=id?'Editar Muestra':'Nueva Muestra — '+(tipo==='SEGUIMIENTO'?'Para Seguimiento':'Para Tipo y Aprobación');
+  if(id){
+    var data=msLoad(),r=null;
+    for(var i=0;i<data.length;i++){if(data[i].id===id){r=data[i];break;}}
+    if(!r)r={};
+    document.getElementById('msFactura').value=r.factura||'';
+    document.getElementById('msCotizacion').value=r.cotizacion||'';
+    document.getElementById('msFechaCot').value=r.fechaCotizacion||'';
+    document.getElementById('msFechaRetiro').value=r.fechaRetiro||'';
+    document.getElementById('msFechaEntrega').value=r.fechaEntrega||'';
+    document.getElementById('msEstado').value=r.estado||'EN TRAMITE';
+    document.getElementById('msObs').value=r.observaciones||'';
+  } else {
+    ['msFactura','msCotizacion','msFechaCot','msFechaRetiro','msFechaEntrega','msObs'].forEach(function(fid){document.getElementById(fid).value='';});
+    document.getElementById('msEstado').value='EN TRAMITE';
+  }
+  document.getElementById('muestraModalBg').style.display='flex';
+}
+function closeMuestraModal(){document.getElementById('muestraModalBg').style.display='none';}
+function saveMuestra(){
+  var data=msLoad();
+  var entry={
+    id:_msEditId||msId(),tipo:_msTipo,
+    factura:document.getElementById('msFactura').value.trim(),
+    cotizacion:document.getElementById('msCotizacion').value.trim(),
+    fechaCotizacion:document.getElementById('msFechaCot').value,
+    fechaRetiro:document.getElementById('msFechaRetiro').value,
+    fechaEntrega:document.getElementById('msFechaEntrega').value,
+    estado:document.getElementById('msEstado').value,
+    observaciones:document.getElementById('msObs').value.trim()
+  };
+  if(_msEditId){
+    var found=false;
+    for(var i=0;i<data.length;i++){if(data[i].id===_msEditId){data[i]=entry;found=true;break;}}
+    if(!found)data.push(entry);
+  } else {data.push(entry);}
+  msSave(data);closeMuestraModal();renderMuestras();
+}
+function deleteMuestra(id){
+  if(!confirm('¿Eliminar este registro?'))return;
+  msSave(msLoad().filter(function(r){return r.id!==id;}));
+  renderMuestras();
+}
+// ── /MUESTRAS ─────────────────────────────────────────────
 </script>
 
 <script>
@@ -1738,6 +1940,7 @@ function msClearFilters(){
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
   <div class="tab" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
   <div class="tab" data-v="EXTRAS" onclick="setMainTab('EXTRAS',this)">Extras</div>
+  <div class="tab" data-v="MUESTRAS" onclick="setMainTab('MUESTRAS',this)">Muestras</div>
 </div>
 <div class="subtabs" id="canalTabs" style="display:none">
   <div class="subtab active" data-v="SODIMAC" onclick="setCanal('SODIMAC',this)">Sodimac</div>
@@ -1792,6 +1995,68 @@ function msClearFilters(){
       <div id="cliContent"></div>
     </div>
   </div>
+<div id="muestrasSection" style="display:none">
+  <div class="ms-header">
+    <span class="ms-title">Módulo Muestras</span>
+  </div>
+  <div class="ms-block">
+    <div class="ms-block-header">
+      <span class="ms-block-title">Para Seguimiento</span>
+      <button class="ms-add-btn" onclick="openMuestraModal(null,'SEGUIMIENTO')">+ Agregar</button>
+    </div>
+    <div id="msTable_SEGUIMIENTO"></div>
+  </div>
+  <div class="ms-block">
+    <div class="ms-block-header">
+      <span class="ms-block-title">Para Tipo y Aprobación</span>
+      <button class="ms-add-btn" onclick="openMuestraModal(null,'TIPO_APROBACION')">+ Agregar</button>
+    </div>
+    <div id="msTable_TIPO_APROBACION"></div>
+  </div>
+</div>
+<div id="muestraModalBg" class="ms-modal-bg" style="display:none" onclick="if(event.target===this)closeMuestraModal()">
+  <div class="ms-modal">
+    <div class="ms-modal-title" id="msTitulo">Nueva Muestra</div>
+    <div class="ms-form-grid">
+      <div class="ms-form-group full">
+        <label class="ms-form-label">Factura</label>
+        <input class="ms-form-input" id="msFactura" placeholder="Ej: CH-GR-SE2507 PRIMMUS">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">N° Cotización</label>
+        <input class="ms-form-input" id="msCotizacion" placeholder="Ej: 599203">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Fecha Cotización</label>
+        <input class="ms-form-input" id="msFechaCot" type="date">
+      </div>
+      <div class="ms-form-group" id="msRetiroGrp">
+        <label class="ms-form-label">Fecha Retiro Muestra</label>
+        <input class="ms-form-input" id="msFechaRetiro" type="date">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Fecha Entrega Certificado</label>
+        <input class="ms-form-input" id="msFechaEntrega" type="date">
+      </div>
+      <div class="ms-form-group">
+        <label class="ms-form-label">Estado</label>
+        <select class="ms-form-select" id="msEstado">
+          <option value="EN TRAMITE">En Trámite</option>
+          <option value="CERRADO">Cerrado</option>
+          <option value="PENDIENTE">Pendiente</option>
+        </select>
+      </div>
+      <div class="ms-form-group full">
+        <label class="ms-form-label">Observaciones</label>
+        <input class="ms-form-input" id="msObs" placeholder="Ej: Proceso cerrado, BD actualizada">
+      </div>
+    </div>
+    <div class="ms-modal-actions">
+      <button class="ms-btn-cancel" onclick="closeMuestraModal()">Cancelar</button>
+      <button class="ms-btn-save" onclick="saveMuestra()">Guardar</button>
+    </div>
+  </div>
+</div>
 <div class="prod-tooltip" id="prodTooltip"></div>
 
 </div>
