@@ -536,6 +536,11 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 .ms-form-grid{grid-template-columns:1fr;}
 .ms-table th:nth-child(3),.ms-table td:nth-child(3),.ms-table th:nth-child(5),.ms-table td:nth-child(5){display:none;}}
 /* /muestras */
+/* ms-admin */
+.ms-row-edit,.ms-row-del{background:none;border:none;cursor:pointer;padding:3px 6px;border-radius:3px;font-size:.8rem;transition:background .12s;color:var(--muted);}
+.ms-row-edit:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.ms-row-del:hover{background:rgba(244,67,54,.15);color:#f87171;}
+/* /ms-admin */
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3ba8d4">
@@ -622,144 +627,100 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
   <div class="ms-header">
     <button class="ms-back" onclick="volverHomeFromMuestras()">← Volver</button>
     <div class="ms-title">Estado de Muestras</div>
-    <div style="width:80px;"></div>
+    <button id="ms-admin-btn" onclick="openMsModal(null,null)" style="display:none;align-items:center;gap:.4rem;font-size:.72rem;padding:.35rem .8rem;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">⚙ Admin</button>
   </div>
   <div class="ms-body">
     <div class="ms-kpis">
-      <div class="ms-kpi"><div class="kv" style="color:#f0a830;">1</div><div class="kl">En proceso</div></div>
-      <div class="ms-kpi"><div class="kv" style="color:#4a90d4;">6</div><div class="kl">Cerrados</div></div>
-      <div class="ms-kpi"><div class="kv">16</div><div class="kl">Días hábiles promedio</div></div>
-      <div class="ms-kpi"><div class="kv">22</div><div class="kl">Días hábiles máximo</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-proc" style="color:#f0a830;">—</div><div class="kl">En proceso</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-cerr" style="color:#4a90d4;">—</div><div class="kl">Cerrados</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-avg">—</div><div class="kl">Días hábiles promedio</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-max">—</div><div class="kl">Días hábiles máximo</div></div>
     </div>
-
-    <!-- Filtros -->
     <div style="display:flex;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;">
       <div style="display:flex;align-items:center;gap:.5rem;">
         <span style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">Factura</span>
-        <input id="ms-filter-factura" type="text" placeholder="Buscar..." oninput="msFilter()"
-          style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);width:160px;outline:none;"/>
+        <input id="ms-filter-factura" type="text" placeholder="Buscar..." oninput="msFilter()" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);width:160px;outline:none;"/>
       </div>
       <div style="display:flex;align-items:center;gap:.5rem;">
         <span style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">Estado</span>
-        <select id="ms-filter-estado" onchange="msFilter()"
-          style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);outline:none;">
+        <select id="ms-filter-estado" onchange="msFilter()" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);outline:none;">
           <option value="">Todos</option>
           <option value="EN PROCESO">En proceso</option>
           <option value="CERRADO">Cerrado</option>
         </select>
       </div>
-      <button onclick="msClearFilters()"
-        style="font-size:.65rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;letter-spacing:.05em;">
-        Limpiar
-      </button>
+      <button onclick="msClearFilters()" style="font-size:.65rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;letter-spacing:.05em;">Limpiar</button>
     </div>
-
-    <!-- Tabla SEGUIMIENTO -->
     <div class="ms-table-wrap" style="margin-bottom:1.5rem;">
-      <div class="ms-section-hdr">Para seguimiento</div>
+      <div class="ms-section-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Para seguimiento</span>
+        <button id="ms-add-seg" onclick="openMsModal(null,'SEG')" style="display:none;font-size:.7rem;padding:.25rem .65rem;border-radius:5px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">+ Nueva</button>
+      </div>
       <table class="ms-tbl" id="ms-tbl-seg">
         <thead><tr>
-          <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th>
-          <th>Días hábiles</th><th>Estado</th><th>Observaciones</th>
+          <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th><th>Días hábiles</th><th>Estado</th><th>Observaciones</th><th id="ms-th-seg" style="width:60px;display:none"></th>
         </tr></thead>
-        <tbody>
-          <tr data-factura="FS 2026-0301-3 PORTALÁMPRAS" data-estado="EN PROCESO">
-            <td><div style="font-weight:500;">FS 2026-0301-3 PORTALÁMPRAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 601182</div></td>
-            <td>10/06/2026</td><td>—</td>
-            <td><div style="font-size:.68rem;color:#f0a830;">En trámite</div></td>
-            <td><span class="ms-pill ms-pill-proc">En proceso</span></td>
-            <td class="ms-obs" onmouseenter="showObsTip(event,'Muestras ya fueron retiradas, en espera de certificación')" onmouseleave="hideTip()" style="cursor:default;">Muestras ya fueron retiradas, en espera de certificación</td>
-          </tr>
-          <tr data-factura="CH-GR-SE2507 PRIMMUS" data-estado="CERRADO">
-            <td><div style="font-weight:500;">CH-GR-SE2507 PRIMMUS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599203</div></td>
-            <td>11/05/2026</td><td>10/06/2026</td>
-            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:100%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">22 días hábiles</div></td>
-            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, cambiado de carpeta y BD actualizada</td>
-          </tr>
-          <tr data-factura="06-25 SR2512385 CLIO AEREO" data-estado="CERRADO">
-            <td><div style="font-weight:500;">06-25 SR2512385 CLIO AEREO</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598912</div></td>
-            <td>05/05/2026</td><td>20/05/2026</td>
-            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:54%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">12 días hábiles</div></td>
-            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, cambiado de carpeta y BD actualizada</td>
-          </tr>
-          <tr data-factura="05-25 SR2511310 CLIO PLACAS 10/16A" data-estado="CERRADO">
-            <td><div style="font-weight:500;">05-25 SR2511310 CLIO PLACAS 10/16A</div><div style="font-size:.65rem;color:var(--muted);">Cot. 598385</div></td>
-            <td>24/04/2026</td><td>15/05/2026</td>
-            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:72%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">16 días hábiles</div></td>
-            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, cambiado de carpeta y BD actualizada</td>
-          </tr>
-          <tr data-factura="25FS-1201-2 PORTALAMPARAS" data-estado="CERRADO">
-            <td><div style="font-weight:500;">25FS-1201-2 PORTALAMPARAS</div><div style="font-size:.65rem;color:var(--muted);">Cot. 597740</div></td>
-            <td>17/04/2026</td><td>07/05/2026</td>
-            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:68%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">15 días hábiles</div></td>
-            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, cambiado de carpeta y BD actualizada</td>
-          </tr>
-          <tr data-factura="I260010 YLK" data-estado="CERRADO">
-            <td><div style="font-weight:500;">I260010 YLK</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599774</div></td>
-            <td>19/05/2026</td><td>10/06/2026</td>
-            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:77%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">17 días hábiles</div></td>
-            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, cambiado de carpeta y BD actualizada</td>
-          </tr>
-        </tbody>
+        <tbody id="ms-tbody-seg"></tbody>
       </table>
     </div>
-
-    <!-- Tabla TIPO Y APROBACIÓN -->
     <div class="ms-table-wrap">
-      <div class="ms-section-hdr">Para tipo y aprobación</div>
+      <div class="ms-section-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Para tipo y aprobación</span>
+        <button id="ms-add-tip" onclick="openMsModal(null,'TIP')" style="display:none;font-size:.7rem;padding:.25rem .65rem;border-radius:5px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">+ Nueva</button>
+      </div>
       <table class="ms-tbl" id="ms-tbl-tip">
         <thead><tr>
-          <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th>
-          <th>Días hábiles</th><th>Estado</th><th>Observaciones</th>
+          <th>Factura / Producto</th><th>Retiro</th><th>Certificado</th><th>Días hábiles</th><th>Estado</th><th>Observaciones</th><th id="ms-th-tip" style="width:60px;display:none"></th>
         </tr></thead>
-        <tbody>
-          <tr data-factura="INTERRUPTORES SMART" data-estado="CERRADO">
-            <td><div style="font-weight:500;">INTERRUPTORES SMART</div><div style="font-size:.65rem;color:var(--muted);">Cot. 599603</div></td>
-            <td>14/05/2026</td><td>22/05/2026</td>
-            <td><div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:31%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">7 días hábiles</div></td>
-            <td><span class="ms-pill ms-pill-cerr">Cerrado</span></td>
-            <td class="ms-obs" onmouseenter="showObsTip(event,'Proceso cerrado, cambiado de carpeta y BD actualizada')" onmouseleave="hideTip()" style="cursor:default;">Proceso cerrado, cambiado de carpeta y BD actualizada</td>
-          </tr>
-        </tbody>
+        <tbody id="ms-tbody-tip"></tbody>
       </table>
     </div>
   </div>
 </div>
-
-<script>
-function showObsTip(e, obs){
-  var tip = document.getElementById('prodTooltip');
-  tip.innerHTML = '<div style="font-size:.78rem;color:var(--text);max-width:280px;line-height:1.5;">' + obs + '</div>';
-  tip.style.display='block';
-  positionTip(e);
-}
-function msFilter(){
-  const txt = document.getElementById('ms-filter-factura').value.toLowerCase();
-  const est = document.getElementById('ms-filter-estado').value;
-  ['ms-tbl-seg','ms-tbl-tip'].forEach(id=>{
-    const tbl = document.getElementById(id);
-    if(!tbl) return;
-    tbl.querySelectorAll('tbody tr').forEach(row=>{
-      const fac = (row.dataset.factura||'').toLowerCase();
-      const est2 = row.dataset.estado||'';
-      const showFac = !txt || fac.includes(txt);
-      const showEst = !est || est2 === est;
-      row.style.display = (showFac && showEst) ? '' : 'none';
-    });
-  });
-}
-function msClearFilters(){
-  document.getElementById('ms-filter-factura').value='';
-  document.getElementById('ms-filter-estado').value='';
-  msFilter();
-}
-</script>
-
+<!-- ADMIN MODAL MUESTRAS -->
+<div id="msMod" onclick="if(event.target===this)closeMsModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:3000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:#1a2030;border:1px solid var(--border);border-radius:10px;padding:1.5rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;">
+    <div id="msModTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--text);margin-bottom:1.2rem;">Nueva Entrada</div>
+    <input type="hidden" id="msModId"><input type="hidden" id="msModTipo">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+      <div style="display:flex;flex-direction:column;gap:.3rem;grid-column:1/-1;">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Factura / Producto</label>
+        <input id="msModFac" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ej: CH-GR-SE2507 PRIMMUS">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">N° Cotización</label>
+        <input id="msModCot" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ej: 599203">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Estado</label>
+        <select id="msModEst" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;">
+          <option value="EN PROCESO">En proceso</option>
+          <option value="CERRADO">Cerrado</option>
+        </select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Fecha Retiro Muestra</label>
+        <input id="msModRet" type="date" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Fecha Entrega Certificado</label>
+        <input id="msModCert" type="date" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Días hábiles</label>
+        <input id="msModDias" type="number" min="0" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ej: 15">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;grid-column:1/-1;">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Observaciones</label>
+        <input id="msModObs" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ej: Proceso cerrado, BD actualizada">
+      </div>
+    </div>
+    <div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.2rem;">
+      <button onclick="closeMsModal()" style="padding:.45rem 1.1rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancelar</button>
+      <button onclick="saveMsEntry()" style="padding:.45rem 1.1rem;border-radius:5px;border:none;background:var(--accent);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Guardar</button>
+    </div>
+  </div>
+</div>
 <!-- PRÓXIMAMENTE -->
 <div id="proximamente">
   <div style="position:absolute;top:1.2rem;left:1.5rem;">
@@ -1658,6 +1619,7 @@ function enterCobranza(){
 }
 function enterMuestras(){
   sessionStorage.setItem('gs_screen','muestras');
+  if(typeof renderMuestrasScreen==='function') renderMuestrasScreen();
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('muestrasScreen'));
   });
@@ -1667,6 +1629,115 @@ function volverHome(){
     fadeIn(document.getElementById('homeScreen'));
   });
 }
+// ── MUESTRAS ADMIN ─────────────────────────────────────────────────────────
+var GRANTT_MS='grantt_ms_v2';
+function msIsAdmin(){return sessionStorage.getItem('gs_role')==='admin';}
+function msDataLoad(){try{return JSON.parse(localStorage.getItem(GRANTT_MS)||'null');}catch{return null;}}
+function msDataSave(d){localStorage.setItem(GRANTT_MS,JSON.stringify(d));}
+function msGenId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function msFmtDate(d){if(!d)return'\u2014';var p=d.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d;}
+function renderMuestrasScreen(){
+  var d=msDataLoad();
+  if(!d){
+    d=[
+      {id:'ms1',tipo:'SEG',fac:'FS 2026-0301-3 PORTAL\u00c1MPRAS',cot:'601182',ret:'2026-06-10',cert:'',dias:'',est:'EN PROCESO',obs:'Muestras ya fueron retiradas, en espera de certificaci\u00f3n'},
+      {id:'ms2',tipo:'SEG',fac:'CH-GR-SE2507 PRIMMUS',cot:'599203',ret:'2026-05-11',cert:'2026-06-10',dias:'22',est:'CERRADO',obs:'Proceso cerrado, cambiado de carpeta y BD actualizada'},
+      {id:'ms3',tipo:'SEG',fac:'06-25 SR2512385 CLIO AEREO',cot:'598912',ret:'2026-05-05',cert:'2026-05-20',dias:'12',est:'CERRADO',obs:'Proceso cerrado, cambiado de carpeta y BD actualizada'},
+      {id:'ms4',tipo:'SEG',fac:'05-25 SR2511310 CLIO PLACAS 10/16A',cot:'598385',ret:'2026-04-24',cert:'2026-05-15',dias:'16',est:'CERRADO',obs:'Proceso cerrado, cambiado de carpeta y BD actualizada'},
+      {id:'ms5',tipo:'SEG',fac:'25FS-1201-2 PORTALAMPARAS',cot:'597740',ret:'2026-04-17',cert:'2026-05-07',dias:'15',est:'CERRADO',obs:'Proceso cerrado, cambiado de carpeta y BD actualizada'},
+      {id:'ms6',tipo:'SEG',fac:'I260010 YLK',cot:'599774',ret:'2026-05-19',cert:'2026-06-10',dias:'17',est:'CERRADO',obs:'Proceso cerrado, cambiado de carpeta y BD actualizada'},
+      {id:'ms7',tipo:'TIP',fac:'INTERRUPTORES SMART',cot:'599603',ret:'2026-05-14',cert:'2026-05-22',dias:'7',est:'CERRADO',obs:'Proceso cerrado, cambiado de carpeta y BD actualizada'}
+    ];
+    msDataSave(d);
+  }
+  var admin=msIsAdmin();
+  var btnAdmin=document.getElementById('ms-admin-btn');
+  if(btnAdmin)btnAdmin.style.display=admin?'flex':'none';
+  ['seg','tip'].forEach(function(t){
+    var btn=document.getElementById('ms-add-'+t);if(btn)btn.style.display=admin?'':'none';
+    var th=document.getElementById('ms-th-'+t);if(th)th.style.display=admin?'':'none';
+  });
+  var days=d.map(function(r){return parseInt(r.dias)||0;}).filter(function(x){return x>0;});
+  var enProc=d.filter(function(r){return r.est==='EN PROCESO';}).length;
+  var cerr=d.filter(function(r){return r.est==='CERRADO';}).length;
+  var avg=days.length?Math.round(days.reduce(function(a,b){return a+b;},0)/days.length):0;
+  var max=days.length?Math.max.apply(null,days):0;
+  var el;
+  el=document.getElementById('ms-kpi-proc');if(el)el.textContent=enProc||'0';
+  el=document.getElementById('ms-kpi-cerr');if(el)el.textContent=cerr||'0';
+  el=document.getElementById('ms-kpi-avg');if(el)el.textContent=avg||'\u2014';
+  el=document.getElementById('ms-kpi-max');if(el)el.textContent=max||'\u2014';
+  msFillTable('ms-tbody-seg',d.filter(function(r){return r.tipo==='SEG';}),admin,max);
+  msFillTable('ms-tbody-tip',d.filter(function(r){return r.tipo==='TIP';}),admin,max);
+  msFilter();
+}
+function msFillTable(tbodyId,rows,admin,maxDays){
+  var tb=document.getElementById(tbodyId);
+  if(!tb)return;
+  if(!rows.length){tb.innerHTML='<tr><td colspan="'+(admin?7:6)+'" style="text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem;">Sin registros</td></tr>';return;}
+  var tipo=tbodyId.indexOf('seg')>=0?'SEG':'TIP';
+  tb.innerHTML=rows.map(function(r){
+    var dias=parseInt(r.dias)||0;
+    var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
+    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.68rem;color:#f0a830;">En tr\u00e1mite</div>';
+    var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
+    var adminTd=admin?'<td><button class="ms-row-edit" onclick="openMsModal(\''+r.id+'\',\''+tipo+'\')">\u270f</button><button class="ms-row-del" onclick="deleteMsRow(\''+r.id+'\')">\u2715</button></td>':'';
+    return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.65rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.75rem;color:var(--muted);">'+r.obs+'</td>'+adminTd+'</tr>';
+  }).join('');
+}
+function openMsModal(id,tipo){
+  var idEl=document.getElementById('msModId');
+  var tipoEl=document.getElementById('msModTipo');
+  if(idEl)idEl.value=id||'';
+  if(tipoEl)tipoEl.value=tipo||'SEG';
+  document.getElementById('msModTitle').textContent=id?'Editar entrada':'Nueva entrada \u2014 '+(tipo==='SEG'?'Seguimiento':'Tipo y Aprobaci\u00f3n');
+  if(id){
+    var d=msDataLoad()||[];
+    var r=null;for(var i=0;i<d.length;i++){if(d[i].id===id){r=d[i];break;}}
+    if(!r)r={};
+    document.getElementById('msModFac').value=r.fac||'';
+    document.getElementById('msModCot').value=r.cot||'';
+    document.getElementById('msModRet').value=r.ret||'';
+    document.getElementById('msModCert').value=r.cert||'';
+    document.getElementById('msModDias').value=r.dias||'';
+    document.getElementById('msModEst').value=r.est||'EN PROCESO';
+    document.getElementById('msModObs').value=r.obs||'';
+  } else {
+    ['msModFac','msModCot','msModObs'].forEach(function(fid){document.getElementById(fid).value='';});
+    document.getElementById('msModRet').value='';
+    document.getElementById('msModCert').value='';
+    document.getElementById('msModDias').value='';
+    document.getElementById('msModEst').value='EN PROCESO';
+  }
+  var mod=document.getElementById('msMod');if(mod)mod.style.display='flex';
+}
+function closeMsModal(){var mod=document.getElementById('msMod');if(mod)mod.style.display='none';}
+function saveMsEntry(){
+  var idEl=document.getElementById('msModId');
+  var tipoEl=document.getElementById('msModTipo');
+  var entry={
+    id:idEl&&idEl.value?idEl.value:msGenId(),
+    tipo:tipoEl?tipoEl.value:'SEG',
+    fac:document.getElementById('msModFac').value.trim(),
+    cot:document.getElementById('msModCot').value.trim(),
+    ret:document.getElementById('msModRet').value,
+    cert:document.getElementById('msModCert').value,
+    dias:document.getElementById('msModDias').value.trim(),
+    est:document.getElementById('msModEst').value,
+    obs:document.getElementById('msModObs').value.trim()
+  };
+  var d=msDataLoad()||[];
+  var editId=idEl&&idEl.value?idEl.value:null;
+  if(editId){var found=false;for(var i=0;i<d.length;i++){if(d[i].id===editId){d[i]=entry;found=true;break;}}if(!found)d.push(entry);}
+  else d.push(entry);
+  msDataSave(d);closeMsModal();renderMuestrasScreen();
+}
+function deleteMsRow(id){
+  if(!confirm('\u00bfEliminar este registro?'))return;
+  var d=(msDataLoad()||[]).filter(function(r){return r.id!==id;});
+  msDataSave(d);renderMuestrasScreen();
+}
+// ── /MUESTRAS ADMIN ────────────────────────────────────────────────────────
 function volverHomeFromVentas(){
   sessionStorage.setItem('gs_screen','home');
   fadeOut(document.getElementById('ventasScreen'), ()=>{
@@ -2735,7 +2806,8 @@ function volverHomeFromMuestras(){
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
-var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');if(inp.value===LS_PWD){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_screen','home');const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
+const ADMIN_PWD='adminGrantt26';
+var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var ok=inp.value===LS_PWD||inp.value===ADMIN_PWD;if(ok){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',inp.value===ADMIN_PWD?'admin':'user');sessionStorage.setItem('gs_screen','home');const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
@@ -2791,7 +2863,7 @@ function checkAndRefresh(btn){
     var hs2=document.getElementById('homeScreen');
     var ms=document.getElementById('muestrasScreen');
     if(hs2)hs2.style.display='none';
-    if(ms){ms.style.display='block';ms.style.opacity='1';}
+    if(ms){ms.style.display='block';ms.style.opacity='1';if(typeof renderMuestrasScreen==='function') renderMuestrasScreen();}
   }
 })();
 </script>
