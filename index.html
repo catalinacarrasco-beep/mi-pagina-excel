@@ -700,16 +700,17 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
       </div>
       <div style="display:flex;flex-direction:column;gap:.3rem;">
         <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Fecha Retiro Muestra</label>
-        <input id="msModRet" type="date" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;">
+        <input id="msModRet" type="date" oninput="msModUpdateDias()" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;">
       </div>
       <div style="display:flex;flex-direction:column;gap:.3rem;">
         <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Fecha Entrega Certificado</label>
-        <input id="msModCert" type="date" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;">
+        <input id="msModCert" type="date" oninput="msModUpdateDias()" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;">
       </div>
       <div style="display:flex;flex-direction:column;gap:.3rem;">
-        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Días hábiles</label>
-        <input id="msModDias" type="number" min="0" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ej: 15">
+        <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Días hábiles (calculado)</label>
+        <div id="msModDiasDisplay" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);font-size:.82rem;min-height:2rem;display:flex;align-items:center;">—</div>
       </div>
+
       <div style="display:flex;flex-direction:column;gap:.3rem;grid-column:1/-1;">
         <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Observaciones</label>
         <input id="msModObs" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;" placeholder="Ej: Proceso cerrado, BD actualizada">
@@ -1699,19 +1700,36 @@ function openMsModal(id,tipo){
     document.getElementById('msModCot').value=r.cot||'';
     document.getElementById('msModRet').value=r.ret||'';
     document.getElementById('msModCert').value=r.cert||'';
-    document.getElementById('msModDias').value=r.dias||'';
+    setTimeout(msModUpdateDias,0);
     document.getElementById('msModEst').value=r.est||'EN PROCESO';
     document.getElementById('msModObs').value=r.obs||'';
   } else {
     ['msModFac','msModCot','msModObs'].forEach(function(fid){document.getElementById(fid).value='';});
     document.getElementById('msModRet').value='';
     document.getElementById('msModCert').value='';
-    document.getElementById('msModDias').value='';
+    setTimeout(msModUpdateDias,0);
     document.getElementById('msModEst').value='EN PROCESO';
   }
   var mod=document.getElementById('msMod');if(mod)mod.style.display='flex';
 }
 function closeMsModal(){var mod=document.getElementById('msMod');if(mod)mod.style.display='none';}
+function calcDiasHabiles(ret,cert){
+  if(!ret||!cert)return'';
+  var d1=new Date(ret),d2=new Date(cert);
+  if(isNaN(d1.getTime())||isNaN(d2.getTime())||d2<d1)return'';
+  var count=0,cur=new Date(d1);
+  while(cur<=d2){var dow=cur.getDay();if(dow!==0&&dow!==6)count++;cur.setDate(cur.getDate()+1);}
+  return String(count);
+}
+function msModUpdateDias(){
+  var ret=(document.getElementById('msModRet')||{}).value||'';
+  var cert=(document.getElementById('msModCert')||{}).value||'';
+  var el=document.getElementById('msModDiasDisplay');
+  if(!el)return;
+  var d=calcDiasHabiles(ret,cert);
+  el.textContent=d?d+' días hábiles':'—';
+  el.style.color=d?'var(--text)':'var(--muted)';
+}
 function saveMsEntry(){
   var idEl=document.getElementById('msModId');
   var tipoEl=document.getElementById('msModTipo');
@@ -1722,7 +1740,7 @@ function saveMsEntry(){
     cot:document.getElementById('msModCot').value.trim(),
     ret:document.getElementById('msModRet').value,
     cert:document.getElementById('msModCert').value,
-    dias:document.getElementById('msModDias').value.trim(),
+    dias:calcDiasHabiles(document.getElementById('msModRet').value,document.getElementById('msModCert').value),
     est:document.getElementById('msModEst').value,
     obs:document.getElementById('msModObs').value.trim()
   };
