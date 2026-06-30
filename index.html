@@ -2698,28 +2698,22 @@ function normCodStk(cod){
 }
 
 function buildStockAlerts(threshold){
-  // gather all products from DETAIL_GEN26 with name + category
-  var products = [];
-  if(typeof DETAIL_GEN26 !== 'undefined'){
-    Object.keys(DETAIL_GEN26).forEach(function(cat){
-      (DETAIL_GEN26[cat]||[]).forEach(function(p){
-        var nc = normCodStk(p.cod);
-        var qty = (typeof STOCK !== 'undefined') ? (STOCK[nc] !== undefined ? STOCK[nc] : -1) : -1;
-        if(qty < 0) return; // not in stock data
-        if(qty < threshold){
-          products.push({cod:p.cod, desc:p.desc, cat:cat, qty:qty});
-        }
-      });
-    });
-  }
-  // dedup by cod (same product may appear in multiple cats - keep first)
-  var seen = {};
-  products = products.filter(function(p){
-    if(seen[p.cod]) return false;
-    seen[p.cod] = true;
-    return true;
+  if(typeof STOCK==='undefined') return[];
+  var products=[];
+  Object.keys(STOCK).forEach(function(cod){
+    var qty=STOCK[cod];
+    if(typeof qty!=='number') qty = (qty && qty.qty!==undefined) ? qty.qty : 0;
+    if(qty>=0 && qty<threshold){
+      var name=cod, cat='—';
+      // try to get name from STOCK_NAMES if available (set on actualiza)
+      if(typeof STOCK_NAMES!=='undefined' && STOCK_NAMES[cod]){
+        name=STOCK_NAMES[cod].name||cod;
+        cat=STOCK_NAMES[cod].cat||'—';
+      }
+      products.push({cod:cod, desc:name, cat:cat, qty:qty});
+    }
   });
-  products.sort(function(a,b){ return a.qty - b.qty; });
+  products.sort(function(a,b){return a.qty-b.qty;});
   return products;
 }
 
