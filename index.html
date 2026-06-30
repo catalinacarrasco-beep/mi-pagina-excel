@@ -826,7 +826,7 @@ const COLORS={ALEJANDRA:'#3ba8d4',MARCELO:'#3ba8d4',JOEL:'#3ba8d4',GENERAL:'#3ba
 const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'General',OSCAR:'Oscar',DIEGO:'Diego',SANDRA:'Sandra'};
 
 let currentVendedor='GENERAL', currentView='valores';
-function defaultMonths(v){var late=['JOEL','DIEGO','SANDRA','OSCAR'];var start=late.indexOf(v)>=0?3:0;var cur=new Date().getMonth();if(start>cur)start=cur;var s=new Set();for(var i=start;i<=cur;i++)s.add(i);return s;}
+function defaultMonths(v){return new Set([new Date().getMonth()]);}
 let selectedMonths=defaultMonths('GENERAL');
 
 
@@ -1804,7 +1804,7 @@ const COLORS={ALEJANDRA:'#3ba8d4',MARCELO:'#3ba8d4',JOEL:'#3ba8d4',GENERAL:'#3ba
 const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'General',OSCAR:'Oscar',DIEGO:'Diego',SANDRA:'Sandra'};
 
 let currentVendedor='GENERAL', currentView='valores';
-function defaultMonths(v){var late=['JOEL','DIEGO','SANDRA','OSCAR'];var start=late.indexOf(v)>=0?3:0;var cur=new Date().getMonth();if(start>cur)start=cur;var s=new Set();for(var i=start;i<=cur;i++)s.add(i);return s;}
+function defaultMonths(v){return new Set([new Date().getMonth()]);}
 let selectedMonths=defaultMonths('GENERAL');
 
 
