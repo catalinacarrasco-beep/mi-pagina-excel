@@ -2812,6 +2812,13 @@ function stkSetThreshold(val){
 }
 // ── /STOCK ALERT ──────────────────────────────────────────────────────────────
 
+// DIRECT TOP-LEVEL DEBUG
+(function(){
+  var el=document.getElementById('stkDirectTest');
+  if(!el){el=document.createElement('div');el.id='stkDirectTest';el.style.cssText='position:fixed;top:0;left:0;width:100%;z-index:99999;background:#9333ea;color:#fff;padding:8px 16px;font-weight:700;font-size:13px;text-align:center;';document.body.appendChild(el);}
+  el.textContent='SCRIPT BLOCK EJECUTA: STOCK='+typeof STOCK+', renderStockBanner='+typeof renderStockBanner;
+})();
+
 </script>
 
 <script>
