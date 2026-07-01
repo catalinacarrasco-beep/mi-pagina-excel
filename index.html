@@ -2331,7 +2331,7 @@ function checkAndRefresh(btn){
     var tabEl=document.querySelector('.tab[data-v="'+tab+'"]');
     if(tabEl&&typeof setMainTab==='function')setMainTab(tab,tabEl);
     var vendor=sessionStorage.getItem('gs_vendor');
-    if(vendor){
+    if(vendor&&(tab==='SUBDIST'||tab==='EXTRAS')){
       var vSubEl=document.querySelector('#subtabs .subtab[data-v="'+vendor+'"]');
       var vExtEl=document.querySelector('#extrasTabs .subtab[data-v="'+vendor+'"]');
       if(vSubEl&&typeof setVendedor==='function')setVendedor(vendor,vSubEl);
