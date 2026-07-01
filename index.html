@@ -971,7 +971,7 @@ function renderKPIs(){
   const d=currentMainTab==='CANALES'?RESUMEN_CANALES[currentCanal]:(currentMainTab==='EXTRAS'?RESUMEN_EXTRAS[currentVendedor]:RESUMEN[currentVendedor]),color=COLORS[currentVendedor],months=getMonths();
   let per26=0,per25=0;
   getCats().forEach(c=>{per26+=sumMonths(d.v26[c]);per25+=sumMonths(d.v25[c]);});
-  const diff=per26-per25,pct=per25?((per26-per25)/Math.abs(per25)*100):0;
+  const diff=per26-per25,pct=per25?((per26-per25)/Math.abs(per25)*100):null;
   let bcat='',bval=-Infinity;
   getCats().forEach(c=>{const v=sumMonths(d.v26[c]);if(v>bval){bval=v;bcat=c;}});
   const label1=months.length===1?MESES[months[0]]+' 2026':periodStr()+' 2026';
@@ -979,7 +979,7 @@ function renderKPIs(){
   document.getElementById('kpis').innerHTML=[
     {l:label1,v:fmt(per26),s:'Período seleccionado',delta:null},
     {l:label2,v:fmt(per25),s:'Mismo período año anterior',delta:null},
-    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:null},
+    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':pct===null?'S/D':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:null},
     {l:'Top Categoría',v:bval>0?(bcat||'-'):'-',s:bval>0?fmt(bval):'Sin ventas',delta:null},
   ].map(k=>`<div class="kpi-card" style="--kpi-color:${color}">
     <div class="kpi-label">${k.l}</div>
