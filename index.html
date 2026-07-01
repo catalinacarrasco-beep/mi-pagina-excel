@@ -625,6 +625,14 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 .va-add-prod-btn:hover{border-color:var(--accent);color:var(--accent);}
 .va-admin-btn{display:none;align-items:center;gap:.35rem;font-size:.72rem;padding:.3rem .75rem;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;flex-shrink:0;}
 .va-admin-btn:hover{background:rgba(59,168,212,.1);}
+
+/* resumen (canales/extras) mode overrides */
+.va-resumen thead th:first-child{min-width:200px;text-align:left;}
+.va-resumen thead th:nth-child(2),.va-resumen thead th:nth-child(3){position:static!important;left:auto!important;}
+.va-resumen .va-prod-row>td:nth-child(2),.va-resumen .va-prod-row>td:nth-child(3){position:static!important;left:auto!important;}
+.va-cat-lbl{padding:.3rem .45rem;font-size:.78rem;font-weight:600;color:var(--text);}
+.va-total-row>td{background:var(--surface);font-weight:700;font-size:.76rem;padding:.3rem .4rem;border-top:2px solid var(--border);border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums;}
+.va-total-row>td:first-child{text-align:left;position:sticky;left:0;z-index:2;}
 /* -- /VENTAS ADMIN ----------------------------------------------- */
 </style>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1563,9 +1571,10 @@ var _vaData = null;
 var _vaInited = false;
 
 var VA_MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-var VA_CATS_ORDER = ['CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL',
-  'SMART','PLACAS MURALES','PORTALAMPARAS','VOLANTES','BORNERAS',
-  'BLOQUEADO','Proceso de Alimentos','OBSOLETO'];
+// Orden igual al Excel (hoja DATOS GENERALES2026)
+var VA_CATS_ORDER = ['VOLANTES','EXTENSIONES','BLOQUEADO','SMART','Proceso de Alimentos',
+  'PORTALAMPARAS','PLACAS MURALES','OBSOLETO','ILUMINACION','HERRAMIENTAS','INDUSTRIAL',
+  'CANALETAS','BORNERAS'];
 
 function vaLoadLS(){try{return JSON.parse(localStorage.getItem(VA_KEY)||'null');}catch(e){return null;}}
 function vaSaveLS(d){localStorage.setItem(VA_KEY,JSON.stringify(d));}
@@ -1574,8 +1583,11 @@ function vaClone(o){return JSON.parse(JSON.stringify(o));}
 function vaGetWorkingData(){
   var s=vaLoadLS();
   if(s) return s;
-  return {gen26:vaClone(DETAIL_GEN26),gen25:vaClone(DETAIL_GEN25),
-          det26:vaClone(DETAIL_2026),det25:vaClone(DETAIL_2025)};
+  return {
+    gen26:vaClone(DETAIL_GEN26),gen25:vaClone(DETAIL_GEN25),
+    det26:vaClone(DETAIL_2026),det25:vaClone(DETAIL_2025),
+    canales:vaClone(RESUMEN_CANALES),extras:vaClone(RESUMEN_EXTRAS)
+  };
 }
 
 function vaApplyOverrides(d){
@@ -1587,6 +1599,22 @@ function vaApplyOverrides(d){
       if(d.det25&&d.det25[v]&&d.det25[v][cat]) DETAIL_2025[v][cat]=d.det25[v][cat];
     });
   });
+  if(d.canales){
+    Object.keys(d.canales).forEach(function(canal){
+      if(!RESUMEN_CANALES[canal]) return;
+      ['v26','v25'].forEach(function(yr){
+        if(d.canales[canal][yr]) Object.assign(RESUMEN_CANALES[canal][yr],d.canales[canal][yr]);
+      });
+    });
+  }
+  if(d.extras){
+    Object.keys(d.extras).forEach(function(vnd){
+      if(!RESUMEN_EXTRAS[vnd]) return;
+      ['v26','v25'].forEach(function(yr){
+        if(d.extras[vnd][yr]) Object.assign(RESUMEN_EXTRAS[vnd][yr],d.extras[vnd][yr]);
+      });
+    });
+  }
   vaRecalcResumen();
 }
 
@@ -1614,8 +1642,21 @@ function vaInitOverrides(){
   if(btn&&typeof msIsAdmin==='function'&&msIsAdmin()) btn.style.display='flex';
 }
 
+function vaIsResumen(){
+  return _vaView.startsWith('CANAL:')||_vaView.startsWith('EXTRA:');
+}
+
 function vaGetProds(year,view){
   if(!_vaData) return {};
+  var yr=year===2026?'v26':'v25';
+  if(view.startsWith('CANAL:')){
+    var canal=view.slice(6);
+    return (_vaData.canales&&_vaData.canales[canal])?(_vaData.canales[canal][yr]||{}):{};
+  }
+  if(view.startsWith('EXTRA:')){
+    var vnd=view.slice(6);
+    return (_vaData.extras&&_vaData.extras[vnd])?(_vaData.extras[vnd][yr]||{}):{};
+  }
   if(view==='GENERAL') return year===2026?_vaData.gen26:_vaData.gen25;
   var det=year===2026?_vaData.det26:_vaData.det25;
   return (det&&det[view])?det[view]:{};
@@ -1624,18 +1665,18 @@ function vaGetProds(year,view){
 function vaFmt(n){
   if(!n&&n!==0) return '';
   var abs=Math.abs(Math.round(n));
-  var s=abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  var s=abs.toString().replace(/B(?=(d{3})+(?!d))/g,'.');
   return n<0?'-'+s:s;
 }
 function vaParse(s){
   if(!s&&s!==0) return 0;
-  var n=parseInt(String(s).replace(/\./g,'').replace(/,/g,'.'));
+  var n=parseInt(String(s).replace(/./g,'').replace(/,/g,'.'));
   return isNaN(n)?0:n;
 }
 
 function openVentasAdmin(){
   _vaData=vaGetWorkingData();
-  VA_CATS_ORDER.forEach(function(c){_vaExpanded[c]=c!=='OBSOLETO';});
+  VA_CATS_ORDER.forEach(function(c){_vaExpanded[c]=true;});
   var el=document.getElementById('vaAdmin');
   if(el){el.style.display='flex';renderVentasAdmin();}
 }
@@ -1668,8 +1709,19 @@ function vaToggleCat(cat){
 function vaFlushEdits(){
   var wrap=document.getElementById('vaTableWrap');
   if(!wrap) return;
+  if(vaIsResumen()){
+    var rp=vaGetProds(_vaYear,_vaView);
+    wrap.querySelectorAll('tr[data-vacat]').forEach(function(row){
+      var cat=row.getAttribute('data-vacat');
+      if(!rp[cat]) rp[cat]=Array(12).fill(0);
+      row.querySelectorAll('[data-month]').forEach(function(inp){
+        rp[cat][parseInt(inp.getAttribute('data-month'))]=vaParse(inp.value);
+      });
+    });
+    return;
+  }
   var prods=vaGetProds(_vaYear,_vaView);
-  wrap.querySelectorAll('tr[data-vacat]').forEach(function(row){
+  wrap.querySelectorAll('tr[data-vacat][data-vaidx]').forEach(function(row){
     var cat=row.getAttribute('data-vacat');
     var idx=parseInt(row.getAttribute('data-vaidx'));
     var arr=prods[cat];
@@ -1687,9 +1739,40 @@ function vaFlushEdits(){
 function renderVentasAdmin(){
   var wrap=document.getElementById('vaTableWrap');
   if(!wrap) return;
+  if(vaIsResumen()){ _renderResumenAdmin(wrap); return; }
+  _renderProductAdmin(wrap);
+}
+
+function _renderResumenAdmin(wrap){
+  var prods=vaGetProds(_vaYear,_vaView);
+  var h='<table class="va-sheet va-resumen"><thead><tr>';
+  h+='<th>Categoría</th>';
+  VA_MESES.forEach(function(m){h+='<th>'+m+'</th>';});
+  h+='</tr></thead><tbody>';
+  var totals=Array(12).fill(0);
+  VA_CATS_ORDER.forEach(function(cat){
+    var vals=prods[cat]||Array(12).fill(0);
+    vals.forEach(function(v,i){totals[i]+=(v||0);});
+    var safecat=cat.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    h+='<tr class="va-prod-row" data-vacat="'+safecat+'">';
+    h+='<td class="va-cat-lbl">'+cat+'</td>';
+    vals.forEach(function(v,mi){
+      h+='<td><input class="va-inp va-num" data-month="'+mi+'" value="'+(v?vaFmt(v):'')+'"></td>';
+    });
+    h+='</tr>';
+  });
+  h+='<tr class="va-total-row"><td>TOTAL</td>';
+  totals.forEach(function(t){
+    h+='<td>'+(t?vaFmt(t):'')+'</td>';
+  });
+  h+='</tr></tbody></table>';
+  wrap.innerHTML=h;
+}
+
+function _renderProductAdmin(wrap){
   var prods=vaGetProds(_vaYear,_vaView);
   var h='<table class="va-sheet"><thead><tr>';
-  h+='<th>Categor&iacute;a</th><th>C&oacute;digo</th><th>Descripci&oacute;n</th>';
+  h+='<th>Categoría</th><th>Código</th><th>Descripción</th>';
   VA_MESES.forEach(function(m){h+='<th>'+m+'</th>';});
   h+='<th></th></tr></thead><tbody>';
 
@@ -1701,10 +1784,10 @@ function renderVentasAdmin(){
     var safecat=cat.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
 
     h+='<tr class="va-cat-row" onclick="vaToggleCat(this.dataset.vacat)" data-vacat="'+safecat+'">';
-    h+='<td colspan="3">'+( exp?'&#9662; ':'&#9656; ' )+'<b>'+cat+'</b>';
+    h+='<td colspan="3">'+(exp?'&#9662; ':'&#9656; ')+'<b>'+cat+'</b>';
     h+='<span style="color:var(--muted);font-size:.7rem;font-weight:400"> ('+items.length+')</span></td>';
     totals.forEach(function(t){
-      h+='<td style="text-align:right;font-size:.71rem;color:var(--muted)">'+( t?vaFmt(t):'' )+'</td>';
+      h+='<td style="text-align:right;font-size:.71rem;color:var(--muted)">'+(t?vaFmt(t):'')+'</td>';
     });
     h+='<td></td></tr>';
 
@@ -1718,9 +1801,9 @@ function renderVentasAdmin(){
       h+='<td><input class="va-inp" data-field="cod" value="'+cod+'"></td>';
       h+='<td><input class="va-inp" data-field="desc" value="'+desc+'"></td>';
       (p.vals||Array(12).fill(0)).forEach(function(v,mi){
-        h+='<td><input class="va-inp va-num" data-month="'+mi+'" value="'+( v?vaFmt(v):'' )+'"></td>';
+        h+='<td><input class="va-inp va-num" data-month="'+mi+'" value="'+(v?vaFmt(v):'')+'"></td>';
       });
-      h+='<td><button class="va-del-btn" onclick="vaDelProd(this)" data-vacat="'+safecat+'" data-vaidx="'+idx+'">&#215;</button></td>';
+      h+='<td><button class="va-del-btn" onclick="vaDelProd(this)" data-vacat="'+safecat+'" data-vaidx="'+idx+'">&times;</button></td>';
       h+='</tr>';
     });
 
@@ -1747,7 +1830,7 @@ function vaAddProd(el){
 }
 
 function vaDelProd(el){
-  if(!confirm('\u00bfEliminar este producto?')) return;
+  if(!confirm('¿Eliminar este producto?')) return;
   var cat=el.getAttribute('data-vacat');
   var idx=parseInt(el.getAttribute('data-vaidx'));
   vaFlushEdits();
@@ -1762,14 +1845,15 @@ function vaSaveAdmin(){
   vaApplyOverrides(_vaData);
   renderAll();
   var btn=document.querySelector('.va-save-btn');
-  if(btn){var orig=btn.textContent;btn.textContent='\u2713 Guardado';setTimeout(function(){btn.textContent=orig;},1600);}
+  if(btn){var orig=btn.textContent;btn.textContent='✓ Guardado';setTimeout(function(){btn.textContent=orig;},1600);}
 }
 
 function vaResetAdmin(){
-  if(!confirm('\u00bfResetear todos los datos al Excel original? Se perder\u00e1n los cambios locales.')) return;
+  if(!confirm('¿Resetear todos los datos al Excel original? Se perderán los cambios locales.')) return;
   localStorage.removeItem(VA_KEY);
   _vaData={gen26:vaClone(DETAIL_GEN26),gen25:vaClone(DETAIL_GEN25),
-           det26:vaClone(DETAIL_2026),det25:vaClone(DETAIL_2025)};
+           det26:vaClone(DETAIL_2026),det25:vaClone(DETAIL_2025),
+           canales:vaClone(RESUMEN_CANALES),extras:vaClone(RESUMEN_EXTRAS)};
   renderVentasAdmin();
 }
 // -- /VENTAS ADMIN ----------------------------------------------------------
@@ -3475,10 +3559,25 @@ function checkAndRefresh(btn){
       <button id="vaYr25" class="va-yr-btn" onclick="vaSetYear(2025)">2025</button>
     </div>
     <select id="vaViewSel" class="va-view-sel" onchange="vaSetView(this.value)">
-      <option value="GENERAL">General</option>
-      <option value="ALEJANDRA">Alejandra</option>
-      <option value="MARCELO">Marcelo</option>
-      <option value="JOEL">Joel</option>
+      <optgroup label="General">
+        <option value="GENERAL">General</option>
+      </optgroup>
+      <optgroup label="Sub Distribuci&oacute;n">
+        <option value="ALEJANDRA">Alejandra</option>
+        <option value="MARCELO">Marcelo</option>
+        <option value="JOEL">Joel</option>
+      </optgroup>
+      <optgroup label="Canales">
+        <option value="CANAL:SODIMAC">Sodimac</option>
+        <option value="CANAL:IMPERIAL">Imperial</option>
+        <option value="CANAL:CONSTRUMART">Construmart</option>
+        <option value="CANAL:MERCADO LIBRE">Mercado Libre</option>
+      </optgroup>
+      <optgroup label="Extras">
+        <option value="EXTRA:OSCAR">Oscar</option>
+        <option value="EXTRA:DIEGO">Diego</option>
+        <option value="EXTRA:SANDRA">Sandra</option>
+      </optgroup>
     </select>
     <button class="va-reset-btn" onclick="vaResetAdmin()" title="Restablecer al Excel original">&#8635; Resetear</button>
     <button class="va-save-btn" onclick="vaSaveAdmin()">&#128190; Guardar</button>
