@@ -1003,7 +1003,6 @@ function getDetail26(){if(currentMainTab==='CANALES')return CANALES_DETAIL26[cur
 function getDetail25(){if(currentMainTab==='CANALES')return CANALES_DETAIL25[currentCanal]||{};if(currentMainTab==='EXTRAS')return {};return currentVendedor==='GENERAL'?DETAIL_GEN25:(DETAIL_2025[currentVendedor]||{});}
 
 function renderAll(){
-  vaInitOverrides();
   var mainEl=document.querySelector('main');if(mainEl)mainEl.style.display='';
   var ms=document.getElementById('muestrasSection');if(ms)ms.style.display='none';
   renderKPIs();renderTopCats();renderMonthBtns();renderTable();
@@ -1774,6 +1773,7 @@ function vaResetAdmin(){
   renderVentasAdmin();
 }
 // -- /VENTAS ADMIN ----------------------------------------------------------
+vaInitOverrides();
 
 // ── STOCK ALERT ──────────────────────────────────────────────────────────────
 var _stkThreshold = 300;
