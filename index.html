@@ -1773,7 +1773,7 @@ function vaResetAdmin(){
   renderVentasAdmin();
 }
 // -- /VENTAS ADMIN ----------------------------------------------------------
-vaInitOverrides();
+document.addEventListener('DOMContentLoaded', vaInitOverrides);
 
 // ── STOCK ALERT ──────────────────────────────────────────────────────────────
 var _stkThreshold = 300;
