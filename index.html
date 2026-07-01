@@ -1789,7 +1789,7 @@ function _stkBuildMaps(){
     var prods = DETAIL_GEN26[cat]||[];
     prods.forEach(function(p){
       var nc = String(p.cod).trim().toLowerCase().replace(/\s+/g,'').replace(/^0+/,'') || String(p.cod);
-      if(_EXCL_CATS.has(cat)) _stkExcl.add(nc);
+      if(_EXCL_CATS && _EXCL_CATS.has(cat)) _stkExcl.add(nc);
       _stkDescMap[nc] = {desc: p.desc || p.cod, cat: cat};
     });
   });
