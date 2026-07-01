@@ -1607,7 +1607,7 @@ function vaRecalcResumen(){
 }
 
 function vaInitOverrides(){
-  if(_vaInited) return;
+  if(_vaInited||typeof VA_CATS_ORDER==='undefined') return;
   _vaInited=true;
   var s=vaLoadLS();
   if(s) vaApplyOverrides(s);
