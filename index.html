@@ -545,6 +545,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 /* ── STOCK ALERT ─────────────────────────────────────────────────────────── */
 main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 #stkBanner{margin-bottom:1rem;}
+#stkBanner{display:none!important;}
 .stk-bar{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem;background:var(--surface);border:1px solid var(--border);border-left:3px solid #c07a18;border-radius:6px;cursor:pointer;transition:background .15s;}
 .stk-bar:hover{background:var(--surface2);}
 .stk-bar-txt{flex:1;}
@@ -788,7 +789,6 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
   <div class="tab" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
   <div class="tab" data-v="EXTRAS" onclick="setMainTab('EXTRAS',this)">Extras</div>
-  <div class="tab" data-v="MUESTRAS" onclick="setMainTab('MUESTRAS',this)">Muestras</div>
 </div>
 <div class="subtabs" id="canalTabs" style="display:none">
   <div class="subtab active" data-v="SODIMAC" onclick="setCanal('SODIMAC',this)">Sodimac</div>
@@ -1979,7 +1979,6 @@ function volverHomeFromMuestras(){
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
   <div class="tab" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
   <div class="tab" data-v="EXTRAS" onclick="setMainTab('EXTRAS',this)">Extras</div>
-  <div class="tab" data-v="MUESTRAS" onclick="setMainTab('MUESTRAS',this)">Muestras</div>
 </div>
 <div class="subtabs" id="canalTabs" style="display:none">
   <div class="subtab active" data-v="SODIMAC" onclick="setCanal('SODIMAC',this)">Sodimac</div>
