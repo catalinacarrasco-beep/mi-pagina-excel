@@ -1864,7 +1864,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
     var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.68rem;color:#f0a830;">En tr\u00e1mite</div>';
     var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
     var adminTd=admin?('<td><button class="ms-row-edit" data-id="'+r.id+'" data-tipo="'+tipo+'" onclick="openMsModal(this.dataset.id,this.dataset.tipo)">&#9998;</button>'+'<button class="ms-row-del" data-id="'+r.id+'" onclick="deleteMsRow(this.dataset.id)">&#10005;</button></td>'):'';
-    return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.65rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.75rem;color:var(--muted);">'+r.obs+'</td>'+adminTd+'</tr>';
+    return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.65rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td style="max-width:260px;white-space:normal;word-break:break-word;font-size:.75rem;color:var(--muted);line-height:1.4;">'+r.obs+'</td>'+adminTd+'</tr>';
   }).join('');
 }
 function openMsModal(id,tipo){
