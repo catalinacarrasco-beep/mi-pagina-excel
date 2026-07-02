@@ -1853,6 +1853,18 @@ function renderMuestrasScreen(){
   msFillTable('ms-tbody-tip',d.filter(function(r){return r.tipo==='TIP';}),admin,max);
   msFilter();
 }
+function msFilter(){
+  var fac=((document.getElementById('ms-filter-factura')||{}).value||'').toLowerCase();
+  var est=(document.getElementById('ms-filter-estado')||{}).value||'';
+  ['ms-tbody-seg','ms-tbody-tip'].forEach(function(id){
+    var tb=document.getElementById(id);
+    if(!tb)return;
+    Array.from(tb.rows).forEach(function(tr){
+      var ok=(!fac||tr.dataset.factura.includes(fac))&&(!est||tr.dataset.estado===est);
+      tr.style.display=ok?'':'none';
+    });
+  });
+}
 function msFillTable(tbodyId,rows,admin,maxDays){
   var tb=document.getElementById(tbodyId);
   if(!tb)return;
