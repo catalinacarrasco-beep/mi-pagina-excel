@@ -994,11 +994,9 @@ function renderTopCats(){
   const _tcEl=document.getElementById('topCats');if(!tots.length){_tcEl.innerHTML='';_tcEl.style.display='none';return;}_tcEl.style.display='';
   const gt=tots.reduce((a,b)=>a+b.t,0),top5=tots.slice(0,5),mx=top5[0].t;
   const ranks=['first','second','third','',''];
-  const maxMon=Math.max(...selectedMonths),prevMon=maxMon-1;
   function growthBadge(c){
-    if(prevMon<0)return'<div class="top-cat-growth flat">—</div>';
-    const cur=(d.v26[c]||[])[maxMon]||0,prev=(d.v26[c]||[])[prevMon]||0;
-    if(!prev)return'<div class="top-cat-growth flat">—</div>';
+    const cur=sumMonths(d.v26[c]),prev=sumMonths(d.v25[c]);
+    if(!prev)return'<div class="top-cat-growth flat">S/D</div>';
     const g=(cur-prev)/prev*100;
     const cls=g>0?'pos':g<0?'neg':'flat',arr=g>0?'▲':g<0?'▼':'';
     return`<div class="top-cat-growth ${cls}">${arr} ${Math.abs(g).toFixed(1)}%</div>`;
@@ -1006,7 +1004,7 @@ function renderTopCats(){
   document.getElementById('topCats').innerHTML=`
     <div class="top-cats-header">
       <div class="top-cats-title">Top Categorías — ${periodStr()} 2026</div>
-      <div class="top-cats-subtitle">Ranking por ventas del período seleccionado vs mes anterior</div>
+      <div class="top-cats-subtitle">Ranking por ventas del período seleccionado vs mismo período 2025</div>
     </div>
     <div class="top-cats-list">${top5.map((r,i)=>`
       <div class="top-cat-row">
