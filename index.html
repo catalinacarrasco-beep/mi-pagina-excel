@@ -1346,13 +1346,11 @@ function setMainTab(v, el){
     currentMainTab='CANALES';
     document.querySelectorAll('#canalTabs .subtab').forEach(t=>t.classList.remove('active'));
     canalTabs.querySelector('.subtab').classList.add('active');
-    selectedMonths=defaultMonths('GENERAL');
     expandedCats.clear();
     renderAll();
   } else if(v==='GENERAL'){
     currentVendedor='GENERAL';
     currentMainTab='GENERAL';
-    selectedMonths=defaultMonths('GENERAL');
     expandedCats.clear();
     renderAll();
   } else if(v==='EXTRAS'){
@@ -1362,7 +1360,6 @@ function setMainTab(v, el){
     firstSub.classList.add('active');
     currentVendedor = firstSub.dataset.v;
     currentMainTab='EXTRAS';
-    selectedMonths=defaultMonths(currentVendedor);
     expandedCats.clear();
     renderAll();
   } else {
@@ -1372,7 +1369,6 @@ function setMainTab(v, el){
     firstSub.classList.add('active');
     currentVendedor = firstSub.dataset.v;
     currentMainTab='SUBDIST';
-    selectedMonths=defaultMonths(currentVendedor);
     expandedCats.clear();
     renderAll();
   }
@@ -1389,7 +1385,6 @@ function setCanal(v,el){
 function setVendedor(v,el){
   sessionStorage.setItem('gs_vendor',v);
   currentVendedor=v;
-  selectedMonths=defaultMonths(v);
   expandedCats.clear();
   document.querySelectorAll('#subtabs .subtab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
@@ -1398,7 +1393,6 @@ function setVendedor(v,el){
 function setExtras(v,el){
   sessionStorage.setItem('gs_vendor',v);
   currentVendedor=v;
-  selectedMonths=defaultMonths(v);
   expandedCats.clear();
   document.querySelectorAll('#extrasTabs .subtab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
