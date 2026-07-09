@@ -776,7 +776,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 <header>
   <div class="header-left">
     <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button><input type="file" id="_xlsxInput" accept=".xlsx" style="display:none" onchange="_handleXlsx(this)"><button id="_xlsxBtn" onclick="document.getElementById('_xlsxInput').click()" style="display:none;font-size:.72rem;background:none;border:1px solid var(--accent);color:var(--accent);cursor:pointer;padding:.2rem .55rem;border-radius:4px;letter-spacing:.04em;margin-left:.5rem">↑ Subir Excel</button><span id="_xlsxStatus" style="font-size:.7rem;color:var(--muted);margin-left:.4rem"></span></p>
+    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
     <div class="year-badge">2026 vs 2025</div>
@@ -789,6 +789,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
   <div class="tab" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
   <div class="tab" data-v="EXTRAS" onclick="setMainTab('EXTRAS',this)">Extras</div>
+  <div class="tab" id="_configTab" data-v="CONFIG" onclick="setMainTab('CONFIG',this)" style="display:none;margin-left:auto;opacity:.7">⚙ Config</div>
 </div>
 <div class="subtabs" id="canalTabs" style="display:none">
   <div class="subtab active" data-v="SODIMAC" onclick="setCanal('SODIMAC',this)">Sodimac</div>
@@ -906,6 +907,17 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <button class="ms-btn-save" onclick="saveMuestra()">Guardar</button>
     </div>
   </div>
+</div>
+<div id="configSection" style="display:none;padding:2.5rem 2rem;max-width:640px;margin:0 auto">
+  <p style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;font-family:'DM Sans',sans-serif;font-weight:700">Configuración</p>
+  <div style="border:1.5px dashed var(--border);border-radius:10px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:border-color .2s" onclick="document.getElementById('_cfgInput').click()" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+    <div style="font-size:2.5rem;margin-bottom:1rem">📊</div>
+    <p style="color:var(--text);font-size:.9rem;margin-bottom:.4rem;font-weight:600;font-family:'DM Sans',sans-serif">Cargar Excel de datos</p>
+    <p style="color:var(--muted);font-size:.78rem;font-family:'DM Sans',sans-serif">Selecciona el archivo <code>.xlsx</code> para actualizar el dashboard</p>
+    <input type="file" id="_cfgInput" accept=".xlsx" style="display:none" onchange="_handleXlsx(this)">
+    <div style="margin-top:1.5rem"><span style="display:inline-block;padding:.4rem 1.2rem;border:1px solid var(--accent);border-radius:5px;color:var(--accent);font-size:.8rem;font-weight:600;letter-spacing:.06em;font-family:'DM Sans',sans-serif">↑ Seleccionar archivo</span></div>
+  </div>
+  <div id="_xlsxStatus" style="margin-top:1.2rem;font-size:.85rem;text-align:center;min-height:1.5rem;font-family:'DM Sans',sans-serif"></div>
 </div>
 <div class="prod-tooltip" id="prodTooltip"></div>
 <footer>
@@ -1316,9 +1328,10 @@ function _showSalesUI(show){
   var mainEl=document.querySelector('main');
   if(mainEl)mainEl.style.display=show?'':'none';
   var cliEl=document.getElementById('cliSection');
-  if(cliEl&&show)cliEl.style.display='none'; // cliSection managed by setMainView
+  if(cliEl&&show)cliEl.style.display='none';
   var ms=document.getElementById('muestrasSection');
   if(ms)ms.style.display=show?'none':'block';
+  document.querySelectorAll('#configSection').forEach(function(el){el.style.display='none';});
 }
 function setMainTab(v, el){
   sessionStorage.setItem('gs_tab',v);
@@ -1330,6 +1343,13 @@ function setMainTab(v, el){
   canalTabs.style.display='none';
   subtabs.style.display='none';
   extrasTabs.style.display='none';
+  if(v==='CONFIG'){
+    currentMainTab='CONFIG';
+    _showSalesUI(false);
+    document.querySelectorAll('#muestrasSection').forEach(function(el){el.style.display='none';});
+    document.querySelectorAll('#configSection').forEach(function(el){el.style.display='block';});
+    return;
+  }
   if(v==='MUESTRAS'){
     currentMainTab='MUESTRAS';
     _showSalesUI(false);
@@ -1970,7 +1990,7 @@ function volverHomeFromMuestras(){
 <header>
   <div class="header-left">
     <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button><input type="file" id="_xlsxInput" accept=".xlsx" style="display:none" onchange="_handleXlsx(this)"><button id="_xlsxBtn" onclick="document.getElementById('_xlsxInput').click()" style="display:none;font-size:.72rem;background:none;border:1px solid var(--accent);color:var(--accent);cursor:pointer;padding:.2rem .55rem;border-radius:4px;letter-spacing:.04em;margin-left:.5rem">↑ Subir Excel</button><span id="_xlsxStatus" style="font-size:.7rem;color:var(--muted);margin-left:.4rem"></span></p>
+    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
     <div class="year-badge">2026 vs 2025</div>
@@ -1983,6 +2003,7 @@ function volverHomeFromMuestras(){
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
   <div class="tab" data-v="SUBDIST" onclick="setMainTab('SUBDIST',this)">Sub Distribución</div>
   <div class="tab" data-v="EXTRAS" onclick="setMainTab('EXTRAS',this)">Extras</div>
+  <div class="tab" id="_configTab" data-v="CONFIG" onclick="setMainTab('CONFIG',this)" style="display:none;margin-left:auto;opacity:.7">⚙ Config</div>
 </div>
 <div class="subtabs" id="canalTabs" style="display:none">
   <div class="subtab active" data-v="SODIMAC" onclick="setCanal('SODIMAC',this)">Sodimac</div>
@@ -2100,6 +2121,17 @@ function volverHomeFromMuestras(){
       <button class="ms-btn-save" onclick="saveMuestra()">Guardar</button>
     </div>
   </div>
+</div>
+<div id="configSection" style="display:none;padding:2.5rem 2rem;max-width:640px;margin:0 auto">
+  <p style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;font-family:'DM Sans',sans-serif;font-weight:700">Configuración</p>
+  <div style="border:1.5px dashed var(--border);border-radius:10px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:border-color .2s" onclick="document.getElementById('_cfgInput').click()" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+    <div style="font-size:2.5rem;margin-bottom:1rem">📊</div>
+    <p style="color:var(--text);font-size:.9rem;margin-bottom:.4rem;font-weight:600;font-family:'DM Sans',sans-serif">Cargar Excel de datos</p>
+    <p style="color:var(--muted);font-size:.78rem;font-family:'DM Sans',sans-serif">Selecciona el archivo <code>.xlsx</code> para actualizar el dashboard</p>
+    <input type="file" id="_cfgInput" accept=".xlsx" style="display:none" onchange="_handleXlsx(this)">
+    <div style="margin-top:1.5rem"><span style="display:inline-block;padding:.4rem 1.2rem;border:1px solid var(--accent);border-radius:5px;color:var(--accent);font-size:.8rem;font-weight:600;letter-spacing:.06em;font-family:'DM Sans',sans-serif">↑ Seleccionar archivo</span></div>
+  </div>
+  <div id="_xlsxStatus" style="margin-top:1.2rem;font-size:.85rem;text-align:center;min-height:1.5rem;font-family:'DM Sans',sans-serif"></div>
 </div>
 <div class="prod-tooltip" id="prodTooltip"></div>
 
@@ -2355,11 +2387,10 @@ function checkAndRefresh(btn){
 (function(){
   function showBtn(){
     if(sessionStorage.getItem('gs_role')==='admin'){
-      document.querySelectorAll('#_xlsxBtn').forEach(function(b){b.style.display='';});
+      document.querySelectorAll('#_configTab').forEach(function(b){b.style.display='';});
     }
   }
   document.addEventListener('DOMContentLoaded', showBtn);
-  // Also expose for post-login calls
   window._showXlsxBtn = showBtn;
 })();
 
