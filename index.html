@@ -776,7 +776,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 <header>
   <div class="header-left">
     <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
+    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button><input type="file" id="_xlsxInput" accept=".xlsx" style="display:none" onchange="_handleXlsx(this)"><button id="_xlsxBtn" onclick="document.getElementById('_xlsxInput').click()" style="display:none;font-size:.72rem;background:none;border:1px solid var(--accent);color:var(--accent);cursor:pointer;padding:.2rem .55rem;border-radius:4px;letter-spacing:.04em;margin-left:.5rem">↑ Subir Excel</button><span id="_xlsxStatus" style="font-size:.7rem;color:var(--muted);margin-left:.4rem"></span></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
     <div class="year-badge">2026 vs 2025</div>
@@ -1970,7 +1970,7 @@ function volverHomeFromMuestras(){
 <header>
   <div class="header-left">
     <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
+    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button><input type="file" id="_xlsxInput" accept=".xlsx" style="display:none" onchange="_handleXlsx(this)"><button id="_xlsxBtn" onclick="document.getElementById('_xlsxInput').click()" style="display:none;font-size:.72rem;background:none;border:1px solid var(--accent);color:var(--accent);cursor:pointer;padding:.2rem .55rem;border-radius:4px;letter-spacing:.04em;margin-left:.5rem">↑ Subir Excel</button><span id="_xlsxStatus" style="font-size:.7rem;color:var(--muted);margin-left:.4rem"></span></p>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
     <div class="year-badge">2026 vs 2025</div>
@@ -2349,6 +2349,258 @@ function checkAndRefresh(btn){
 })();
 </script>
 </div>
+
+<script>
+// ── ADMIN EXCEL UPLOAD ───────────────────────────────────────────────
+(function(){
+  function showBtn(){
+    if(sessionStorage.getItem('gs_role')==='admin'){
+      document.querySelectorAll('#_xlsxBtn').forEach(function(b){b.style.display='';});
+    }
+  }
+  document.addEventListener('DOMContentLoaded', showBtn);
+  // Also expose for post-login calls
+  window._showXlsxBtn = showBtn;
+})();
+
+function _xlsxStatus(msg, color){
+  document.querySelectorAll('#_xlsxStatus').forEach(function(el){
+    el.textContent = msg;
+    el.style.color = color || 'var(--muted)';
+  });
+}
+
+function _handleXlsx(input){
+  var file = input.files[0];
+  if(!file) return;
+  input.value = '';
+  _xlsxStatus('Cargando SheetJS...', 'var(--muted)');
+  _loadSheetJS(function(){
+    _xlsxStatus('Procesando Excel...', 'var(--muted)');
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        var data = _parseExcel(e.target.result);
+        _xlsxStatus('Subiendo datos...', '#3ba8d4');
+        _pushData(data);
+      } catch(err) {
+        _xlsxStatus('Error: ' + err.message, '#c05050');
+        console.error(err);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function _loadSheetJS(cb){
+  if(window.XLSX) return cb();
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+  s.onload = cb;
+  s.onerror = function(){ _xlsxStatus('Error cargando SheetJS', '#c05050'); };
+  document.head.appendChild(s);
+}
+
+function _parseExcel(arrayBuffer){
+  var wb = XLSX.read(new Uint8Array(arrayBuffer), {type:'array'});
+
+  function pv(v){
+    if(v==null) return 0;
+    if(typeof v==='number') return Math.round(v);
+    var s=String(v).trim().replace(/[\s$.,]/g,'');
+    if(!s||s==='-') return 0;
+    var neg=s[0]==='-'; s=neg?s.slice(1):s;
+    var n=parseFloat(s); return isNaN(n)?0:(neg?-Math.round(n):Math.round(n));
+  }
+  function norm(cod){ var s=String(cod).trim().toLowerCase().replace(/\s+/g,''); return s.replace(/^0+/,'')||s; }
+  function normCat(c){ return c==='PORTALAMPARA'?'PORTALAMPARAS':c; }
+  var ALL_CATS=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION',
+    'INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
+
+  // STOCK
+  var stock={};
+  XLSX.utils.sheet_to_json(wb.Sheets['STOCK DISPONIBLE'],{header:1,defval:null}).forEach(function(row){
+    if(!row||!row[0]) return;
+    var cod=String(row[0]).trim();
+    if(['cod. producto','codigo producto','codigo','cod',''].includes(cod.toLowerCase())) return;
+    try{ stock[norm(cod)]=row[2]!=null?Math.round(parseFloat(String(row[2]))):0; }catch(e){ stock[norm(cod)]=0; }
+  });
+
+  // CLIENTES
+  function parseCli(sheetName, year){
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:null}), cli={ALEJANDRA:[],MARCELO:[],JOEL:[]};
+    rows.slice(2).forEach(function(row){
+      if(!row) return;
+      if(row[0]&&String(row[0]).trim()==='Alejandra'){
+        var c=row[1]?String(row[1]).trim():'';
+        if(c){var v=Array(12).fill(0);for(var i=0;i<5;i++)v[i]=pv(row[2+i]);cli.ALEJANDRA.push({name:c,vals:v});}
+      }
+      if(row[9]&&String(row[9]).trim()==='Marcelo'){
+        var c=row[10]?String(row[10]).trim():'';
+        if(c){var v=Array(12).fill(0);for(var i=0;i<5;i++)v[i]=pv(row[11+i]);cli.MARCELO.push({name:c,vals:v});}
+      }
+      if(row[18]&&String(row[18]).trim()==='Joel'){
+        var c=row[19]?String(row[19]).trim():'';
+        if(c){var v=Array(12).fill(0);
+          if(year===2026){v[4]=pv(row[20]);}else{for(var i=0;i<5;i++)v[i]=pv(row[21+i]);}
+          cli.JOEL.push({name:c,vals:v});}
+      }
+    });
+    return cli;
+  }
+
+  // GENERAL
+  function readGen(sheetName){
+    var data={};
+    XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:null}).forEach(function(row){
+      if(!row||row.length<5) return;
+      var cat=row[0]?String(row[0]).trim():'', cod=row[1]?String(row[1]).trim():'', desc=row[2]?String(row[2]).trim():'';
+      if(!cat||['categoria','none',''].includes(cat.toLowerCase())) return;
+      if(!cod||['none','codigo producto',''].includes(cod.toLowerCase())) return;
+      var v=Array(12).fill(0); for(var i=0;i<12;i++){var ci=15+i; if(ci<row.length)v[i]=pv(row[ci]);}
+      if(!data[cat])data[cat]=[];
+      data[cat].push({cod:cod,desc:desc,vals:v});
+    });
+    return data;
+  }
+
+  // VENDORS
+  function readVend(sheetName, offsets){
+    var vendors=['ALEJANDRA','MARCELO','JOEL'], data={ALEJANDRA:{},MARCELO:{},JOEL:{}};
+    XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:null}).forEach(function(row){
+      if(!row) return;
+      offsets.forEach(function(off,vi){
+        if(row.length<off+3) return;
+        var cat=row[off]?String(row[off]).trim():'', cod=row[off+1]?String(row[off+1]).trim():'', desc=row[off+2]?String(row[off+2]).trim():'';
+        if(!cat||['categoria','none',''].includes(cat.toLowerCase())) return;
+        if(!cod||['none','codigo producto',''].includes(cod.toLowerCase())) return;
+        var v=Array(12).fill(0); for(var i=0;i<12;i++)v[i]=pv(row[off+3+i]);
+        if(!data[vendors[vi]][cat])data[vendors[vi]][cat]=[];
+        data[vendors[vi]][cat].push({cod:cod,desc:desc,vals:v});
+      });
+    });
+    return data;
+  }
+
+  // CANALES
+  function readCanales(sheetName){
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:null});
+    var offsets=[0,16,32,49], r0=rows[0]||[];
+    var names=offsets.map(function(off){return r0[off]?String(r0[off]).trim():'CANAL'+off;});
+    var data={}; names.forEach(function(n){data[n]={};});
+    rows.slice(2).forEach(function(row){
+      if(!row) return;
+      offsets.forEach(function(off,vi){
+        if(row.length<off+3) return;
+        var cat=normCat(row[off]?String(row[off]).trim():''), cod=row[off+1]?String(row[off+1]).trim():'', desc=row[off+2]?String(row[off+2]).trim():'';
+        if(!cat||['categoria','none',''].includes(cat.toLowerCase())) return;
+        if(!cod||['none','codigo producto',''].includes(cod.toLowerCase())) return;
+        var v=Array(12).fill(0); for(var i=0;i<12;i++)v[i]=pv(row[off+3+i]);
+        if(!data[names[vi]][cat])data[names[vi]][cat]=[];
+        data[names[vi]][cat].push({cod:cod,desc:desc,vals:v});
+      });
+    });
+    return data;
+  }
+
+  // EXTRAS
+  function readExtras(sheetName){
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:null});
+    var offsets=[0,13,26], r0=rows[0]||[];
+    var names=offsets.map(function(off){return r0[off]?String(r0[off]).trim().split(' ')[0]:'EXTRA'+off;});
+    var data={}; names.forEach(function(n){data[n]={};});
+    var rowIdx=0;
+    rows.slice(2).forEach(function(row){
+      if(!row){rowIdx++;return;}
+      offsets.forEach(function(off,vi){
+        if(row.length<off+3) return;
+        var cat=normCat(row[off]?String(row[off]).trim():'');
+        var cod=row[off+1]?String(row[off+1]).trim():'';
+        var desc=row[off+2]?String(row[off+2]).trim():'';
+        if(!cat||['categoria','none',''].includes(cat.toLowerCase())) return;
+        if(['none','codigo producto'].includes(cod.toLowerCase())) return;
+        if(!cod) cod='SIN_COD_'+rowIdx;
+        var v=Array(12).fill(0); for(var i=0;i<9;i++)v[3+i]=pv(row[off+3+i]);
+        if(!data[names[vi]][cat])data[names[vi]][cat]=[];
+        data[names[vi]][cat].push({cod:cod,desc:desc,vals:v});
+      });
+      rowIdx++;
+    });
+    return data;
+  }
+
+  var gen26=readGen('DATOS GENERALES2026'), gen25=readGen('DATOS GENERALES 2025');
+  var vend26=readVend('datos 2026 vendedores',[0,16,32]), vend25=readVend('datos 2025 vendedores',[0,17,34]);
+  var canales26=readCanales('CANALES 2026'), canales25=readCanales('CANALES 2025');
+  var extras26=readExtras('EXTRAS');
+
+  // RESUMEN
+  var resumen={};
+  ['ALEJANDRA','MARCELO','JOEL'].forEach(function(v){
+    resumen[v]={v26:{},v25:{}};
+    ALL_CATS.forEach(function(cat){
+      var t26=Array(12).fill(0); (vend26[v][cat]||[]).forEach(function(p){p.vals.forEach(function(x,i){t26[i]+=x;});});
+      resumen[v].v26[cat]=t26;
+      var t25=Array(12).fill(0); (vend25[v][cat]||[]).forEach(function(p){p.vals.forEach(function(x,i){t25[i]+=x;});});
+      resumen[v].v25[cat]=t25;
+    });
+  });
+  resumen.GENERAL={v26:{},v25:{}};
+  ALL_CATS.forEach(function(cat){
+    var t26=Array(12).fill(0); (gen26[cat]||[]).forEach(function(p){p.vals.forEach(function(x,i){t26[i]+=x;});});
+    resumen.GENERAL.v26[cat]=t26;
+    var t25=Array(12).fill(0); (gen25[cat]||[]).forEach(function(p){p.vals.forEach(function(x,i){t25[i]+=x;});});
+    resumen.GENERAL.v25[cat]=t25;
+  });
+
+  // RESUMEN_CANALES
+  var resumenCanales={};
+  Object.keys(canales26).forEach(function(canal){
+    resumenCanales[canal]={v26:{},v25:{}};
+    ALL_CATS.forEach(function(cat){
+      var t26=Array(12).fill(0); (canales26[canal][cat]||[]).forEach(function(p){p.vals.forEach(function(x,i){t26[i]+=x;});});
+      resumenCanales[canal].v26[cat]=t26;
+      var t25=Array(12).fill(0); ((canales25[canal]||{})[cat]||[]).forEach(function(p){p.vals.forEach(function(x,i){t25[i]+=x;});});
+      resumenCanales[canal].v25[cat]=t25;
+    });
+  });
+
+  // RESUMEN_EXTRAS
+  var resumenExtras={};
+  Object.keys(extras26).forEach(function(v){
+    resumenExtras[v]={v26:{},v25:{}};
+    ALL_CATS.forEach(function(cat){
+      var t26=Array(12).fill(0); (extras26[v][cat]||[]).forEach(function(p){p.vals.forEach(function(x,i){t26[i]+=x;});});
+      resumenExtras[v].v26[cat]=t26;
+      resumenExtras[v].v25[cat]=Array(12).fill(0);
+    });
+  });
+
+  var now=new Date(), dd=String(now.getDate()).padStart(2,'0'), mm=String(now.getMonth()+1).padStart(2,'0');
+  var dateStr=dd+'-'+mm+'-'+now.getFullYear();
+
+  return {data:{gen26,gen25,vend26,vend25,resumen,stock,cli26:parseCli('CLIENTES2026',2026),cli25:parseCli('CLIENTES2025',2025),canales26,canales25,resumenCanales,extras26,resumenExtras}, dateStr};
+}
+
+function _pushData(parsed){
+  fetch('/api/push-data', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(parsed)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(j){
+    if(j.ok){
+      _xlsxStatus('✓ Actualizado '+j.dateStr, '#1fa060');
+      setTimeout(function(){ _xlsxStatus(''); }, 8000);
+    } else {
+      _xlsxStatus('Error: '+(j.error||'desconocido'), '#c05050');
+    }
+  })
+  .catch(function(e){ _xlsxStatus('Error de red: '+e.message, '#c05050'); });
+}
+// ── /ADMIN EXCEL UPLOAD ──────────────────────────────────────────────
+</script>
 
 </body>
 </html>
