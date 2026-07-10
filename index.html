@@ -327,64 +327,75 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #proximamente button:hover{background:var(--surface);}
 
-/* ── MÓDULO CARGO TRACKING ──────────────────── */
+/* ── MÓDULO CARGO TRACKING (light, matching grantt-embarques) ── */
+@keyframes ship-float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(2deg)}}
+@keyframes ct-row-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.ct-ship,.ct-row-anim{animation:none!important;}}
 #cargoScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:linear-gradient(135deg,#1a1610 60%,#1e1a10);overflow-y:auto;
+  background:#f0f2f5;overflow-y:auto;
   display:none;flex-direction:column;
   z-index:1000;opacity:0;transition:opacity .35s ease;
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#1a1d23;
 }
-#cargoScreen .ct-header{
+#cargoScreen .ct-topbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:1.2rem 2rem;border-bottom:1px solid var(--border);
+  padding:13px 24px;background:#fff;border-bottom:1px solid #e2e5ea;
 }
-#cargoScreen .ct-header .ct-back{
-  font-size:.75rem;color:var(--muted);cursor:pointer;
-  letter-spacing:.08em;background:none;border:none;padding:0;
-  display:flex;align-items:center;gap:.4rem;
+#cargoScreen .ct-topbar .ct-back{
+  font-size:13px;color:#6b7280;cursor:pointer;
+  background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:6px 14px;
+  font-family:inherit;
 }
-#cargoScreen .ct-header .ct-back:hover{color:#d4943b;}
-#cargoScreen .ct-header .ct-title{
-  font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.2em;text-transform:uppercase;color:#e8eaf0;
+#cargoScreen .ct-topbar .ct-back:hover{background:#f6f7f9;color:#1a1d23;}
+#cargoScreen .ct-brand{display:flex;align-items:center;gap:10px;}
+#cargoScreen .ct-wordmark{font-size:13px;font-weight:700;letter-spacing:.18em;color:#1a1d23;}
+#cargoScreen .ct-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:4px;background:#e0f2fe;color:#0369a1;}
+#cargoScreen .ct-body{padding:28px 24px 32px;}
+#cargoScreen .ct-title-row{display:flex;align-items:center;gap:12px;padding-bottom:24px;border-bottom:1px solid #e2e5ea;}
+#cargoScreen .ct-title{
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:clamp(32px,5vw,48px);font-weight:900;letter-spacing:-0.02em;
+  text-transform:uppercase;line-height:1;color:#1a1d23;margin:0;
 }
-#cargoScreen .ct-body{padding:1.5rem 2rem 3rem;}
-#cargoScreen .ct-kpis{display:flex;gap:1rem;margin-bottom:1.5rem;}
-#cargoScreen .ct-kpi{
-  flex:1;background:var(--surface);border-radius:10px;
-  padding:.9rem 1.2rem;border:1px solid var(--border);
+#cargoScreen .ct-subtitle{font-size:13px;color:#6b7280;margin:8px 0 0;letter-spacing:.01em;}
+#cargoScreen .ct-subtitle .ct-stat{font-variant-numeric:tabular-nums;}
+#cargoScreen .ct-subtitle .ct-dot{color:#d1d5db;margin:0 .2rem;}
+#cargoScreen .ct-toolbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:14px 0 16px;}
+#cargoScreen .ct-btn-export{
+  background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:8px 14px;
+  cursor:pointer;color:#6b7280;font-size:13px;font-family:inherit;white-space:nowrap;
 }
-#cargoScreen .ct-kpi .kv{font-size:1.8rem;font-weight:300;color:var(--text);}
-#cargoScreen .ct-kpi .kl{font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem;}
-#cargoScreen .ct-table-wrap{
-  background:var(--surface);border-radius:12px;
-  border:1px solid var(--border);overflow-x:auto;
-}
+#cargoScreen .ct-btn-export:hover{background:#f6f7f9;color:#1a1d23;}
+#cargoScreen .ct-table-wrap{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto;}
 #cargoScreen .ct-tbl{width:100%;border-collapse:collapse;min-width:900px;}
 #cargoScreen .ct-tbl th{
-  font-size:.6rem;font-weight:500;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.08em;
-  padding:.5rem .75rem;text-align:left;border-bottom:1px solid var(--border);
-  background:#1e293b;color:#fff;white-space:nowrap;
+  font-size:11px;font-weight:600;color:#fff;background:#1e293b;
+  text-transform:uppercase;letter-spacing:.07em;
+  padding:9px 10px;text-align:left;border-bottom:1px solid #f0f2f5;white-space:nowrap;
 }
 #cargoScreen .ct-tbl td{
-  padding:.55rem .75rem;font-size:.73rem;color:var(--text);
-  border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;
+  padding:9px 10px;font-size:13px;color:#1a1d23;
+  border-bottom:1px solid #f0f2f5;vertical-align:top;white-space:nowrap;
 }
-#cargoScreen .ct-tbl tr:nth-child(even) td{background:rgba(255,255,255,.02);}
-#cargoScreen .ct-tbl tr:hover td{background:rgba(212,148,59,.06);}
-.ct-estado{display:inline-block;padding:.15rem .55rem;border-radius:10px;font-size:.65rem;font-weight:600;letter-spacing:.04em;}
-.ct-estado-en_origen{background:#2a3a1a;color:#8bc34a;}
-.ct-estado-en_transito{background:#2a2a1a;color:#f0a830;}
-.ct-estado-en_bodega{background:#1a2a3a;color:#4a90d4;}
-.ct-tipo{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
-.ct-cert-si{color:#4db870;font-weight:600;}
-.ct-cert-no{color:var(--muted);}
-.ct-loading{text-align:center;padding:3rem;color:var(--muted);font-size:.85rem;}
-.ct-empty{text-align:center;padding:3rem;color:var(--muted);font-size:.85rem;}
+#cargoScreen .ct-tbl tr:nth-child(even) td{background:#f6f7f9;}
+#cargoScreen .ct-tbl tr:hover td{background:#eef0f4;}
+.ct-estado{display:inline-block;padding:4px 9px;border-radius:4px;font-size:12px;font-weight:600;border-width:1px;border-style:solid;}
+.ct-estado-en_origen{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8;}
+.ct-estado-en_transito{background:#fefce8;border-color:#fde68a;color:#a16207;}
+.ct-estado-en_bodega{background:#f0fdf4;border-color:#86efac;color:#15803d;}
+.ct-tipo{font-size:13px;color:#1a1d23;}
+.ct-cert-si{color:#1a1d23;font-weight:600;}
+.ct-cert-no{color:#9ca3af;}
+.ct-desc{white-space:normal!important;min-width:140px;color:#4b5563!important;}
+.ct-muted{color:#9ca3af;}
+.ct-qty-tag{font-size:9px;font-weight:700;letter-spacing:.05em;color:#9ca3af;margin-right:4px;}
+.ct-doc-link{color:#0891b2;cursor:default;font-size:12px;}
+.ct-loading{text-align:center;padding:3rem;color:#6b7280;font-size:14px;}
+.ct-empty{text-align:center;padding:3rem;color:#6b7280;font-size:14px;}
 @media(max-width:768px){
-  #cargoScreen .ct-kpis{flex-wrap:wrap;}
-  #cargoScreen .ct-kpi{flex:1 1 calc(50% - .5rem);}
-  #cargoScreen .ct-body{padding:1rem;}
+  #cargoScreen .ct-body{padding:16px;}
+  #cargoScreen .ct-title{font-size:28px!important;}
 }
 
 /* ── MÓDULO MUESTRAS ──────────────────────── */
@@ -741,17 +752,40 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 
 <!-- CARGO TRACKING SCREEN -->
 <div id="cargoScreen">
-  <div class="ct-header">
+  <div class="ct-topbar">
     <button class="ct-back" onclick="volverHomeFromCargo()">← Volver</button>
-    <div class="ct-title">Cargo Tracking</div>
-    <div></div>
+    <div class="ct-brand">
+      <svg width="22" height="22" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#0891b2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="ct-wordmark">GRANTT</span>
+    </div>
+    <span class="ct-badge">ADMIN</span>
   </div>
   <div class="ct-body">
-    <div class="ct-kpis">
-      <div class="ct-kpi"><div class="kv" id="ct-kpi-origen" style="color:#8bc34a;">—</div><div class="kl">En Origen</div></div>
-      <div class="ct-kpi"><div class="kv" id="ct-kpi-transito" style="color:#f0a830;">—</div><div class="kl">En Tránsito</div></div>
-      <div class="ct-kpi"><div class="kv" id="ct-kpi-bodega" style="color:#4a90d4;">—</div><div class="kl">En Bodega</div></div>
-      <div class="ct-kpi"><div class="kv" id="ct-kpi-total">—</div><div class="kl">Total embarques</div></div>
+    <div class="ct-title-row">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <h1 class="ct-title">Cargo Tracking</h1>
+          <svg class="ct-ship" width="40" height="30" viewBox="-55 -42 115 76" style="flex-shrink:0;animation:ship-float 3s ease-in-out infinite;">
+            <path d="M-55 28 Q-40 18,-25 28 Q-10 38,5 28 Q20 18,35 28 Q50 38,60 28" fill="none" stroke="#0891b2" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
+            <path d="M-40 4 L44 4 L38 24 Q0 30,-34 24 Z" fill="#0891b2"/>
+            <rect x="-40" y="0" width="84" height="6" rx="3" fill="#0e7490"/>
+            <rect x="-34" y="-10" width="12" height="12" rx="2" fill="#0e7490"/>
+            <rect x="-20" y="-10" width="12" height="12" rx="2" fill="#0891b2"/>
+            <rect x="-6" y="-10" width="12" height="12" rx="2" fill="#0e7490"/>
+            <rect x="-28" y="-20" width="12" height="10" rx="2" fill="#0891b2" opacity="0.85"/>
+            <rect x="-14" y="-20" width="12" height="10" rx="2" fill="#0e7490" opacity="0.85"/>
+            <rect x="18" y="-22" width="20" height="24" rx="4" fill="#0e7490"/>
+            <rect x="22" y="-18" width="12" height="6" rx="2" fill="#164e63"/>
+            <rect x="22" y="-34" width="10" height="12" rx="3" fill="#0891b2"/>
+            <circle cx="38" cy="-34" r="6" fill="#0891b2" opacity="0.25"/>
+            <circle cx="46" cy="-42" r="4.5" fill="#0891b2" opacity="0.15"/>
+          </svg>
+        </div>
+        <p class="ct-subtitle" id="ct-subtitle">Cargando...</p>
+      </div>
+    </div>
+    <div class="ct-toolbar">
+      <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="exportCargoCSV()">↓ Exportar CSV</button>
     </div>
     <div class="ct-table-wrap">
       <div id="ct-content"><div class="ct-loading">Cargando embarques...</div></div>
@@ -2480,6 +2514,7 @@ function _ctClient(){
   return _ctSb;
 }
 var _ctLoaded=false;
+var _ctData=[];
 function loadCargo(){
   var el=document.getElementById('ct-content');
   if(!el)return;
@@ -2492,34 +2527,47 @@ function loadCargo(){
   .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
   .then(function(data){
     _ctLoaded=true;
+    _ctData=data;
     var origen=0,transito=0,bodega=0;
     data.forEach(function(e){
       if(e.estado_embarque==='en_origen')origen++;
       else if(e.estado_embarque==='en_transito')transito++;
       else if(e.estado_embarque==='en_bodega')bodega++;
     });
-    document.getElementById('ct-kpi-origen').textContent=origen;
-    document.getElementById('ct-kpi-transito').textContent=transito;
-    document.getElementById('ct-kpi-bodega').textContent=bodega;
-    document.getElementById('ct-kpi-total').textContent=data.length;
+    var sub=document.getElementById('ct-subtitle');
+    if(sub){
+      var parts=['<span class="ct-stat" style="color:#374151;">'+data.length+'</span> embarques'];
+      if(origen)parts.push('<span class="ct-dot">·</span><span style="color:#2563eb;">'+origen+' en origen</span>');
+      if(transito)parts.push('<span class="ct-dot">·</span><span style="color:#a16207;">'+transito+' en tránsito</span>');
+      if(bodega)parts.push('<span class="ct-dot">·</span><span style="color:#16a34a;">'+bodega+' en bodega</span>');
+      sub.innerHTML=parts.join(' ');
+    }
+    if(data.length){var exp=document.getElementById('ct-export');if(exp)exp.style.display='';}
     if(!data.length){el.innerHTML='<div class="ct-empty">No hay embarques registrados</div>';return;}
     var ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
+    var TLBL={aereo:'Aéreo',maritimo:'Marítimo'};
     var html='<table class="ct-tbl"><thead><tr>';
-    html+='<th>Estado</th><th>Invoice</th><th>Transporte</th><th>ETD</th><th>ETA</th><th>BL/AWB</th><th>Unidades</th><th>Cajas</th><th>Certificable</th><th>Descripción</th>';
+    html+='<th>Estado</th><th>Invoice</th><th>Descripción</th><th>Tipo transporte</th><th>ETD</th><th>ETA</th><th>BL/AWB</th><th>Unidades</th><th>Certificable</th><th>Documentación</th>';
     html+='</tr></thead><tbody>';
-    data.forEach(function(e){
+    data.forEach(function(e,i){
       var est=e.estado_embarque||'en_origen';
-      html+='<tr>';
+      var und='<span class="ct-muted">—</span>';
+      if(e.unidades!=null&&e.cajas!=null)und='<span class="ct-qty-tag">CAJAS</span>'+e.cajas.toLocaleString('es-CL')+' <span class="ct-qty-tag">UND</span>'+e.unidades.toLocaleString('es-CL');
+      else if(e.unidades!=null)und='<span class="ct-qty-tag">UND</span>'+e.unidades.toLocaleString('es-CL');
+      else if(e.cajas!=null)und='<span class="ct-qty-tag">CAJAS</span>'+e.cajas.toLocaleString('es-CL');
+      var doc='<span class="ct-muted" style="font-size:12px;">Sin doc</span>';
+      if(e.documento_nombre)doc='<span class="ct-doc-link">↓ '+e.documento_nombre+'</span>';
+      html+='<tr class="ct-row-anim" style="animation:ct-row-in .16s ease-out both;animation-delay:'+(i*25)+'ms;">';
       html+='<td><span class="ct-estado ct-estado-'+est+'">'+(ELBL[est]||est)+'</span></td>';
-      html+='<td>'+(e.invoice||'—')+'</td>';
-      html+='<td><span class="ct-tipo">'+(e.tipo_transporte==='aereo'?'✈ Aéreo':e.tipo_transporte==='maritimo'?'🚢 Marítimo':'—')+'</span></td>';
-      html+='<td>'+(e.etd?_ctFmtDate(e.etd):'—')+'</td>';
-      html+='<td>'+(e.eta?_ctFmtDate(e.eta):'—')+'</td>';
-      html+='<td>'+(e.bl_awb||'—')+'</td>';
-      html+='<td>'+(e.unidades!=null?e.unidades.toLocaleString('es-CL'):'—')+'</td>';
-      html+='<td>'+(e.cajas!=null?e.cajas.toLocaleString('es-CL'):'—')+'</td>';
-      html+='<td><span class="'+(e.certificable==='si'?'ct-cert-si':'ct-cert-no')+'">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'—')+'</span></td>';
-      html+='<td style="white-space:normal;max-width:200px;">'+(e.descripcion||'—')+'</td>';
+      html+='<td>'+(e.invoice||'<span class="ct-muted">—</span>')+'</td>';
+      html+='<td class="ct-desc">'+(e.descripcion||'<span class="ct-muted">—</span>')+'</td>';
+      html+='<td class="ct-tipo">'+(TLBL[e.tipo_transporte]||'<span class="ct-muted">—</span>')+'</td>';
+      html+='<td>'+(e.etd?_ctFmtDate(e.etd):'<span class="ct-muted">—</span>')+'</td>';
+      html+='<td>'+(e.eta?_ctFmtDate(e.eta):'<span class="ct-muted">—</span>')+'</td>';
+      html+='<td>'+(e.bl_awb||'<span class="ct-muted">—</span>')+'</td>';
+      html+='<td>'+und+'</td>';
+      html+='<td><span class="'+(e.certificable==='si'?'ct-cert-si':'ct-cert-no')+'">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="ct-muted">—</span>')+'</span></td>';
+      html+='<td>'+doc+'</td>';
       html+='</tr>';
     });
     html+='</tbody></table>';
@@ -2527,8 +2575,19 @@ function loadCargo(){
   })
   .catch(function(err){
     console.error('cargo load error',err);
-    el.innerHTML='<div class="ct-empty" style="color:var(--negative);">Error al cargar embarques</div>';
+    el.innerHTML='<div class="ct-empty" style="color:#c05050;">Error al cargar embarques</div>';
   });
+}
+function exportCargoCSV(){
+  if(!_ctData.length)return;
+  var ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
+  var rows=[['Estado','Invoice','Descripción','Tipo Transporte','ETD','ETA','BL/AWB','Unidades','Cajas','Certificable']];
+  _ctData.forEach(function(e){
+    rows.push([ELBL[e.estado_embarque]||'',e.invoice||'','"'+(e.descripcion||'')+'"',e.tipo_transporte||'',e.etd||'',e.eta||'',e.bl_awb||'',e.unidades!=null?e.unidades:'',e.cajas!=null?e.cajas:'',e.certificable||'']);
+  });
+  var csv=rows.map(function(r){return r.join(',');}).join('\n');
+  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='embarques.csv';a.click();
 }
 function _ctFmtDate(s){
   if(!s)return '—';
