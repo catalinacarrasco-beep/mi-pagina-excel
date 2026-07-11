@@ -366,6 +366,70 @@ footer p{font-size:.75rem;color:var(--muted);}
   #cargoScreen .ct-body{padding:16px;}
   #cargoScreen .ct-title{font-size:28px!important;}
 }
+/* Cargo Tracking — admin UI */
+#cargoScreen .ct-tbl td input[type="text"],
+#cargoScreen .ct-tbl td input:not([type]),
+#cargoScreen .ct-tbl td input[type="date"],
+#cargoScreen .ct-tbl td input[inputmode="numeric"]{
+  width:100%;padding:5px 7px;border:1px solid #d1d5db;border-radius:5px;font-size:13px;font-family:inherit;color:#1a1d23;background:#fff;box-sizing:border-box;
+}
+#cargoScreen .ct-tbl td input:focus{outline:none;border-color:#0891b2;box-shadow:0 0 0 2px rgba(8,145,178,.12);}
+#cargoScreen .ct-tbl td input[type="date"]{min-width:130px;}
+#cargoScreen .ct-tbl td input[inputmode="numeric"]{min-width:70px;width:75px;}
+#cargoScreen .ct-toggle-group{display:flex;gap:3px;}
+#cargoScreen .ct-toggle-group button{border:1px solid #d1d5db;background:#fff;border-radius:4px;padding:5px 9px;cursor:pointer;color:#6b7280;font-size:12px;font-weight:600;font-family:inherit;white-space:nowrap;}
+#cargoScreen .ct-toggle-group button:hover{border-color:#9ca3af;color:#1a1d23;}
+#cargoScreen .ct-toggle-group button.active{background:#0891b2;border-color:#0891b2;color:#fff;}
+#cargoScreen .ct-qty-stack{display:flex;flex-direction:column;gap:4px;}
+#cargoScreen .ct-qty-label{display:flex;align-items:center;gap:4px;}
+#cargoScreen .ct-qty-label input{min-width:0;width:70px;}
+.ct-qty-tag{font-size:9px;font-weight:700;letter-spacing:.05em;color:#6b7280;background:#f0f2f5;border:1px solid #e2e5ea;border-radius:3px;padding:2px 4px;white-space:nowrap;min-width:36px;text-align:center;}
+.ct-qty-tag-r{font-size:9px;font-weight:700;letter-spacing:.05em;color:#9ca3af;margin-right:3px;}
+#cargoScreen .ct-qty-stack-read{display:flex;flex-direction:column;gap:2px;}
+#cargoScreen .col-check{width:36px;padding:9px 6px;text-align:center!important;}
+#cargoScreen input[type="checkbox"]{width:14px;height:14px;min-width:14px;padding:0;border:none;background:none;accent-color:#0891b2;cursor:pointer;vertical-align:middle;}
+#cargoScreen .row-selected td{background:rgba(8,145,178,.06)!important;}
+#cargoScreen .row-actions{display:flex;gap:6px;align-items:center;white-space:nowrap;}
+#cargoScreen .btn-edit{background:none;border:1px solid #d1d5db;border-radius:4px;color:#6b7280;cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
+#cargoScreen .btn-edit:hover{border-color:#0891b2;color:#0891b2;}
+#cargoScreen .btn-done{background:none;border:1px solid #0891b2;border-radius:4px;color:#0891b2;cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;font-weight:600;}
+#cargoScreen .btn-done:hover{background:rgba(8,145,178,.08);}
+#cargoScreen .row-delete{background:none;border:1px solid #d1d5db;border-radius:4px;color:#6b7280;cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
+#cargoScreen .row-delete:hover{border-color:#dc2626;color:#dc2626;background:#fef2f2;}
+#cargoScreen .cell-text{font-size:13px;color:#374151;}
+#cargoScreen .cell-empty{font-size:12px;color:#d1d5db;}
+#cargoScreen .date-past{color:#dc2626;}
+#cargoScreen .date-soon{color:#d97706;}
+#cargoScreen .doc-cell{display:flex;flex-direction:column;gap:3px;white-space:normal;min-width:150px;}
+#cargoScreen .doc-chips{display:flex;flex-wrap:wrap;gap:4px;}
+#cargoScreen .doc-chip{background:#f8f9fb;border:1px solid #e2e5ea;border-radius:4px;padding:3px 8px;font-size:11px;color:#6b7280;cursor:pointer;white-space:nowrap;font-family:inherit;}
+#cargoScreen .doc-chip:hover:not([disabled]){border-color:#9ca3af;color:#374151;}
+#cargoScreen .doc-chip-expired{border-color:#fca5a5;color:#b91c1c;cursor:default;}
+#cargoScreen .doc-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:3px;}
+#cargoScreen .doc-tipo-tag{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6b7280;background:#f0f2f5;border:1px solid #e2e5ea;border-radius:3px;padding:2px 5px;white-space:nowrap;}
+#cargoScreen .doc-dl-btn{background:#fff;border:1px solid #d1d5db;border-radius:4px;cursor:pointer;padding:3px 7px;font-size:11px;color:#6b7280;white-space:nowrap;max-width:130px;overflow:hidden;text-overflow:ellipsis;font-family:inherit;}
+#cargoScreen .doc-dl-btn:hover{border-color:#9ca3af;color:#1a1d23;}
+#cargoScreen .doc-hint{font-size:10px;color:#9ca3af;}
+#cargoScreen .doc-expired-sm{font-size:10px;color:#dc2626;}
+#cargoScreen .doc-del-btn{background:none;border:none;cursor:pointer;color:#9ca3af;font-size:14px;line-height:1;padding:0 3px;font-family:inherit;}
+#cargoScreen .doc-del-btn:hover{color:#dc2626;}
+#cargoScreen .doc-add-row{display:flex;align-items:center;gap:5px;margin-top:4px;padding-top:4px;border-top:1px solid #f0f2f5;}
+#cargoScreen .doc-tipo-select{font-size:11px;padding:4px 6px;min-width:110px;border:1px solid #d1d5db;border-radius:4px;color:#6b7280;background:#fff;font-family:inherit;}
+#cargoScreen .upload-btn{border:1px dashed #d1d5db;border-radius:4px;padding:4px 9px;cursor:pointer;display:inline-block;font-size:11px;color:#6b7280;white-space:nowrap;font-family:inherit;}
+#cargoScreen .upload-btn:hover{border-color:#0891b2;color:#0891b2;}
+#cargoScreen .ct-save-ok{display:inline-block;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#15803d;padding:6px 14px;font-size:13px;}
+#cargoScreen .ct-save-error{display:inline-block;background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;color:#b91c1c;padding:6px 14px;font-size:13px;}
+#cargoScreen .ct-action-bar{display:flex;align-items:center;gap:8px;flex:1;}
+#cargoScreen .ct-action-bar-inner{display:flex;align-items:center;gap:8px;background:#1e293b;padding:8px 14px;border-radius:6px;width:100%;}
+#cargoScreen .ct-action-bar span{font-size:13px;color:#94a3b8;}
+#cargoScreen .ct-action-bar button{background:none;border:1px solid #475569;color:#e2e8f0;border-radius:5px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;}
+#cargoScreen .ct-action-bar button:hover{border-color:#94a3b8;}
+#cargoScreen .ct-btn-add{background:#0891b2;border:none;color:#fff;border-radius:6px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:700;font-family:inherit;white-space:nowrap;}
+#cargoScreen .ct-btn-add:hover{background:#0e7490;}
+#cargoScreen .ct-btn-add:disabled{opacity:.55;cursor:not-allowed;}
+#cargoScreen .ct-empty-state{text-align:center;padding:4rem 2rem;color:#6b7280;font-size:14px;}
+#cargoScreen .ct-empty-state p{margin:0 0 16px;font-size:15px;color:#374151;}
+#cargoScreen .ct-tbl td{white-space:nowrap;vertical-align:top;}
 /* Pantalla próximamente */
 #proximamente{
   position:fixed;top:0;left:0;width:100%;height:100%;
@@ -868,8 +932,20 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
         <p class="ct-subtitle" id="ct-subtitle">Cargando...</p>
       </div>
     </div>
-    <div class="ct-toolbar">
-      <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="exportCargoCSV()">↓ Exportar CSV</button>
+    <div id="ct-feedback" style="min-height:0;padding:2px 0 6px;"></div>
+    <div class="ct-toolbar" style="flex-wrap:wrap;gap:8px;align-items:center;">
+      <div id="ct-action-bar" style="display:none;" class="ct-action-bar">
+        <div class="ct-action-bar-inner">
+          <span id="ct-action-count"></span>
+          <button onclick="_ctBulkStatus('en_origen')">En Origen</button>
+          <button onclick="_ctBulkStatus('en_transito')">En Tránsito</button>
+          <button onclick="_ctBulkStatus('en_bodega')">En Bodega</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-left:auto;">
+        <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="_ctExportCSV()">↓ Exportar CSV</button>
+        <button class="ct-btn-add" id="ct-add" style="display:none;" onclick="_ctAddRow()">+ Nuevo embarque</button>
+      </div>
     </div>
     <div class="ct-table-wrap">
       <div id="ct-content"><div class="ct-loading">Cargando embarques...</div></div>
@@ -2119,8 +2195,20 @@ function volverHomeFromMuestras(){
         <p class="ct-subtitle" id="ct-subtitle">Cargando...</p>
       </div>
     </div>
-    <div class="ct-toolbar">
-      <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="exportCargoCSV()">↓ Exportar CSV</button>
+    <div id="ct-feedback" style="min-height:0;padding:2px 0 6px;"></div>
+    <div class="ct-toolbar" style="flex-wrap:wrap;gap:8px;align-items:center;">
+      <div id="ct-action-bar" style="display:none;" class="ct-action-bar">
+        <div class="ct-action-bar-inner">
+          <span id="ct-action-count"></span>
+          <button onclick="_ctBulkStatus('en_origen')">En Origen</button>
+          <button onclick="_ctBulkStatus('en_transito')">En Tránsito</button>
+          <button onclick="_ctBulkStatus('en_bodega')">En Bodega</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-left:auto;">
+        <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="_ctExportCSV()">↓ Exportar CSV</button>
+        <button class="ct-btn-add" id="ct-add" style="display:none;" onclick="_ctAddRow()">+ Nuevo embarque</button>
+      </div>
     </div>
     <div class="ct-table-wrap">
       <div id="ct-content"><div class="ct-loading">Cargando embarques...</div></div>
@@ -2468,94 +2556,379 @@ function volverHomeFromMuestras(){
     fadeIn(document.getElementById('homeScreen'));
   });
 }
-// ── CARGO TRACKING ──────────────────────────────────────────────────────────
-var _ctSb=null;
-function _ctClient(){
-  if(_ctSb)return _ctSb;
-  _ctSb={url:'https://bmxnqzfoskugnsdkytql.supabase.co',key:'sb_publishable_rqhiObYXtBQWa4VhecKB6A_UAFFDrD0'};
-  return _ctSb;
+// ── CARGO TRACKING ADMIN ────────────────────────────────────────────────────
+var _CT_URL='https://bmxnqzfoskugnsdkytql.supabase.co';
+var _CT_KEY='sb_publishable_rqhiObYXtBQWa4VhecKB6A_UAFFDrD0';
+var _CT_BUCKET='documentos-embarque';
+var _ctEmbarques=[];
+var _ctEditingId=null;
+var _ctSelected=new Set();
+var _ctAdding=false;
+var _CT_ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
+var _CT_TLBL={aereo:'Aéreo',maritimo:'Marítimo'};
+var _CT_DOC_TIPOS=['Invoice','Packing List','Certificado de Origen','BL','AWB','Otro'];
+
+function _ctIsAdmin(){return sessionStorage.getItem('gs_role')==='admin';}
+
+function _ctH(extra){
+  var h={'apikey':_CT_KEY,'Authorization':'Bearer '+_CT_KEY,'Content-Type':'application/json'};
+  if(extra)Object.assign(h,extra);
+  return h;
 }
-var _ctLoaded=false;
-var _ctData=[];
-function loadCargo(){
-  var el=document.getElementById('ct-content');
-  if(!el)return;
-  if(_ctLoaded){return;}
-  el.innerHTML='<div class="ct-loading">Cargando embarques...</div>';
-  var sb=_ctClient();
-  fetch(sb.url+'/rest/v1/embarques?select=*&order=updated_at.desc',{
-    headers:{'apikey':sb.key,'Authorization':'Bearer '+sb.key}
-  })
-  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
-  .then(function(data){
-    _ctLoaded=true;
-    _ctData=data;
-    var origen=0,transito=0,bodega=0;
-    data.forEach(function(e){
-      if(e.estado_embarque==='en_origen')origen++;
-      else if(e.estado_embarque==='en_transito')transito++;
-      else if(e.estado_embarque==='en_bodega')bodega++;
-    });
-    var sub=document.getElementById('ct-subtitle');
-    if(sub){
-      var parts=['<span class="ct-stat" style="color:#374151;">'+data.length+'</span> embarques'];
-      if(origen)parts.push('<span class="ct-dot">·</span><span style="color:#2563eb;">'+origen+' en origen</span>');
-      if(transito)parts.push('<span class="ct-dot">·</span><span style="color:#a16207;">'+transito+' en tránsito</span>');
-      if(bodega)parts.push('<span class="ct-dot">·</span><span style="color:#16a34a;">'+bodega+' en bodega</span>');
-      sub.innerHTML=parts.join(' ');
-    }
-    if(data.length){var exp=document.getElementById('ct-export');if(exp)exp.style.display='';}
-    if(!data.length){el.innerHTML='<div class="ct-empty">No hay embarques registrados</div>';return;}
-    var ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
-    var TLBL={aereo:'Aéreo',maritimo:'Marítimo'};
-    var html='<table class="ct-tbl"><thead><tr>';
-    html+='<th>Estado</th><th>Invoice</th><th>Descripción</th><th>Tipo transporte</th><th>ETD</th><th>ETA</th><th>BL/AWB</th><th>Unidades</th><th>Certificable</th><th>Documentación</th>';
-    html+='</tr></thead><tbody>';
-    data.forEach(function(e,i){
-      var est=e.estado_embarque||'en_origen';
-      var und='<span class="ct-muted">—</span>';
-      if(e.unidades!=null&&e.cajas!=null)und='<span class="ct-qty-tag">CAJAS</span>'+e.cajas.toLocaleString('es-CL')+' <span class="ct-qty-tag">UND</span>'+e.unidades.toLocaleString('es-CL');
-      else if(e.unidades!=null)und='<span class="ct-qty-tag">UND</span>'+e.unidades.toLocaleString('es-CL');
-      else if(e.cajas!=null)und='<span class="ct-qty-tag">CAJAS</span>'+e.cajas.toLocaleString('es-CL');
-      var doc='<span class="ct-muted" style="font-size:12px;">Sin doc</span>';
-      if(e.documento_nombre)doc='<span class="ct-doc-link">↓ '+e.documento_nombre+'</span>';
-      html+='<tr class="ct-row-anim" style="animation:ct-row-in .16s ease-out both;animation-delay:'+(i*25)+'ms;">';
-      html+='<td><span class="ct-estado ct-estado-'+est+'">'+(ELBL[est]||est)+'</span></td>';
-      html+='<td>'+(e.invoice||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td class="ct-desc">'+(e.descripcion||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td class="ct-tipo">'+(TLBL[e.tipo_transporte]||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+(e.eta?_ctFmtDate(e.eta):'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+(e.etd?_ctFmtDate(e.etd):'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+(e.bl_awb||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+und+'</td>';
-      html+='<td><span class="'+(e.certificable==='si'?'ct-cert-si':'ct-cert-no')+'">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="ct-muted">—</span>')+'</span></td>';
-      html+='<td>'+doc+'</td>';
-      html+='</tr>';
-    });
-    html+='</tbody></table>';
-    el.innerHTML=html;
-  })
-  .catch(function(err){
-    console.error('cargo load error',err);
-    el.innerHTML='<div class="ct-empty" style="color:#c05050;">Error al cargar embarques</div>';
-  });
-}
-function exportCargoCSV(){
-  if(!_ctData.length)return;
-  var ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
-  var rows=[['Estado','Invoice','Descripción','Tipo Transporte','ETD','ETA','BL/AWB','Unidades','Cajas','Certificable']];
-  _ctData.forEach(function(e){
-    rows.push([ELBL[e.estado_embarque]||'',e.invoice||'','"'+(e.descripcion||'')+'"',e.tipo_transporte||'',e.etd||'',e.eta||'',e.bl_awb||'',e.unidades!=null?e.unidades:'',e.cajas!=null?e.cajas:'',e.certificable||'']);
-  });
-  var csv=rows.map(function(r){return r.join(',');}).join('\n');
-  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='embarques.csv';a.click();
-}
+
 function _ctFmtDate(s){
   if(!s)return '—';
-  var parts=s.split('-');
-  if(parts.length===3)return parts[2]+'/'+parts[1]+'/'+parts[0];
-  return s;
+  var p=s.split('-');
+  return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:s;
+}
+
+function _ctDateClass(s){
+  if(!s)return '';
+  var d=new Date(s);if(isNaN(d.getTime()))return '';
+  var today=new Date();today.setHours(0,0,0,0);
+  var diff=(d.getTime()-today.getTime())/86400000;
+  return diff<0?'date-past':diff<=7?'date-soon':'';
+}
+
+function _ctExpDate(at){
+  if(!at)return '—';
+  var d=new Date(at);if(isNaN(d.getTime()))return '—';
+  d.setDate(d.getDate()+90);return d.toLocaleDateString('es-CL');
+}
+
+function _ctIsExpired(at){
+  if(!at)return false;
+  var d=new Date(at);if(isNaN(d.getTime()))return false;
+  d.setDate(d.getDate()+90);return d<new Date();
+}
+
+function _ctAllDocs(e){
+  var docs=(e.documentos||[]).map(function(d){return Object.assign({},d,{isLegacy:false});});
+  if(e.documento_path){
+    docs.push({path:e.documento_path,nombre:e.documento_nombre||'Documento',tipo:'Documento',subido_at:e.documento_subido_at||'',isLegacy:true});
+  }
+  return docs;
+}
+
+function _ctEsc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _ctEscH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function _ctFeedback(ok,msg){
+  var el=document.getElementById('ct-feedback');if(!el)return;
+  if(ok){
+    el.innerHTML='<span class="ct-save-ok">✓ Guardado</span>';
+    setTimeout(function(){el.innerHTML='';},1800);
+  } else {
+    el.innerHTML='<span class="ct-save-error">'+(msg||'Error al guardar')+'</span>';
+    setTimeout(function(){el.innerHTML='';},4000);
+  }
+}
+
+function _ctUpdateStats(){
+  var sub=document.getElementById('ct-subtitle');if(!sub)return;
+  var o=0,t=0,b=0;
+  _ctEmbarques.forEach(function(e){
+    if(e.estado_embarque==='en_origen')o++;
+    else if(e.estado_embarque==='en_transito')t++;
+    else if(e.estado_embarque==='en_bodega')b++;
+  });
+  var p=['<span style="color:#374151;">'+_ctEmbarques.length+'</span> embarques'];
+  if(o)p.push('<span style="color:#d1d5db;margin:0 .25rem;">·</span><span style="color:#2563eb;">'+o+' en origen</span>');
+  if(t)p.push('<span style="color:#d1d5db;margin:0 .25rem;">·</span><span style="color:#a16207;">'+t+' en tránsito</span>');
+  if(b)p.push('<span style="color:#d1d5db;margin:0 .25rem;">·</span><span style="color:#16a34a;">'+b+' en bodega</span>');
+  sub.innerHTML=p.join('');
+}
+
+function _ctUpdateActionBar(){
+  var bar=document.getElementById('ct-action-bar');
+  var cnt=document.getElementById('ct-action-count');
+  if(!bar||!cnt)return;
+  var n=_ctSelected.size;
+  if(n>0&&_ctIsAdmin()){
+    bar.style.display='flex';
+    cnt.textContent=n+(n===1?' embarque seleccionado':' embarques seleccionados')+' — ';
+  } else {
+    bar.style.display='none';
+  }
+}
+
+async function _ctUpdateField(id,patch,skipRender){
+  var prev=_ctEmbarques.find(function(r){return r.id===id;});
+  _ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?Object.assign({},r,patch):r;});
+  if(!skipRender)_ctUpdateStats();
+  var resp=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
+    method:'PATCH',headers:Object.assign(_ctH(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+  });
+  if(!resp.ok){
+    if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();}
+    _ctFeedback(false,'Error al guardar');
+  } else {
+    _ctFeedback(true);
+  }
+}
+
+function loadCargo(){
+  var el=document.getElementById('ct-content');if(!el)return;
+  _ctSelected=new Set();_ctEditingId=null;
+  el.innerHTML='<div class="ct-loading">Cargando embarques...</div>';
+  var addBtn=document.getElementById('ct-add');
+  if(addBtn)addBtn.style.display=_ctIsAdmin()?'':'none';
+  fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctH()})
+  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+  .then(function(data){
+    _ctEmbarques=data;
+    var exp=document.getElementById('ct-export');if(exp)exp.style.display=data.length?'':'none';
+    _ctUpdateStats();
+    _ctRender();
+  })
+  .catch(function(err){
+    console.error('cargo',err);
+    el.innerHTML='<div class="ct-empty-state" style="color:#b91c1c;"><p>Error al cargar embarques.</p></div>';
+  });
+}
+
+function _ctRender(){
+  var el=document.getElementById('ct-content');if(!el)return;
+  if(!_ctEmbarques.length){
+    var add=_ctIsAdmin()?'<button class="ct-btn-add" onclick="_ctAddRow()" style="margin-top:1rem;">+ Agregar el primero</button>':'';
+    el.innerHTML='<div class="ct-empty-state"><p>No hay embarques registrados.</p>'+add+'</div>';
+    return;
+  }
+  var isAdmin=_ctIsAdmin();
+  var allSel=_ctEmbarques.length>0&&_ctSelected.size===_ctEmbarques.length;
+  var h='<table class="ct-tbl"><thead><tr>';
+  if(isAdmin)h+='<th class="col-check"><input type="checkbox"'+(allSel?' checked':'')+'onchange="_ctToggleAll()" aria-label="Todos"></th>';
+  h+='<th>Estado</th><th>Invoice</th><th>Descripción</th><th>Tipo</th><th>ETD</th><th>ETA</th><th>BL/AWB</th><th>Unidades</th><th>Certificable</th><th>Documentación</th>';
+  if(isAdmin)h+='<th></th>';
+  h+='</tr></thead><tbody>';
+  _ctEmbarques.forEach(function(e){
+    var editing=isAdmin&&_ctEditingId===e.id;
+    var sel=_ctSelected.has(e.id);
+    var docs=_ctAllDocs(e);
+    h+='<tr'+(sel?' class="row-selected"':'')+'>';
+    if(isAdmin)h+='<td class="col-check"><input type="checkbox"'+(sel?' checked':'')+'onchange="_ctToggleSelect(\''+e.id+'\')" aria-label="Seleccionar"></td>';
+    // Estado badge always read-only
+    h+='<td><span class="ct-estado ct-estado-'+e.estado_embarque+'">'+(  _CT_ELBL[e.estado_embarque]||e.estado_embarque)+'</span></td>';
+    if(editing){
+      // ── EDIT ROW ──
+      h+='<td><input type="text" value="'+_ctEsc(e.invoice||'')+'" onblur="_ctBlurField(\''+e.id+'\',\'invoice\',this)"></td>';
+      h+='<td><input type="text" value="'+_ctEsc(e.descripcion||'')+'" placeholder="Ej: CANALETAS / ILUMINACION" onblur="_ctBlurField(\''+e.id+'\',\'descripcion\',this,true)"></td>';
+      h+='<td><div class="ct-toggle-group" id="ct-tg-tipo-'+e.id+'">';
+      h+='<button data-v="aereo" class="'+(e.tipo_transporte==='aereo'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'tipo_transporte\',\'aereo\',\'ct-tg-tipo-'+e.id+'\')">Aéreo</button>';
+      h+='<button data-v="maritimo" class="'+(e.tipo_transporte==='maritimo'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'tipo_transporte\',\'maritimo\',\'ct-tg-tipo-'+e.id+'\')">Marítimo</button>';
+      h+='</div></td>';
+      h+='<td><input type="date" value="'+(e.etd||'')+'" onchange="_ctBlurField(\''+e.id+'\',\'etd\',this,true)"></td>';
+      h+='<td><input type="date" value="'+(e.eta||'')+'" onchange="_ctBlurField(\''+e.id+'\',\'eta\',this,true)"></td>';
+      h+='<td><input type="text" value="'+_ctEsc(e.bl_awb||'')+'" onblur="_ctBlurField(\''+e.id+'\',\'bl_awb\',this,true)"></td>';
+      h+='<td><div class="ct-qty-stack">';
+      h+='<label class="ct-qty-label"><span class="ct-qty-tag">UND</span><input inputmode="numeric" value="'+(e.unidades!=null?e.unidades:'')+'" onblur="_ctBlurQty(\''+e.id+'\',\'unidades\',this)"></label>';
+      h+='<label class="ct-qty-label"><span class="ct-qty-tag">CAJAS</span><input inputmode="numeric" value="'+(e.cajas!=null?e.cajas:'')+'" onblur="_ctBlurQty(\''+e.id+'\',\'cajas\',this)"></label>';
+      h+='</div></td>';
+      h+='<td><div class="ct-toggle-group" id="ct-tg-cert-'+e.id+'">';
+      h+='<button data-v="si" class="'+(e.certificable==='si'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'certificable\',\'si\',\'ct-tg-cert-'+e.id+'\')">Sí</button>';
+      h+='<button data-v="no" class="'+(e.certificable==='no'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'certificable\',\'no\',\'ct-tg-cert-'+e.id+'\')">No</button>';
+      h+='</div></td>';
+      // Doc cell — edit mode
+      h+='<td class="doc-cell">';
+      docs.forEach(function(doc){
+        var dp=doc.path.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        h+='<div class="doc-row"><span class="doc-tipo-tag">'+_ctEscH(doc.tipo)+'</span>';
+        if(_ctIsExpired(doc.subido_at)){
+          h+='<span class="doc-expired-sm">Expirado '+_ctExpDate(doc.subido_at)+'</span>';
+        } else {
+          h+='<button class="doc-dl-btn" onclick="_ctDownloadDoc(\''+dp+'\')">⬇ '+_ctEscH(doc.nombre)+'</button>';
+        }
+        h+='<span class="doc-hint">exp. '+_ctExpDate(doc.subido_at)+'</span>';
+        if(!doc.isLegacy){
+          h+='<button class="doc-del-btn" onclick="_ctDeleteDoc(\''+e.id+'\',\''+dp+'\')" aria-label="Eliminar">×</button>';
+        }
+        h+='</div>';
+      });
+      h+='<div class="doc-add-row"><select class="doc-tipo-select" id="ct-dt-'+e.id+'">';
+      _CT_DOC_TIPOS.forEach(function(t){h+='<option>'+t+'</option>';});
+      h+='</select><label class="upload-btn">+ Subir<input type="file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" hidden onchange="_ctHandleUpload(\''+e.id+'\',this)"></label></div>';
+      h+='</td>';
+      h+='<td class="row-actions"><button class="btn-done" onclick="_ctStopEdit()">Listo</button><button class="row-delete" onclick="_ctDeleteRow(\''+e.id+'\')">Eliminar</button></td>';
+    } else {
+      // ── READ ROW ──
+      h+='<td class="cell-text">'+(e.invoice?_ctEscH(e.invoice):'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td class="cell-text" style="white-space:normal;min-width:120px;">'+(e.descripcion?_ctEscH(e.descripcion):'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td class="cell-text">'+(_CT_TLBL[e.tipo_transporte]||'<span class="cell-empty">—</span>')+'</td>';
+      var ec=_ctDateClass(e.etd),ac=_ctDateClass(e.eta);
+      h+='<td class="cell-text">'+(e.etd?'<span class="'+ec+'">'+_ctFmtDate(e.etd)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td class="cell-text">'+(e.eta?'<span class="'+ac+'">'+_ctFmtDate(e.eta)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td class="cell-text">'+(e.bl_awb?_ctEscH(e.bl_awb):'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td class="cell-text"><div class="ct-qty-stack-read">';
+      if(e.unidades!=null)h+='<span><span class="ct-qty-tag-r">UND</span>'+e.unidades.toLocaleString('es-CL')+'</span>';
+      if(e.cajas!=null)h+='<span><span class="ct-qty-tag-r">CAJAS</span>'+e.cajas.toLocaleString('es-CL')+'</span>';
+      if(e.unidades==null&&e.cajas==null)h+='<span class="cell-empty">—</span>';
+      h+='</div></td>';
+      h+='<td class="cell-text">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td class="doc-cell">';
+      if(!docs.length){
+        h+='<span class="cell-empty">Sin doc</span>';
+      } else {
+        h+='<div class="doc-chips">';
+        docs.forEach(function(doc){
+          var dp=doc.path.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+          if(_ctIsExpired(doc.subido_at)){
+            h+='<span class="doc-chip doc-chip-expired" title="Expirado '+_ctExpDate(doc.subido_at)+'">⚠ '+_ctEscH(doc.tipo)+'</span>';
+          } else {
+            h+='<button class="doc-chip" onclick="_ctDownloadDoc(\''+dp+'\')" title="'+_ctEsc(doc.nombre)+'">⬇ '+_ctEscH(doc.tipo)+'</button>';
+          }
+        });
+        h+='</div>';
+      }
+      h+='</td>';
+      if(isAdmin)h+='<td class="row-actions"><button class="btn-edit" onclick="_ctStartEdit(\''+e.id+'\')">Editar</button></td>';
+    }
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  el.innerHTML=h;
+}
+
+function _ctStartEdit(id){_ctEditingId=id;_ctRender();}
+function _ctStopEdit(){_ctEditingId=null;_ctRender();}
+
+function _ctBlurField(id,field,el,nullIfEmpty){
+  var val=el.value||null;
+  if(!nullIfEmpty&&val===null)val='';
+  var patch={};patch[field]=val;
+  _ctUpdateField(id,patch,true);
+}
+
+function _ctBlurQty(id,field,el){
+  var raw=(el.value||'').replace(/\D/g,'');
+  var patch={};patch[field]=raw===''?null:Number(raw);
+  _ctUpdateField(id,patch,true);
+}
+
+function _ctToggle(id,field,val,groupId){
+  var patch={};patch[field]=val;
+  _ctUpdateField(id,patch,true);
+  var g=document.getElementById(groupId);
+  if(g)g.querySelectorAll('button').forEach(function(b){b.className=b.getAttribute('data-v')===val?'active':'';});
+}
+
+function _ctToggleSelect(id){
+  if(_ctSelected.has(id))_ctSelected.delete(id);else _ctSelected.add(id);
+  _ctUpdateActionBar();
+  // update just this row's checkbox + highlight without full re-render
+  var boxes=document.querySelectorAll('#ct-content input[type="checkbox"]');
+  boxes.forEach(function(cb){
+    if(cb.getAttribute('onchange')&&cb.getAttribute('onchange').indexOf(id)>-1){
+      cb.checked=_ctSelected.has(id);
+      var row=cb.closest('tr');if(row)row.className=_ctSelected.has(id)?'row-selected':'';
+    }
+  });
+}
+
+function _ctToggleAll(){
+  if(_ctSelected.size===_ctEmbarques.length){_ctSelected=new Set();}
+  else{_ctSelected=new Set(_ctEmbarques.map(function(e){return e.id;}));}
+  _ctUpdateActionBar();_ctRender();
+}
+
+async function _ctBulkStatus(estado){
+  var ids=Array.from(_ctSelected);
+  var patch={estado_embarque:estado};
+  _ctEmbarques=_ctEmbarques.map(function(r){return _ctSelected.has(r.id)?Object.assign({},r,patch):r;});
+  _ctSelected=new Set();_ctUpdateActionBar();_ctRender();
+  await Promise.all(ids.map(function(id){
+    return fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
+      method:'PATCH',headers:Object.assign(_ctH(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+    });
+  }));
+  _ctFeedback(true);
+}
+
+async function _ctAddRow(){
+  if(_ctAdding)return;
+  _ctAdding=true;
+  var btn=document.getElementById('ct-add');
+  if(btn){btn.disabled=true;btn.textContent='Agregando…';}
+  var resp=await fetch(_CT_URL+'/rest/v1/embarques',{
+    method:'POST',
+    headers:Object.assign(_ctH(),{'Prefer':'return=representation'}),
+    body:JSON.stringify({estado_embarque:'en_origen'})
+  });
+  if(btn){btn.disabled=false;btn.textContent='+ Nuevo embarque';}
+  _ctAdding=false;
+  if(!resp.ok){_ctFeedback(false,'No se pudo crear el embarque');return;}
+  var data=await resp.json();
+  var row=Array.isArray(data)?data[0]:data;
+  if(row){
+    _ctEmbarques=[row].concat(_ctEmbarques);
+    _ctEditingId=row.id;
+    var exp=document.getElementById('ct-export');if(exp)exp.style.display='';
+    _ctRender();
+  }
+}
+
+async function _ctDeleteRow(id){
+  if(!confirm('¿Eliminar este embarque permanentemente?'))return;
+  await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{method:'DELETE',headers:_ctH()});
+  _ctEmbarques=_ctEmbarques.filter(function(r){return r.id!==id;});
+  _ctSelected.delete(id);
+  if(_ctEditingId===id)_ctEditingId=null;
+  _ctUpdateActionBar();
+  var exp=document.getElementById('ct-export');if(exp)exp.style.display=_ctEmbarques.length?'':'none';
+  _ctRender();
+}
+
+async function _ctHandleUpload(embarqueId,input){
+  var file=input.files&&input.files[0];if(!file)return;
+  var tipoEl=document.getElementById('ct-dt-'+embarqueId);
+  var tipo=tipoEl?tipoEl.value:_CT_DOC_TIPOS[0];
+  input.value='';
+  var emb=_ctEmbarques.find(function(r){return r.id===embarqueId;});if(!emb)return;
+  var path=embarqueId+'/'+([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,function(c){return(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16);})+'-'+file.name;
+  var upResp=await fetch(_CT_URL+'/storage/v1/object/'+_CT_BUCKET+'/'+path,{
+    method:'POST',
+    headers:{'apikey':_CT_KEY,'Authorization':'Bearer '+_CT_KEY,'Content-Type':file.type||'application/octet-stream','x-upsert':'false'},
+    body:file
+  });
+  if(!upResp.ok){alert('No se pudo subir el archivo.');return;}
+  var nuevoDoc={path:path,nombre:file.name,tipo:tipo,subido_at:new Date().toISOString()};
+  var documentos=(emb.documentos||[]).concat([nuevoDoc]);
+  await _ctUpdateField(embarqueId,{documentos:documentos},true);
+  // refresh this row in edit mode
+  _ctRender();
+}
+
+async function _ctDeleteDoc(embarqueId,path){
+  await fetch(_CT_URL+'/storage/v1/object/'+_CT_BUCKET,{
+    method:'DELETE',headers:_ctH(),body:JSON.stringify({prefixes:[path]})
+  });
+  var emb=_ctEmbarques.find(function(r){return r.id===embarqueId;});if(!emb)return;
+  var documentos=(emb.documentos||[]).filter(function(d){return d.path!==path;});
+  await _ctUpdateField(embarqueId,{documentos:documentos},true);
+  _ctRender();
+}
+
+async function _ctDownloadDoc(path){
+  var resp=await fetch(_CT_URL+'/storage/v1/object/sign/'+_CT_BUCKET+'/'+path,{
+    method:'POST',headers:_ctH(),body:JSON.stringify({expiresIn:60})
+  });
+  if(!resp.ok){alert('No se pudo generar el link de descarga.');return;}
+  var data=await resp.json();
+  var url=data.signedURL||data.signedUrl;
+  if(!url){alert('No se pudo generar el link de descarga.');return;}
+  var a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.click();
+}
+
+function _ctExportCSV(){
+  if(!_ctEmbarques.length)return;
+  var rows=[['Estado','Invoice','Descripción','Tipo','ETD','ETA','BL/AWB','Unidades','Cajas','Certificable','Documentos']];
+  _ctEmbarques.forEach(function(e){
+    rows.push([_CT_ELBL[e.estado_embarque]||'',e.invoice||'',e.descripcion||'',e.tipo_transporte||'',e.etd||'',e.eta||'',e.bl_awb||'',e.unidades!=null?e.unidades:'',e.cajas!=null?e.cajas:'',e.certificable||'',_ctAllDocs(e).map(function(d){return d.tipo+': '+d.nombre;}).join(' | ')]);
+  });
+  var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n');
+  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='embarques.csv';a.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 <script>
