@@ -252,58 +252,63 @@ footer p{font-size:.75rem;color:var(--muted);}
   position:fixed;top:0;left:0;width:100%;height:100%;
   background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2rem;z-index:1000;
+  gap:2rem;z-index:1000;padding:2rem;
   opacity:1;transition:opacity .35s ease;
 }
-#homeScreen .home-logo{
-  text-align:center;
-}
+#homeScreen .home-logo{text-align:center;}
 #homeScreen .home-logo h1{
-  font-family:'DM Sans',sans-serif;font-size:2.8rem;font-weight:300;
-  letter-spacing:.5em;color:#e8eaf0;margin:0;
+  font-family:'DM Sans',sans-serif;font-size:2.4rem;font-weight:300;
+  letter-spacing:.45em;text-indent:.45em;color:var(--text);margin:0;
 }
 #homeScreen .home-logo .home-line{
-  width:36px;height:1px;background:var(--accent);margin:.9rem auto;
-}
-#homeScreen .home-logo p{
-  font-size:.65rem;color:#7a9aaa;letter-spacing:.25em;text-transform:uppercase;margin:0;
+  width:28px;height:1px;background:var(--accent);margin:.7rem auto;opacity:.55;
 }
 #homeScreen .home-cards{
-  display:flex;gap:1rem;
+  display:flex;flex-direction:column;gap:.6rem;
+  width:min(860px,100%);
 }
-#homeScreen .home-card{
-  width:310px;padding:3.5rem 2.5rem;border-radius:12px;
-  display:flex;flex-direction:column;align-items:center;gap:1.6rem;
-  cursor:pointer;transition:transform .2s ease,opacity .2s ease;
-  text-decoration:none;position:relative;overflow:hidden;border:1px solid;
+#homeScreen .home-card.ventas{
+  display:flex;align-items:center;gap:2.5rem;
+  padding:2.25rem 2.75rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-top:2px solid var(--accent);
+  border-radius:12px;
+  cursor:pointer;
+  transition:box-shadow .22s ease,border-color .22s ease;
 }
-#homeScreen .home-card:hover{transform:translateY(-5px);}
-#homeScreen .home-card.ventas{background:#16395a;border-color:#1e5278;border-top-color:rgba(59,168,212,.55);}
-#homeScreen .home-card.cobranza{background:#1a2e42;border-color:#2a4a62;}
-#homeScreen .home-card.muestras{background:#162a1e;border-color:#2a4a36;}
-#homeScreen .home-card.muestras .hc-corner{background:rgba(45,180,122,.07);}
-#homeScreen .home-card.muestras .hc-title{color:#4dd490;}
-#homeScreen .home-card.muestras .hc-sub{color:#5ab880;}
-#homeScreen .home-card.cargo{background:#2e2416;border-color:#4a3a22;}
-#homeScreen .home-card.cargo .hc-corner{background:rgba(212,148,59,.07);}
-#homeScreen .home-card.cargo .hc-title{color:#d4a43b;}
-#homeScreen .home-card.cargo .hc-sub{color:#b8923a;}
-#homeScreen .home-card .hc-corner{
-  position:absolute;top:0;right:0;width:40px;height:40px;border-bottom-left-radius:12px;
+#homeScreen .home-card.ventas:hover{
+  border-color:rgba(59,168,212,.4);
+  box-shadow:0 0 0 1px rgba(59,168,212,.12),0 8px 40px rgba(0,0,0,.4);
 }
-#homeScreen .home-card.ventas .hc-corner{background:rgba(255,255,255,.12);}
-#homeScreen .home-card.cobranza .hc-corner{background:rgba(59,168,212,.07);}
-#homeScreen .home-card svg{width:68px;height:68px;}
-#homeScreen .home-card .hc-title{
-  font-size:.78rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500;
+#homeScreen .home-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+#homeScreen .home-card.secondary{
+  display:flex;flex-direction:column;gap:1rem;
+  padding:1.75rem 2.25rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;cursor:pointer;
+  transition:border-color .22s ease;
 }
-#homeScreen .home-card.ventas .hc-title{color:rgba(255,255,255,.9);}
-#homeScreen .home-card.cobranza .hc-title{color:#a8d8f0;}
-#homeScreen .home-card .hc-sub{
-  font-size:.75rem;text-align:center;line-height:1.6;
+#homeScreen .home-card.secondary:hover{border-color:rgba(59,168,212,.38);}
+#homeScreen .hc-text{display:flex;flex-direction:column;gap:.28rem;flex:1;}
+#homeScreen .home-card.ventas svg{width:48px;height:48px;flex-shrink:0;}
+#homeScreen .home-card.secondary svg{width:34px;height:34px;}
+#homeScreen .hc-label{
+  font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin-bottom:.1rem;
 }
-#homeScreen .home-card.ventas .hc-sub{color:rgba(255,255,255,.85);}
-#homeScreen .home-card.cobranza .hc-sub{color:#8ab8d0;}
+#homeScreen .hc-title{
+  font-size:1.3rem;font-weight:700;color:var(--text);letter-spacing:-.01em;line-height:1.1;
+}
+#homeScreen .home-card.ventas .hc-title{font-size:1.5rem;}
+#homeScreen .hc-sub{font-size:.78rem;color:var(--muted);line-height:1.55;}
+#homeScreen .hc-cta{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-size:.72rem;letter-spacing:.05em;color:var(--accent);
+  margin-top:.5rem;font-weight:600;
+  transition:gap .18s ease;
+}
+#homeScreen .home-card.ventas:hover .hc-cta{gap:.55rem;}
 /* Pantalla próximamente */
 #proximamente{
   position:fixed;top:0;left:0;width:100%;height:100%;
@@ -326,77 +331,6 @@ footer p{font-size:.75rem;color:var(--muted);}
   transition:background .15s;
 }
 #proximamente button:hover{background:var(--surface);}
-
-/* ── MÓDULO CARGO TRACKING (light, matching grantt-embarques) ── */
-@keyframes ship-float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(2deg)}}
-@keyframes ct-row-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){.ct-ship,.ct-row-anim{animation:none!important;}}
-#cargoScreen{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:#f0f2f5;overflow-y:auto;
-  display:none;flex-direction:column;
-  z-index:1000;opacity:0;transition:opacity .35s ease;
-  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#1a1d23;
-}
-#cargoScreen .ct-topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 24px;background:#fff;border-bottom:1px solid #e2e5ea;
-}
-#cargoScreen .ct-topbar .ct-back{
-  font-size:13px;color:#6b7280;cursor:pointer;
-  background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:6px 14px;
-  font-family:inherit;
-}
-#cargoScreen .ct-topbar .ct-back:hover{background:#f6f7f9;color:#1a1d23;}
-#cargoScreen .ct-brand{display:flex;align-items:center;gap:10px;}
-#cargoScreen .ct-wordmark{font-size:13px;font-weight:700;letter-spacing:.18em;color:#1a1d23;}
-#cargoScreen .ct-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:4px;background:#e0f2fe;color:#0369a1;}
-#cargoScreen .ct-body{padding:28px 24px 32px;}
-#cargoScreen .ct-title-row{display:flex;align-items:center;gap:12px;padding-bottom:24px;border-bottom:1px solid #e2e5ea;}
-#cargoScreen .ct-title{
-  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
-  font-size:clamp(32px,5vw,48px);font-weight:900;letter-spacing:-0.02em;
-  text-transform:uppercase;line-height:1;color:#1a1d23;margin:0;
-}
-#cargoScreen .ct-subtitle{font-size:13px;color:#6b7280;margin:8px 0 0;letter-spacing:.01em;}
-#cargoScreen .ct-subtitle .ct-stat{font-variant-numeric:tabular-nums;}
-#cargoScreen .ct-subtitle .ct-dot{color:#d1d5db;margin:0 .2rem;}
-#cargoScreen .ct-toolbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:14px 0 16px;}
-#cargoScreen .ct-btn-export{
-  background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:8px 14px;
-  cursor:pointer;color:#6b7280;font-size:13px;font-family:inherit;white-space:nowrap;
-}
-#cargoScreen .ct-btn-export:hover{background:#f6f7f9;color:#1a1d23;}
-#cargoScreen .ct-table-wrap{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto;}
-#cargoScreen .ct-tbl{width:100%;border-collapse:collapse;min-width:900px;}
-#cargoScreen .ct-tbl th{
-  font-size:11px;font-weight:600;color:#fff;background:#1e293b;
-  text-transform:uppercase;letter-spacing:.07em;
-  padding:9px 10px;text-align:left;border-bottom:1px solid #f0f2f5;white-space:nowrap;
-}
-#cargoScreen .ct-tbl td{
-  padding:9px 10px;font-size:13px;color:#1a1d23;
-  border-bottom:1px solid #f0f2f5;vertical-align:top;white-space:nowrap;
-}
-#cargoScreen .ct-tbl tr:nth-child(even) td{background:#f6f7f9;}
-#cargoScreen .ct-tbl tr:hover td{background:#eef0f4;}
-.ct-estado{display:inline-block;padding:4px 9px;border-radius:4px;font-size:12px;font-weight:600;border-width:1px;border-style:solid;}
-.ct-estado-en_origen{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8;}
-.ct-estado-en_transito{background:#fefce8;border-color:#fde68a;color:#a16207;}
-.ct-estado-en_bodega{background:#f0fdf4;border-color:#86efac;color:#15803d;}
-.ct-tipo{font-size:13px;color:#1a1d23;}
-.ct-cert-si{color:#1a1d23;font-weight:600;}
-.ct-cert-no{color:#9ca3af;}
-.ct-desc{white-space:normal!important;min-width:140px;color:#4b5563!important;}
-.ct-muted{color:#9ca3af;}
-.ct-qty-tag{font-size:9px;font-weight:700;letter-spacing:.05em;color:#9ca3af;margin-right:4px;}
-.ct-doc-link{color:#0891b2;cursor:default;font-size:12px;}
-.ct-loading{text-align:center;padding:3rem;color:#6b7280;font-size:14px;}
-.ct-empty{text-align:center;padding:3rem;color:#6b7280;font-size:14px;}
-@media(max-width:768px){
-  #cargoScreen .ct-body{padding:16px;}
-  #cargoScreen .ct-title{font-size:28px!important;}
-}
 
 /* ── MÓDULO MUESTRAS ──────────────────────── */
 #muestrasScreen{
@@ -537,15 +471,9 @@ footer p{font-size:.75rem;color:var(--muted);}
 ::-webkit-scrollbar-thumb:hover{background:#3d4a5c;}
 html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 @keyframes lsReveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-#homeScreen .home-card{animation:fadeIn .4s ease both;}
-#homeScreen .home-cards .home-card:nth-child(1){animation-delay:.04s}
-#homeScreen .home-cards .home-card:nth-child(2){animation-delay:.1s}
-#homeScreen .home-cards .home-card:nth-child(3){animation-delay:.16s}
-#homeScreen .home-cards .home-card:nth-child(4){animation-delay:.22s}
-#homeScreen .home-card.ventas:hover{border-color:rgba(59,168,212,.7);}
-#homeScreen .home-card.cobranza:hover{border-color:#3a6a8a;}
-#homeScreen .home-card.muestras:hover{border-color:#3a6a4a;}
-#homeScreen .home-card.cargo:hover{border-color:#6a5a2a;}
+#homeScreen .home-logo{animation:fadeIn .4s ease both;}
+#homeScreen .home-card.ventas{animation:fadeIn .38s cubic-bezier(0,.6,.4,1) both;animation-delay:.06s}
+#homeScreen .home-row{animation:fadeIn .38s cubic-bezier(0,.6,.4,1) both;animation-delay:.16s}
 .kpis .kpi-card:nth-child(1){animation-delay:.04s!important}
 .kpis .kpi-card:nth-child(2){animation-delay:.1s!important}
 .kpis .kpi-card:nth-child(3){animation-delay:.16s!important}
@@ -560,14 +488,14 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 .ls-logo-mark{width:58px;height:58px;margin-bottom:.6rem;display:block;}
 .ls-brand{gap:.3rem;margin-bottom:1.2rem;}
 @media(max-width:768px){
-  #homeScreen .home-cards{flex-direction:column;align-items:center;}
-  #homeScreen .home-card{width:min(320px,calc(100vw - 2.5rem));padding:2.5rem 2rem;}
+  #homeScreen .home-card.ventas{flex-direction:column;align-items:flex-start;gap:1.25rem;padding:1.75rem 1.75rem;}
+  #homeScreen .home-row{grid-template-columns:1fr;}
+  #homeScreen .home-card.secondary{padding:1.5rem 1.75rem;}
   .kpis{grid-template-columns:repeat(2,1fr) !important;}
   .kpi-value{font-size:1.8rem !important;}
 }
 @media(max-width:480px){
-  #homeScreen .home-card{width:calc(100vw - 2rem);padding:2rem 1.5rem;}
-  #homeScreen .home-logo h1{font-size:2rem;letter-spacing:.35em;}
+  #homeScreen .home-logo h1{font-size:1.9rem;letter-spacing:.35em;text-indent:.35em;}
   .ls-card{padding:2rem 1.25rem 1.5rem;}
   .ls-brand-name{font-size:2.2rem;}
   .ls-logo-mark{width:48px;height:48px;}
@@ -699,96 +627,49 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 <div id="homeScreen">
   <div class="home-logo">
     <h1>GRANTT</h1>
-
+    <div class="home-line"></div>
   </div>
   <div class="home-cards">
     <div class="home-card ventas" onclick="enterVentas()">
-      <div class="hc-corner"></div>
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="28" width="8" height="14" rx="2" fill="rgba(255,255,255,0.85)"/>
-        <rect x="20" y="18" width="8" height="24" rx="2" fill="rgba(255,255,255,0.85)"/>
-        <rect x="34" y="8" width="8" height="34" rx="2" fill="rgba(255,255,255,0.85)"/>
+        <rect x="6" y="28" width="8" height="14" rx="2" fill="var(--accent)" opacity=".6"/>
+        <rect x="20" y="18" width="8" height="24" rx="2" fill="var(--accent)" opacity=".8"/>
+        <rect x="34" y="8" width="8" height="34" rx="2" fill="var(--accent)"/>
       </svg>
-      <div class="hc-title">Ventas</div>
-      <div class="hc-sub">Comparativo anual por vendedor y categoría</div>
-    </div>
-    <div class="home-card cobranza" onclick="enterCobranza()">
-      <div class="hc-corner"></div>
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="8" width="28" height="34" rx="3" stroke="#3ba8d4" stroke-width="2"/>
-        <line x1="16" y1="18" x2="32" y2="18" stroke="#3ba8d4" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="24" x2="32" y2="24" stroke="#3ba8d4" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="30" x2="24" y2="30" stroke="#3ba8d4" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <div class="hc-title">Cobranza</div>
-      <div class="hc-sub">Facturas y estados de pago por cliente</div>
-    </div>
-    <div class="home-card muestras" onclick="enterMuestras()">
-      <div class="hc-corner"></div>
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="20" width="32" height="22" rx="3" stroke="#2db47a" stroke-width="2"/>
-        <polyline points="16,20 16,10 32,10 32,20" stroke="#2db47a" stroke-width="2" stroke-linejoin="round"/>
-        <line x1="20" y1="10" x2="20" y2="6" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="28" y1="10" x2="28" y2="6" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="29" x2="32" y2="29" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="35" x2="26" y2="35" stroke="#2db47a" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <div class="hc-title">Muestras</div>
-      <div class="hc-sub">Estado de certificaciones SEC</div>
-    </div>
-    <div class="home-card cargo" onclick="enterCargo()">
-      <div class="hc-corner"></div>
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="22" width="36" height="18" rx="2" stroke="#d4943b" stroke-width="2"/>
-        <polyline points="6,22 24,12 42,22" stroke="#d4943b" stroke-width="2" stroke-linejoin="round" fill="none"/>
-        <line x1="16" y1="28" x2="32" y2="28" stroke="#d4943b" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="34" x2="26" y2="34" stroke="#d4943b" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <div class="hc-title">Cargo Tracking</div>
-      <div class="hc-sub">Estado de embarques en tránsito</div>
-    </div>
-  </div>
-</div>
-
-<!-- CARGO TRACKING SCREEN -->
-<div id="cargoScreen">
-  <div class="ct-topbar">
-    <button class="ct-back" onclick="volverHomeFromCargo()">← Volver</button>
-    <div class="ct-brand">
-      <svg width="22" height="22" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#0891b2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="ct-wordmark">GRANTT</span>
-    </div>
-    <span class="ct-badge">ADMIN</span>
-  </div>
-  <div class="ct-body">
-    <div class="ct-title-row">
-      <div>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <h1 class="ct-title">Cargo Tracking</h1>
-          <svg class="ct-ship" width="40" height="30" viewBox="-55 -42 115 76" style="flex-shrink:0;animation:ship-float 3s ease-in-out infinite;">
-            <path d="M-55 28 Q-40 18,-25 28 Q-10 38,5 28 Q20 18,35 28 Q50 38,60 28" fill="none" stroke="#0891b2" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
-            <path d="M-40 4 L44 4 L38 24 Q0 30,-34 24 Z" fill="#0891b2"/>
-            <rect x="-40" y="0" width="84" height="6" rx="3" fill="#0e7490"/>
-            <rect x="-34" y="-10" width="12" height="12" rx="2" fill="#0e7490"/>
-            <rect x="-20" y="-10" width="12" height="12" rx="2" fill="#0891b2"/>
-            <rect x="-6" y="-10" width="12" height="12" rx="2" fill="#0e7490"/>
-            <rect x="-28" y="-20" width="12" height="10" rx="2" fill="#0891b2" opacity="0.85"/>
-            <rect x="-14" y="-20" width="12" height="10" rx="2" fill="#0e7490" opacity="0.85"/>
-            <rect x="18" y="-22" width="20" height="24" rx="4" fill="#0e7490"/>
-            <rect x="22" y="-18" width="12" height="6" rx="2" fill="#164e63"/>
-            <rect x="22" y="-34" width="10" height="12" rx="3" fill="#0891b2"/>
-            <circle cx="38" cy="-34" r="6" fill="#0891b2" opacity="0.25"/>
-            <circle cx="46" cy="-42" r="4.5" fill="#0891b2" opacity="0.15"/>
-          </svg>
-        </div>
-        <p class="ct-subtitle" id="ct-subtitle">Cargando...</p>
+      <div class="hc-text">
+        <div class="hc-label">Módulo principal</div>
+        <div class="hc-title">Ventas</div>
+        <div class="hc-sub">Comparativo anual por vendedor y categoría</div>
+        <div class="hc-cta">Ingresar <span>→</span></div>
       </div>
     </div>
-    <div class="ct-toolbar">
-      <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="exportCargoCSV()">↓ Exportar CSV</button>
-    </div>
-    <div class="ct-table-wrap">
-      <div id="ct-content"><div class="ct-loading">Cargando embarques...</div></div>
+    <div class="home-row">
+      <div class="home-card secondary cobranza" onclick="enterCobranza()">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="8" width="28" height="34" rx="3" stroke="var(--muted)" stroke-width="1.5"/>
+          <line x1="16" y1="18" x2="32" y2="18" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="16" y1="24" x2="32" y2="24" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="16" y1="30" x2="24" y2="30" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div class="hc-title">Cobranza</div>
+          <div class="hc-sub">Facturas y estados de pago por cliente</div>
+        </div>
+      </div>
+      <div class="home-card secondary muestras" onclick="enterMuestras()">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="20" width="32" height="22" rx="3" stroke="var(--muted)" stroke-width="1.5"/>
+          <polyline points="16,20 16,10 32,10 32,20" stroke="var(--muted)" stroke-width="1.5" stroke-linejoin="round"/>
+          <line x1="20" y1="10" x2="20" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="28" y1="10" x2="28" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="16" y1="29" x2="32" y2="29" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="16" y1="35" x2="26" y2="35" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div class="hc-title">Muestras</div>
+          <div class="hc-sub">Estado de certificaciones SEC</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2417,19 +2298,6 @@ function volverHomeFromMuestras(){
     fadeIn(document.getElementById('homeScreen'));
   });
 }
-function enterCargo(){
-  sessionStorage.setItem('gs_screen','cargo');
-  fadeOut(document.getElementById('homeScreen'), ()=>{
-    fadeIn(document.getElementById('cargoScreen'));
-    if(typeof loadCargo==='function') loadCargo();
-  });
-}
-function volverHomeFromCargo(){
-  sessionStorage.setItem('gs_screen','home');
-  fadeOut(document.getElementById('cargoScreen'), ()=>{
-    fadeIn(document.getElementById('homeScreen'));
-  });
-}
 </script>
 <script>
 // ponytail: client-side password — change LS_PWD to update
@@ -2493,109 +2361,10 @@ function checkAndRefresh(btn){
     var ms=document.getElementById('muestrasScreen');
     if(hs2)hs2.style.display='none';
     if(ms){ms.style.display='block';ms.style.opacity='1';setTimeout(function(){try{if(typeof renderMuestrasScreen==='function') renderMuestrasScreen();}catch(e){console.error(e);}},50);}
-  } else if(scr==='cargo'){
-    var hs3=document.getElementById('homeScreen');
-    var cs=document.getElementById('cargoScreen');
-    if(hs3)hs3.style.display='none';
-    if(cs){cs.style.display='flex';cs.style.opacity='1';setTimeout(function(){if(typeof loadCargo==='function') loadCargo();},50);}
   }
 })();
 </script>
 </div>
-
-<script>
-// ── CARGO TRACKING (read-only from embarques Supabase) ──────────────
-var _ctSb=null;
-function _ctClient(){
-  if(_ctSb)return _ctSb;
-  var url='https://bmxnqzfoskugnsdkytql.supabase.co';
-  var key='sb_publishable_rqhiObYXtBQWa4VhecKB6A_UAFFDrD0';
-  _ctSb={url:url,key:key};
-  return _ctSb;
-}
-var _ctLoaded=false;
-var _ctData=[];
-function loadCargo(){
-  var el=document.getElementById('ct-content');
-  if(!el)return;
-  if(_ctLoaded){return;}
-  el.innerHTML='<div class="ct-loading">Cargando embarques...</div>';
-  var sb=_ctClient();
-  fetch(sb.url+'/rest/v1/embarques?select=*&order=updated_at.desc',{
-    headers:{'apikey':sb.key,'Authorization':'Bearer '+sb.key}
-  })
-  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
-  .then(function(data){
-    _ctLoaded=true;
-    _ctData=data;
-    var origen=0,transito=0,bodega=0;
-    data.forEach(function(e){
-      if(e.estado_embarque==='en_origen')origen++;
-      else if(e.estado_embarque==='en_transito')transito++;
-      else if(e.estado_embarque==='en_bodega')bodega++;
-    });
-    var sub=document.getElementById('ct-subtitle');
-    if(sub){
-      var parts=['<span class="ct-stat" style="color:#374151;">'+data.length+'</span> embarques'];
-      if(origen)parts.push('<span class="ct-dot">·</span><span style="color:#2563eb;">'+origen+' en origen</span>');
-      if(transito)parts.push('<span class="ct-dot">·</span><span style="color:#a16207;">'+transito+' en tránsito</span>');
-      if(bodega)parts.push('<span class="ct-dot">·</span><span style="color:#16a34a;">'+bodega+' en bodega</span>');
-      sub.innerHTML=parts.join(' ');
-    }
-    if(data.length){var exp=document.getElementById('ct-export');if(exp)exp.style.display='';}
-    if(!data.length){el.innerHTML='<div class="ct-empty">No hay embarques registrados</div>';return;}
-    var ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
-    var TLBL={aereo:'Aéreo',maritimo:'Marítimo'};
-    var html='<table class="ct-tbl"><thead><tr>';
-    html+='<th>Estado</th><th>Invoice</th><th>Descripción</th><th>Tipo transporte</th><th>ETD</th><th>ETA</th><th>BL/AWB</th><th>Unidades</th><th>Certificable</th><th>Documentación</th>';
-    html+='</tr></thead><tbody>';
-    data.forEach(function(e,i){
-      var est=e.estado_embarque||'en_origen';
-      var und='<span class="ct-muted">—</span>';
-      if(e.unidades!=null&&e.cajas!=null)und='<span class="ct-qty-tag">CAJAS</span>'+e.cajas.toLocaleString('es-CL')+' <span class="ct-qty-tag">UND</span>'+e.unidades.toLocaleString('es-CL');
-      else if(e.unidades!=null)und='<span class="ct-qty-tag">UND</span>'+e.unidades.toLocaleString('es-CL');
-      else if(e.cajas!=null)und='<span class="ct-qty-tag">CAJAS</span>'+e.cajas.toLocaleString('es-CL');
-      var doc='<span class="ct-muted" style="font-size:12px;">Sin doc</span>';
-      if(e.documento_nombre)doc='<span class="ct-doc-link">↓ '+e.documento_nombre+'</span>';
-      html+='<tr class="ct-row-anim" style="animation:ct-row-in .16s ease-out both;animation-delay:'+(i*25)+'ms;">';
-      html+='<td><span class="ct-estado ct-estado-'+est+'">'+(ELBL[est]||est)+'</span></td>';
-      html+='<td>'+(e.invoice||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td class="ct-desc">'+(e.descripcion||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td class="ct-tipo">'+(TLBL[e.tipo_transporte]||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+(e.etd?_ctFmtDate(e.etd):'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+(e.eta?_ctFmtDate(e.eta):'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+(e.bl_awb||'<span class="ct-muted">—</span>')+'</td>';
-      html+='<td>'+und+'</td>';
-      html+='<td><span class="'+(e.certificable==='si'?'ct-cert-si':'ct-cert-no')+'">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="ct-muted">—</span>')+'</span></td>';
-      html+='<td>'+doc+'</td>';
-      html+='</tr>';
-    });
-    html+='</tbody></table>';
-    el.innerHTML=html;
-  })
-  .catch(function(err){
-    console.error('cargo load error',err);
-    el.innerHTML='<div class="ct-empty" style="color:#c05050;">Error al cargar embarques</div>';
-  });
-}
-function exportCargoCSV(){
-  if(!_ctData.length)return;
-  var ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
-  var rows=[['Estado','Invoice','Descripción','Tipo Transporte','ETD','ETA','BL/AWB','Unidades','Cajas','Certificable']];
-  _ctData.forEach(function(e){
-    rows.push([ELBL[e.estado_embarque]||'',e.invoice||'','"'+(e.descripcion||'')+'"',e.tipo_transporte||'',e.etd||'',e.eta||'',e.bl_awb||'',e.unidades!=null?e.unidades:'',e.cajas!=null?e.cajas:'',e.certificable||'']);
-  });
-  var csv=rows.map(function(r){return r.join(',');}).join('\n');
-  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='embarques.csv';a.click();
-}
-function _ctFmtDate(s){
-  if(!s)return '—';
-  var parts=s.split('-');
-  if(parts.length===3)return parts[2]+'/'+parts[1]+'/'+parts[0];
-  return s;
-}
-</script>
 
 <script>
 // ── ADMIN EXCEL UPLOAD ───────────────────────────────────────────────
