@@ -430,6 +430,46 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-empty-state{text-align:center;padding:4rem 2rem;color:#6b7280;font-size:14px;}
 #cargoScreen .ct-empty-state p{margin:0 0 16px;font-size:15px;color:#374151;}
 #cargoScreen .ct-tbl td{white-space:nowrap;vertical-align:top;}
+/* ── MÓDULO COBRANZAS ─────────────────────── */
+#cobranzasScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);overflow-y:auto;display:none;flex-direction:column;z-index:1000;opacity:0;transition:opacity .35s ease;}
+.cob-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.cob-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;padding:0;transition:color .15s;}
+.cob-back:hover{color:var(--accent);}
+.cob-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.15em;color:var(--accent);flex:1;}
+.cob-upload-lbl{cursor:pointer;display:flex;align-items:center;gap:.5rem;padding:.35rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.78rem;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;}
+.cob-upload-lbl:hover{border-color:var(--accent);color:var(--accent);}
+.cob-body{padding:1.5rem;max-width:1400px;margin:0 auto;width:100%;box-sizing:border-box;}
+.cob-upload-zone{border:1.5px dashed var(--border);border-radius:10px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:1.5rem;}
+.cob-upload-zone:hover{border-color:var(--accent);background:rgba(59,168,212,.04);}
+.cob-upload-zone .cob-up-icon{font-size:2rem;margin-bottom:.6rem;opacity:.6;}
+.cob-upload-zone p{font-size:.82rem;color:var(--muted);margin:.25rem 0;}
+.cob-upload-zone strong{color:var(--text);}
+.cob-filters{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:1.1rem;}
+.cob-fbtn{padding:.32rem .8rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.78rem;transition:all .15s;}
+.cob-fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+.cob-vsel{padding:.32rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;}
+.cob-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:.65rem;margin-bottom:1.1rem;}
+.cob-kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;}
+.cob-kpi .kv{font-family:'Bebas Neue',sans-serif;font-size:1.65rem;letter-spacing:.04em;color:var(--accent);}
+.cob-kpi .kl{font-size:.7rem;color:var(--muted);margin-top:.12rem;letter-spacing:.04em;}
+.cob-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
+.cob-tbl{width:100%;border-collapse:collapse;font-size:.81rem;}
+.cob-tbl thead th{background:var(--surface2);padding:.6rem .9rem;text-align:left;font-weight:600;font-size:.72rem;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+.cob-tbl tbody td{padding:.5rem .9rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.cob-tbl tbody tr:last-child td{border-bottom:none;}
+.cob-tbl tbody tr:hover{background:var(--surface);}
+.cob-amt{font-weight:600;text-align:right;font-variant-numeric:tabular-nums;}
+.cob-amt.venc{color:var(--negative);}
+.cob-dt.venc{color:var(--negative);}
+.cob-vtag{display:inline-block;padding:.12rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600;letter-spacing:.04em;background:rgba(59,168,212,.12);color:var(--accent);}
+.cob-info{padding:.65rem .9rem;border-radius:6px;font-size:.8rem;margin-bottom:.9rem;}
+.cob-info.ok{background:rgba(46,158,106,.1);color:var(--positive);}
+.cob-info.err{background:rgba(192,80,80,.1);color:var(--negative);}
+.cob-empty{padding:3rem;text-align:center;color:var(--muted);font-size:.85rem;}
+.cob-bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.7rem;font-size:.78rem;color:var(--muted);}
+.cob-csv{margin-left:auto;padding:.28rem .7rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.73rem;transition:all .15s;}
+.cob-csv:hover{border-color:var(--accent);color:var(--accent);}
+
 /* Pantalla próximamente */
 #proximamente{
   position:fixed;top:0;left:0;width:100%;height:100%;
@@ -953,6 +993,23 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   </div>
 </div>
 <!-- PRÓXIMAMENTE -->
+<div id="cobranzasScreen">
+  <div class="cob-header">
+    <button class="cob-back" onclick="volverHomeFromCobranza()">← Volver</button>
+    <div class="cob-title">Cobranza</div>
+    <label class="cob-upload-lbl">↑ Cargar Excel<input type="file" accept=".xlsx,.xls" hidden onchange="_cobHandleUpload(this)"></label>
+  </div>
+  <div class="cob-body">
+    <div id="cob-fb"></div>
+    <div id="cob-main">
+      <div class="cob-upload-zone" onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()">
+        <div class="cob-up-icon">📋</div>
+        <p><strong>Cargar archivo de cobranza</strong></p>
+        <p>Haz clic para seleccionar el Excel exportado desde Softland</p>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="proximamente">
   <div style="position:absolute;top:1.2rem;left:1.5rem;">
     <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
@@ -1979,8 +2036,15 @@ function enterVentas(){
   });
 }
 function enterCobranza(){
+  sessionStorage.setItem('gs_screen','cobranza');
   fadeOut(document.getElementById('homeScreen'), ()=>{
-    fadeIn(document.getElementById('proximamente'));
+    fadeIn(document.getElementById('cobranzasScreen'));
+  });
+}
+function volverHomeFromCobranza(){
+  sessionStorage.setItem('gs_screen','home');
+  fadeOut(document.getElementById('cobranzasScreen'), ()=>{
+    fadeIn(document.getElementById('homeScreen'));
   });
 }
 function enterCargoTracking(){
@@ -2216,6 +2280,23 @@ function volverHomeFromMuestras(){
   </div>
 </div>
 <!-- PRÓXIMAMENTE -->
+<div id="cobranzasScreen">
+  <div class="cob-header">
+    <button class="cob-back" onclick="volverHomeFromCobranza()">← Volver</button>
+    <div class="cob-title">Cobranza</div>
+    <label class="cob-upload-lbl">↑ Cargar Excel<input type="file" accept=".xlsx,.xls" hidden onchange="_cobHandleUpload(this)"></label>
+  </div>
+  <div class="cob-body">
+    <div id="cob-fb"></div>
+    <div id="cob-main">
+      <div class="cob-upload-zone" onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()">
+        <div class="cob-up-icon">📋</div>
+        <p><strong>Cargar archivo de cobranza</strong></p>
+        <p>Haz clic para seleccionar el Excel exportado desde Softland</p>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="proximamente">
   <div style="position:absolute;top:1.2rem;left:1.5rem;">
     <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
@@ -2515,8 +2596,15 @@ function enterVentas(){
   });
 }
 function enterCobranza(){
+  sessionStorage.setItem('gs_screen','cobranza');
   fadeOut(document.getElementById('homeScreen'), ()=>{
-    fadeIn(document.getElementById('proximamente'));
+    fadeIn(document.getElementById('cobranzasScreen'));
+  });
+}
+function volverHomeFromCobranza(){
+  sessionStorage.setItem('gs_screen','home');
+  fadeOut(document.getElementById('cobranzasScreen'), ()=>{
+    fadeIn(document.getElementById('homeScreen'));
   });
 }
 function enterCargoTracking(){
@@ -2963,6 +3051,224 @@ function _ctExportCSV(){
 }
 </script>
 <script>
+// ── MÓDULO COBRANZAS ─────────────────────────────────────────────────────────
+var _cobRawData=[];
+var _cobFilterYear='all';
+var _cobFilterVendor='all';
+var _cobFechaCorte=null;
+
+var _COB_VENDORS=[
+  {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado'},
+  {key:'marcelo',  label:'Marcelo Herrera',  match:'marcelo herrera'},
+  {key:'joel',     label:'Joel Córdoba',      match:'joel cord'},
+  {key:'oscar',    label:'Oscar Bucarey',     match:'oscar bucarey'},
+  {key:'sandra',   label:'Sandra Ortega',     match:'sandra ortega'},
+  {key:'diego',    label:'Diego Rivero',      match:'diego rivero'}
+];
+
+function _cobFb(ok,msg){
+  var el=document.getElementById('cob-fb');if(!el)return;
+  if(!msg){el.innerHTML='';return;}
+  el.innerHTML='<div class="cob-info '+(ok?'ok':'err')+'">'+msg+'</div>';
+  if(ok)setTimeout(function(){el.innerHTML='';},3500);
+}
+
+function _cobFmtDate(d){
+  if(!d)return'—';
+  var dd=d.getDate(),mm=d.getMonth()+1,yy=d.getFullYear();
+  return(dd<10?'0'+dd:dd)+'/'+(mm<10?'0'+mm:mm)+'/'+yy;
+}
+
+function _cobFmtCLP(n){
+  if(n===null||n===undefined||isNaN(n))return'—';
+  return'$'+Math.round(n).toLocaleString('es-CL');
+}
+
+function _cobParseDate(val){
+  if(!val)return null;
+  if(val instanceof Date)return isNaN(val.getTime())?null:val;
+  if(typeof val==='string'){
+    val=val.trim();
+    var m=val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(m)return new Date(+m[3],+m[2]-1,+m[1]);
+    m=val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+  }
+  if(typeof val==='number'){
+    // Excel serial date (days since 1900-01-00)
+    var d=new Date(Math.round((val-25569)*86400*1000));
+    return isNaN(d.getTime())?null:d;
+  }
+  return null;
+}
+
+function _cobMatchVendor(name){
+  var n=(name||'').toLowerCase().trim();
+  for(var i=0;i<_COB_VENDORS.length;i++){
+    if(n.indexOf(_COB_VENDORS[i].match)>=0)return _COB_VENDORS[i];
+  }
+  return null;
+}
+
+function _cobHandleUpload(input){
+  var file=input&&input.files&&input.files[0];if(!file)return;
+  input.value='';
+  _cobFb(false,'');
+  _loadSheetJS(function(){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{_cobParseFile(e.target.result,file.name);}
+      catch(err){_cobFb(false,'Error al procesar: '+err.message);console.error(err);}
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function _cobParseFile(data,fname){
+  var wb=XLSX.read(data,{type:'array',cellDates:true});
+  var ws=wb.Sheets[wb.SheetNames[0]];
+  var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
+
+  // Encuentra fila de encabezado buscando "descripci" + "cuenta"
+  var hdr=-1;
+  for(var i=0;i<Math.min(rows.length,20);i++){
+    var r=rows[i]||[];
+    for(var j=0;j<r.length;j++){
+      var c=(r[j]||'').toString().toLowerCase();
+      if(c.indexOf('descripci')>=0&&c.indexOf('cuenta')>=0){hdr=i;break;}
+    }
+    if(hdr>=0)break;
+  }
+  if(hdr<0){_cobFb(false,'No se encontró la fila de encabezados.');return;}
+
+  var hs=rows[hdr].map(function(h){return h?h.toString().toLowerCase().trim():'';});
+  function fi(a,b){return hs.findIndex(function(h){return h.indexOf(a)>=0&&(!b||h.indexOf(b)>=0);});}
+  var cDesc=fi('descripci','cuenta'),cRut=fi('rut'),cNom=fi('nombre','auxiliar');
+  var cTipo=fi('tipo'),cFecha=fi('vencimiento'),cSaldo=fi('saldo'),cVend=fi('vendedor');
+
+  if([cDesc,cRut,cNom,cTipo,cFecha,cSaldo,cVend].some(function(c){return c<0;})){
+    _cobFb(false,'No se encontraron todas las columnas requeridas (RUT, Tipo Dcto., Vencimiento, Saldo, Vendedor).');return;
+  }
+
+  // Corte: viernes de la semana actual
+  var hoy=new Date();
+  var dow=hoy.getDay(); // 0=Dom,1=Lun,...,5=Vie,6=Sab
+  var dV=dow===0?-2:dow===6?-1:5-dow;
+  var viernes=new Date(hoy);viernes.setDate(hoy.getDate()+dV);viernes.setHours(23,59,59,999);
+  _cobFechaCorte=viernes;
+
+  _cobRawData=[];
+  for(var row=hdr+1;row<rows.length;row++){
+    var rv=rows[row];if(!rv)continue;
+    var desc=(rv[cDesc]||'').toString().toLowerCase();
+    if(desc.indexOf('clientes nacionales')<0)continue;
+    var tipo=(rv[cTipo]||'').toString().toLowerCase();
+    if(tipo.indexOf('venta afecta electronica')<0)continue;
+    var vnom=(rv[cVend]||'').toString().trim();
+    var vm=_cobMatchVendor(vnom);if(!vm)continue;
+    var fecha=_cobParseDate(rv[cFecha]);if(!fecha)continue;
+    var yr=fecha.getFullYear();if(yr!==2025&&yr!==2026)continue;
+    if(fecha>viernes)continue;
+    var saldo=typeof rv[cSaldo]==='number'?rv[cSaldo]:parseFloat((rv[cSaldo]||'').toString().replace(/[^\d.-]/g,''))||0;
+    _cobRawData.push({
+      rut:(rv[cRut]||'').toString().trim(),
+      nombre:(rv[cNom]||'').toString().trim(),
+      fecha:fecha,year:yr,saldo:saldo,
+      vnom:vnom,vkey:vm.key,vlbl:vm.label
+    });
+  }
+
+  _cobFilterYear='all';_cobFilterVendor='all';
+  _cobFb(true,'✓ '+_cobRawData.length+' documentos cargados · '+fname+' · Corte: '+_cobFmtDate(viernes));
+  _cobRender();
+}
+
+function _cobFiltered(){
+  return _cobRawData.filter(function(r){
+    if(_cobFilterYear!=='all'&&r.year!==+_cobFilterYear)return false;
+    if(_cobFilterVendor!=='all'&&r.vkey!==_cobFilterVendor)return false;
+    return true;
+  });
+}
+
+function _cobSetYear(y){_cobFilterYear=y;_cobRender();}
+function _cobSetVendor(v){_cobFilterVendor=v;_cobRender();}
+
+function _cobRender(){
+  var main=document.getElementById('cob-main');if(!main)return;
+  var data=_cobFiltered();
+  var hoy=new Date();hoy.setHours(0,0,0,0);
+  var total=data.reduce(function(s,r){return s+r.saldo;},0);
+  var vencData=data.filter(function(r){var d=new Date(r.fecha);d.setHours(0,0,0,0);return d<hoy;});
+  var vencSum=vencData.reduce(function(s,r){return s+r.saldo;},0);
+
+  // Totales por vendedor
+  var byV={};
+  _COB_VENDORS.forEach(function(v){byV[v.key]={l:v.label,t:0,n:0};});
+  data.forEach(function(r){if(byV[r.vkey]){byV[r.vkey].t+=r.saldo;byV[r.vkey].n++;}});
+
+  // Botones de año
+  var yBtns=['all','2025','2026'].map(function(y){
+    return'<button class="cob-fbtn'+((_cobFilterYear===y)?' active':'')+'" onclick="_cobSetYear(\''+y+'\')">'+(y==='all'?'Todos':y)+'</button>';
+  }).join('');
+
+  // Selector de vendedor
+  var vOpts='<option value="all">Todos los vendedores</option>'+
+    _COB_VENDORS.map(function(v){
+      return'<option value="'+v.key+'"'+(_cobFilterVendor===v.key?' selected':'')+'>'+v.label+'</option>';
+    }).join('');
+
+  // KPI tarjetas por vendedor
+  var kpiV=_COB_VENDORS.filter(function(v){return byV[v.key].n>0;}).map(function(v){
+    var d=byV[v.key];
+    return'<div class="cob-kpi"><div class="kv" style="font-size:1.25rem;">'+_cobFmtCLP(d.t)+'</div><div class="kl">'+d.l+' ('+d.n+')</div></div>';
+  }).join('');
+
+  // Filas de tabla ordenadas por fecha
+  var tRows=data.slice().sort(function(a,b){return a.fecha-b.fecha;}).map(function(r){
+    var d=new Date(r.fecha);d.setHours(0,0,0,0);var isV=d<hoy;
+    return'<tr>'
+      +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
+      +'<td style="white-space:nowrap">'+r.rut+'</td>'
+      +'<td>'+r.nombre+'</td>'
+      +'<td><span class="cob-vtag">'+r.vlbl+'</span></td>'
+      +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
+      +'</tr>';
+  }).join('');
+
+  main.innerHTML=
+    '<div class="cob-filters">'+yBtns
+      +'<select class="cob-vsel" onchange="_cobSetVendor(this.value)">'+vOpts+'</select>'
+    +'</div>'
+    +'<div class="cob-kpis">'
+      +'<div class="cob-kpi"><div class="kv">'+_cobFmtCLP(total)+'</div><div class="kl">Total por cobrar ('+data.length+' doc.)</div></div>'
+      +'<div class="cob-kpi"><div class="kv" style="color:var(--negative)">'+_cobFmtCLP(vencSum)+'</div><div class="kl">Vencido ('+vencData.length+' doc.)</div></div>'
+      +kpiV
+    +'</div>'
+    +(data.length===0
+      ?'<div class="cob-empty">Sin documentos para los filtros seleccionados.</div>'
+      :'<div class="cob-bar"><span>'+data.length+' documentos</span><span>·</span>'
+        +'<span>Corte al '+_cobFmtDate(_cobFechaCorte)+'</span>'
+        +'<button class="cob-csv" onclick="_cobExportCSV()">⬇ Exportar CSV</button></div>'
+      +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
+        +'<th>Fecha Venc.</th><th>RUT</th><th>Cliente</th><th>Vendedor</th><th style="text-align:right">Saldo</th>'
+        +'</tr></thead><tbody>'+tRows+'</tbody></table></div>'
+    );
+}
+
+function _cobExportCSV(){
+  var data=_cobFiltered();
+  var rows=[['Fecha Venc.','RUT','Cliente','Vendedor','Saldo'].join(',')];
+  data.slice().sort(function(a,b){return a.fecha-b.fecha;}).forEach(function(r){
+    rows.push([_cobFmtDate(r.fecha),'"'+r.rut+'"','"'+r.nombre.replace(/"/g,'""')+'"','"'+r.vlbl+'"',r.saldo].join(','));
+  });
+  var blob=new Blob(['﻿'+rows.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='cobranza.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+<script>
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
@@ -3030,6 +3336,11 @@ function checkAndRefresh(btn){
     var cs=document.getElementById('cargoScreen');
     if(hs3)hs3.style.display='none';
     if(cs){cs.style.display='flex';cs.style.opacity='1';setTimeout(function(){if(typeof loadCargo==='function') loadCargo();},50);}
+  } else if(scr==='cobranza'){
+    var hs4=document.getElementById('homeScreen');
+    var cob=document.getElementById('cobranzasScreen');
+    if(hs4)hs4.style.display='none';
+    if(cob){cob.style.display='flex';cob.style.opacity='1';}
   }
 })();
 </script>
