@@ -3158,7 +3158,7 @@ function _cobParseFile(data,fname){
     var rv=rows[row];if(!rv)continue;
     var desc=(rv[cDesc]||'').toString().toLowerCase();
     if(desc.indexOf('clientes nacionales')<0)continue;
-    var tipo=(rv[cTipo]||'').toString().toLowerCase();
+    var tipo=(rv[cTipo]||'').toString().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
     if(tipo.indexOf('venta afecta electronica')<0)continue;
     var vnom=(rv[cVend]||'').toString().trim();
     var vm=_cobMatchVendor(vnom);if(!vm)continue;
