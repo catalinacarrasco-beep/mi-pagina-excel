@@ -3159,7 +3159,6 @@ function _cobParseFile(data,fname){
     var desc=(rv[cDesc]||'').toString().toLowerCase();
     if(desc.indexOf('clientes nacionales')<0)continue;
     var tipo=(rv[cTipo]||'').toString().toLowerCase();
-    if(tipo.indexOf('venta afecta electr')<0)continue;
     var vnom=(rv[cVend]||'').toString().trim();
     var vm=_cobMatchVendor(vnom);if(!vm)continue;
     var fecha=_cobParseDate(rv[cFecha]);if(!fecha)continue;
