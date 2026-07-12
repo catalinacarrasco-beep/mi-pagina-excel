@@ -3168,7 +3168,7 @@ function _cobParseFile(data,fname){
     var vm=_cobMatchVendor(vnom);if(!vm)continue;
     var fecha=_cobParseDate(rv[cFecha]);if(!fecha)continue;
     var yr=fecha.getFullYear();if(yr!==2025&&yr!==2026)continue;
-    if(fecha>viernes)continue;
+    if(yr===2026&&fecha>viernes)continue;
     var saldo=typeof rv[cSaldo]==='number'?rv[cSaldo]:parseFloat((rv[cSaldo]||'').toString().replace(/[^\d.-]/g,''))||0;
     _cobRawData.push({
       rut:(rv[cRut]||'').toString().trim(),
@@ -3228,11 +3228,11 @@ function _cobRender(){
   var tRows=data.slice().sort(function(a,b){return a.fecha-b.fecha;}).map(function(r){
     var d=new Date(r.fecha);d.setHours(0,0,0,0);var isV=d<hoy;
     return'<tr>'
-      +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td style="white-space:nowrap">'+r.rut+'</td>'
       +'<td>'+r.nombre+'</td>'
-      +'<td><span class="cob-vtag">'+r.vlbl+'</span></td>'
+      +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
+      +'<td><span class="cob-vtag">'+r.vlbl+'</span></td>'
       +'</tr>';
   }).join('');
 
@@ -3248,19 +3248,19 @@ function _cobRender(){
     +(data.length===0
       ?'<div class="cob-empty">Sin documentos para los filtros seleccionados.</div>'
       :'<div class="cob-bar"><span>'+data.length+' documentos</span><span>·</span>'
-        +'<span>Corte al '+_cobFmtDate(_cobFechaCorte)+'</span>'
+        +'<span>2026: corte al '+_cobFmtDate(_cobFechaCorte)+'</span>'
         +'<button class="cob-csv" onclick="_cobExportCSV()">⬇ Exportar CSV</button></div>'
       +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
-        +'<th>Fecha Venc.</th><th>RUT</th><th>Cliente</th><th>Vendedor</th><th style="text-align:right">Saldo</th>'
+        +'<th>RUT</th><th>Cliente</th><th>Vencimiento</th><th style="text-align:right">Saldo</th><th>Vendedor</th>'
         +'</tr></thead><tbody>'+tRows+'</tbody></table></div>'
     );
 }
 
 function _cobExportCSV(){
   var data=_cobFiltered();
-  var rows=[['Fecha Venc.','RUT','Cliente','Vendedor','Saldo'].join(',')];
+  var rows=[['RUT','Cliente','Vencimiento','Saldo','Vendedor'].join(',')];
   data.slice().sort(function(a,b){return a.fecha-b.fecha;}).forEach(function(r){
-    rows.push([_cobFmtDate(r.fecha),'"'+r.rut+'"','"'+r.nombre.replace(/"/g,'""')+'"','"'+r.vlbl+'"',r.saldo].join(','));
+    rows.push(['"'+r.rut+'"','"'+r.nombre.replace(/"/g,'""')+'"',_cobFmtDate(r.fecha),r.saldo,'"'+r.vlbl+'"'].join(','));
   });
   var blob=new Blob(['﻿'+rows.join('\r\n')],{type:'text/csv;charset=utf-8;'});
   var url=URL.createObjectURL(blob);
