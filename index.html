@@ -3046,10 +3046,12 @@ function _ctExportCSV(){
 <script>
 // ── MÓDULO COBRANZAS ─────────────────────────────────────────────────────────
 var _cobRawData=[];
-var _cobFilterYear='all';
+var _cobFilterYear='2026now';
 var _cobFilterVendor='all';
 var _cobFechaCorte=null;
-var _cobDynVendors={};
+var _cobNextId=1;
+var _cobSortKey='fecha';
+var _cobSortDir=1;
 
 var _COB_VENDORS=[
   {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado'},
@@ -3168,14 +3170,15 @@ function _cobParseFile(data,fname){
     if(yr===2026&&fecha>viernes)continue;
     var saldo=typeof rv[cSaldo]==='number'?rv[cSaldo]:parseFloat((rv[cSaldo]||'').toString().replace(/[^\d.-]/g,''))||0;
     _cobRawData.push({
+      _id:_cobNextId++,
       rut:(rv[cRut]||'').toString().trim(),
       nombre:(rv[cNom]||'').toString().trim(),
-      fecha:fecha,year:yr,saldo:saldo,
+      fecha:fecha,year:yr,mes:fecha.getMonth(),saldo:saldo,
       vnom:vnom,vkey:vm.key,vlbl:vm.label
     });
   }
 
-  _cobFilterYear='2026';_cobFilterVendor='all';
+  _cobFilterYear='2026now';_cobFilterVendor='all';
   _cobFb(true,'✓ '+_cobRawData.length+' documentos cargados · '+fname+' · Corte: '+_cobFmtDate(viernes));
   _cobRender();
   _cobSave(fname);
@@ -3189,14 +3192,15 @@ function _cobSave(fname){
     records:_cobRawData.map(function(r){
       return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
     })};
-  try{localStorage.setItem('grantt_cob_v2',JSON.stringify(payload));}catch(e){}
+  try{localStorage.setItem('grantt_cob_v3',JSON.stringify(payload));}catch(e){}
 }
 function _cobRestore(){
   try{
-    var raw=localStorage.getItem('grantt_cob_v2');if(!raw)return false;
+    var raw=localStorage.getItem('grantt_cob_v3');if(!raw)return false;
     var d=JSON.parse(raw);if(!d||!d.records||!d.records.length)return false;
     _cobRawData=d.records.map(function(r){
-      return{rut:r.rut,nombre:r.nombre,fecha:new Date(r.fechaISO),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
+      var f=new Date(r.fechaISO);
+      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
     });
     _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
     _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
@@ -3212,7 +3216,7 @@ function _cobUpdateHdrInfo(){
 }
 function _cobInit(){
   if(!_cobRawData.length)_cobRestore();
-  _cobFilterYear='2026';_cobFilterVendor='all';
+  _cobFilterYear='2026now';_cobFilterVendor='all';
   _cobRender();_cobUpdateHdrInfo();
 }
 function _cobOpenCfg(){
@@ -3226,8 +3230,11 @@ function _cobCloseCfg(){var m=document.getElementById('cob-cfg-bg');if(m)m.style
 var _cobLastFname='';var _cobLastTs=0;
 
 function _cobFiltered(){
+  var curMes=new Date().getMonth();
   return _cobRawData.filter(function(r){
-    if(_cobFilterYear!=='all'&&r.year!==+_cobFilterYear)return false;
+    if(_cobFilterYear==='2025'&&r.year!==2025)return false;
+    if(_cobFilterYear==='2026now'&&(r.year!==2026||r.mes!==curMes))return false;
+    if(_cobFilterYear==='2026prev'&&(r.year!==2026||r.mes>=curMes))return false;
     if(_cobFilterVendor!=='all'&&r.vkey!==_cobFilterVendor)return false;
     return true;
   });
@@ -3235,6 +3242,14 @@ function _cobFiltered(){
 
 function _cobSetYear(y){_cobFilterYear=y;_cobRender();}
 function _cobSetVendor(v){_cobFilterVendor=v;_cobRender();}
+function _cobToggleSort(key){
+  if(_cobSortKey===key){_cobSortDir*=-1;}else{_cobSortKey=key;_cobSortDir=1;}
+  _cobRender();
+}
+function _cobRemove(id){
+  _cobRawData=_cobRawData.filter(function(r){return r._id!==id;});
+  _cobRender();_cobSave(_cobLastFname);_cobUpdateHdrInfo();
+}
 
 function _cobRender(){
   var main=document.getElementById('cob-main');if(!main)return;
@@ -3254,8 +3269,14 @@ function _cobRender(){
   data.forEach(function(r){if(byV[r.vkey]){byV[r.vkey].t+=r.saldo;byV[r.vkey].n++;}});
 
   // Botones de año
-  var yBtns=['2025','2026'].map(function(y){
-    return'<button class="cob-fbtn'+((_cobFilterYear===y)?' active':'')+'" onclick="_cobSetYear(\''+y+'\')">'+y+'</button>';
+  var _mNames=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var _curMes=new Date().getMonth();
+  var yBtns=[
+    {k:'2025',l:'2025'},
+    {k:'2026prev',l:'2026 Anteriores'},
+    {k:'2026now',l:_mNames[_curMes]+' 2026'}
+  ].map(function(y){
+    return'<button class="cob-fbtn'+((_cobFilterYear===y.k)?' active':'')+'" onclick="_cobSetYear(\''+y.k+'\')">'+y.l+'</button>';
   }).join('');
 
   // Selector de vendedor
@@ -3270,8 +3291,14 @@ function _cobRender(){
     return'<div class="cob-kpi"><div class="kv" style="font-size:1.25rem;">'+_cobFmtCLP(d.t)+'</div><div class="kl">'+d.l+' ('+d.n+')</div></div>';
   }).join('');
 
-  // Filas de tabla ordenadas por fecha
-  var tRows=data.slice().sort(function(a,b){return a.fecha-b.fecha;}).map(function(r){
+  // Filas ordenadas
+  var canEdit=_ctIsAdmin();
+  var sorted=data.slice().sort(function(a,b){
+    if(_cobSortKey==='nombre')return _cobSortDir*(a.nombre.localeCompare(b.nombre,'es'));
+    if(_cobSortKey==='saldo')return _cobSortDir*(a.saldo-b.saldo);
+    return _cobSortDir*(a.fecha-b.fecha);
+  });
+  var tRows=sorted.map(function(r){
     var d=new Date(r.fecha);d.setHours(0,0,0,0);var isV=d<hoy;
     return'<tr>'
       +'<td style="white-space:nowrap">'+r.rut+'</td>'
@@ -3279,6 +3306,7 @@ function _cobRender(){
       +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
       +'<td><span class="cob-vtag">'+r.vlbl+'</span></td>'
+      +(canEdit?'<td style="text-align:center"><button onclick="_cobRemove('+r._id+')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--negative)\'" onmouseout="this.style.color=\'var(--muted)\'">✕</button></td>':'')
       +'</tr>';
   }).join('');
 
@@ -3297,7 +3325,12 @@ function _cobRender(){
         +'<span>2026: corte al '+_cobFmtDate(_cobFechaCorte)+'</span>'
         +'<button class="cob-csv" onclick="_cobExportCSV()">⬇ Exportar CSV</button></div>'
       +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
-        +'<th>RUT</th><th>Cliente</th><th>Vencimiento</th><th style="text-align:right">Saldo</th><th>Vendedor</th>'
+        +'<th>RUT</th>'
+        +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'nombre\')">Cliente'+(_cobSortKey==='nombre'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
+        +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'fecha\')">Vencimiento'+(_cobSortKey==='fecha'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
+        +'<th style="text-align:right;cursor:pointer;user-select:none" onclick="_cobToggleSort(\'saldo\')">Saldo'+(_cobSortKey==='saldo'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
+        +'<th>Vendedor</th>'
+        +(canEdit?'<th style="width:40px"></th>':'')
         +'</tr></thead><tbody>'+tRows+'</tbody></table></div>'
     );
 }
