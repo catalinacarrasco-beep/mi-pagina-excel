@@ -3154,12 +3154,12 @@ function _cobParseFile(data,fname){
   _cobFechaCorte=viernes;
 
   _cobRawData=[];
-  var _dbgDesc={};
+  var _dbgVend={};
   for(var row=hdr+1;row<rows.length;row++){
     var rv=rows[row];if(!rv)continue;
     var desc=(rv[cDesc]||'').toString().toLowerCase().trim();
-    _dbgDesc[desc]=(_dbgDesc[desc]||0)+1;
     if(desc.indexOf('clientes nacionales')<0)continue;
+    var _vdbg=(rv[cVend]||'').toString().trim();if(_vdbg)_dbgVend[_vdbg]=(_dbgVend[_vdbg]||0)+1;
     var tipo=(rv[cTipo]||'').toString().toLowerCase();
     var vnom=(rv[cVend]||'').toString().trim();
     var vm=_cobMatchVendor(vnom);if(!vm)continue;
@@ -3176,8 +3176,8 @@ function _cobParseFile(data,fname){
   }
 
   _cobFilterYear='all';_cobFilterVendor='all';
-  var _dbgDescKeys=Object.keys(_dbgDesc).sort(function(a,b){return _dbgDesc[b]-_dbgDesc[a];}).slice(0,4);
-  _cobFb(true,'✓ '+_cobRawData.length+' doc · Descripciones encontradas: '+(_dbgDescKeys.join(' | ')||'ninguna'));
+  var _dbgVendKeys=Object.keys(_dbgVend).sort(function(a,b){return _dbgVend[b]-_dbgVend[a];}).slice(0,6);
+  _cobFb(true,'✓ '+_cobRawData.length+' doc · Vendedores en archivo: '+(_dbgVendKeys.join(' | ')||'ninguno'));
   _cobRender();
   _cobSave(fname);
   _cobUpdateHdrInfo();
