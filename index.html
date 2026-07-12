@@ -440,7 +440,8 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-upload-lbl:hover{border-color:var(--accent);color:var(--accent);}
 .cob-body{padding:1.5rem;max-width:1400px;margin:0 auto;width:100%;box-sizing:border-box;}
 .cob-upload-zone{border:1.5px dashed var(--border);border-radius:10px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:1.5rem;}
-.cob-upload-zone:hover{border-color:var(--accent);background:rgba(59,168,212,.04);}
+.cob-upload-zone:hover,.cob-upload-zone.drag-over{border-color:var(--accent);background:rgba(59,168,212,.08);}
+.cob-upload-zone.drag-over{transform:scale(1.01);transition:transform .1s;}
 .cob-upload-zone .cob-up-icon{font-size:2rem;margin-bottom:.6rem;opacity:.6;}
 .cob-upload-zone p{font-size:.82rem;color:var(--muted);margin:.25rem 0;}
 .cob-upload-zone strong{color:var(--text);}
@@ -1002,10 +1003,14 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   <div class="cob-body">
     <div id="cob-fb"></div>
     <div id="cob-main">
-      <div class="cob-upload-zone" onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()">
+      <div class="cob-upload-zone"
+        onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="event.preventDefault();this.classList.remove('drag-over');_cobHandleFile(event.dataTransfer.files[0])">
         <div class="cob-up-icon">📋</div>
         <p><strong>Cargar archivo de cobranza</strong></p>
-        <p>Haz clic para seleccionar el Excel exportado desde Softland</p>
+        <p>Haz clic o arrastra el Excel aquí</p>
       </div>
     </div>
   </div>
@@ -2289,10 +2294,14 @@ function volverHomeFromMuestras(){
   <div class="cob-body">
     <div id="cob-fb"></div>
     <div id="cob-main">
-      <div class="cob-upload-zone" onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()">
+      <div class="cob-upload-zone"
+        onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="event.preventDefault();this.classList.remove('drag-over');_cobHandleFile(event.dataTransfer.files[0])">
         <div class="cob-up-icon">📋</div>
         <p><strong>Cargar archivo de cobranza</strong></p>
-        <p>Haz clic para seleccionar el Excel exportado desde Softland</p>
+        <p>Haz clic o arrastra el Excel aquí</p>
       </div>
     </div>
   </div>
@@ -3110,9 +3119,8 @@ function _cobMatchVendor(name){
   return null;
 }
 
-function _cobHandleUpload(input){
-  var file=input&&input.files&&input.files[0];if(!file)return;
-  input.value='';
+function _cobHandleFile(file){
+  if(!file)return;
   _cobFb(false,'');
   _loadSheetJS(function(){
     var reader=new FileReader();
@@ -3122,6 +3130,10 @@ function _cobHandleUpload(input){
     };
     reader.readAsArrayBuffer(file);
   });
+}
+function _cobHandleUpload(input){
+  var file=input&&input.files&&input.files[0];if(!file)return;
+  input.value='';_cobHandleFile(file);
 }
 
 function _cobParseFile(data,fname){
