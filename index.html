@@ -3054,10 +3054,10 @@ var _cobDynVendors={};
 var _COB_VENDORS=[
   {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado'},
   {key:'marcelo',  label:'Marcelo Herrera',  match:'marcelo herrera'},
-  {key:'joel',     label:'Joel Córdoba',      match:'joel cord'},
-  {key:'oscar',    label:'Oscar Bucarey',     match:'oscar bucarey'},
-  {key:'sandra',   label:'Sandra Ortega',     match:'sandra ortega'},
-  {key:'diego',    label:'Diego Rivero',      match:'diego rivero'}
+  {key:'joel',     label:'Joel Córdova',     match:'joel cord'},
+  {key:'oscar',    label:'Oscar Bucarey',    match:'oscar bucarey'},
+  {key:'sandra',   label:'Sandra Ortega',    match:'sandra ortega'},
+  {key:'diego',    label:'Diego Rivera',     match:'diego river'}
 ];
 
 function _cobFb(ok,msg){
@@ -3140,10 +3140,11 @@ function _cobParseFile(data,fname){
 
   var hs=rows[hdr].map(function(h){return h?h.toString().toLowerCase().trim():'';});
   function fi(a,b){return hs.findIndex(function(h){return h.indexOf(a)>=0&&(!b||h.indexOf(b)>=0);});}
-  var cRut=fi('rut'),cNom=fi('nombre'),cFecha=fi('vencimiento'),cSaldo=fi('saldo'),cVend=fi('vendedor');
+  var cDesc=fi('descripci','cuenta'),cRut=fi('rut'),cNom=fi('nombre','auxiliar');
+  var cTipo=fi('tipo'),cFecha=fi('vencimiento'),cSaldo=fi('saldo'),cVend=fi('nombre','vendedor');
 
-  if([cRut,cNom,cFecha,cSaldo,cVend].some(function(c){return c<0;})){
-    _cobFb(false,'No se encontraron las columnas requeridas (RUT, Nombre, Vencimiento, Saldo, Vendedor).');return;
+  if([cDesc,cRut,cNom,cTipo,cFecha,cSaldo,cVend].some(function(c){return c<0;})){
+    _cobFb(false,'No se encontraron todas las columnas requeridas.');return;
   }
 
   // Corte: viernes de la semana actual
@@ -3154,26 +3155,27 @@ function _cobParseFile(data,fname){
   _cobFechaCorte=viernes;
 
   _cobRawData=[];
-  _cobDynVendors={};
   for(var row=hdr+1;row<rows.length;row++){
     var rv=rows[row];if(!rv)continue;
-    var rut=(rv[cRut]||'').toString().trim();if(!rut)continue;
+    var desc=(rv[cDesc]||'').toString().toLowerCase();
+    if(desc.indexOf('clientes nacionales')<0)continue;
+    var tipo=(rv[cTipo]||'').toString().toLowerCase();
+    if(tipo.indexOf('venta afecta electr')<0)continue;
+    var vnom=(rv[cVend]||'').toString().trim();
+    var vm=_cobMatchVendor(vnom);if(!vm)continue;
     var fecha=_cobParseDate(rv[cFecha]);if(!fecha)continue;
     var yr=fecha.getFullYear();if(yr!==2025&&yr!==2026)continue;
     if(yr===2026&&fecha>viernes)continue;
     var saldo=typeof rv[cSaldo]==='number'?rv[cSaldo]:parseFloat((rv[cSaldo]||'').toString().replace(/[^\d.-]/g,''))||0;
-    var vnom=(rv[cVend]||'').toString().trim();
-    var vkey=vnom.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-    if(vnom&&vkey)_cobDynVendors[vkey]=vnom;
     _cobRawData.push({
-      rut:rut,
+      rut:(rv[cRut]||'').toString().trim(),
       nombre:(rv[cNom]||'').toString().trim(),
       fecha:fecha,year:yr,saldo:saldo,
-      vnom:vnom,vkey:vkey||'sin_vendedor',vlbl:vnom||'Sin vendedor'
+      vnom:vnom,vkey:vm.key,vlbl:vm.label
     });
   }
 
-  _cobFilterYear='all';_cobFilterVendor='all';
+  _cobFilterYear='2026';_cobFilterVendor='all';
   _cobFb(true,'✓ '+_cobRawData.length+' documentos cargados · '+fname+' · Corte: '+_cobFmtDate(viernes));
   _cobRender();
   _cobSave(fname);
@@ -3210,7 +3212,7 @@ function _cobUpdateHdrInfo(){
 }
 function _cobInit(){
   if(!_cobRawData.length)_cobRestore();
-  _cobFilterYear='all';_cobFilterVendor='all';
+  _cobFilterYear='2026';_cobFilterVendor='all';
   _cobRender();_cobUpdateHdrInfo();
 }
 function _cobOpenCfg(){
@@ -3246,28 +3248,25 @@ function _cobRender(){
   var vencData=data.filter(function(r){var d=new Date(r.fecha);d.setHours(0,0,0,0);return d<hoy;});
   var vencSum=vencData.reduce(function(s,r){return s+r.saldo;},0);
 
-  // Totales por vendedor (dinamico)
+  // Totales por vendedor
   var byV={};
-  data.forEach(function(r){
-    if(!byV[r.vkey])byV[r.vkey]={l:r.vlbl,t:0,n:0};
-    byV[r.vkey].t+=r.saldo;byV[r.vkey].n++;
-  });
+  _COB_VENDORS.forEach(function(v){byV[v.key]={l:v.label,t:0,n:0};});
+  data.forEach(function(r){if(byV[r.vkey]){byV[r.vkey].t+=r.saldo;byV[r.vkey].n++;}});
 
   // Botones de año
-  var yBtns=['all','2025','2026'].map(function(y){
-    return'<button class="cob-fbtn'+((_cobFilterYear===y)?' active':'')+'" onclick="_cobSetYear(\''+y+'\')">'+(y==='all'?'Todos':y)+'</button>';
+  var yBtns=['2025','2026'].map(function(y){
+    return'<button class="cob-fbtn'+((_cobFilterYear===y)?' active':'')+'" onclick="_cobSetYear(\''+y+'\')">'+y+'</button>';
   }).join('');
 
-  // Selector de vendedor (dinamico)
-  var vKeys=Object.keys(byV).sort(function(a,b){return byV[b].t-byV[a].t;});
+  // Selector de vendedor
   var vOpts='<option value="all">Todos los vendedores</option>'+
-    vKeys.map(function(k){
-      return'<option value="'+k+'"'+(_cobFilterVendor===k?' selected':'')+'>'+byV[k].l+'</option>';
+    _COB_VENDORS.map(function(v){
+      return'<option value="'+v.key+'"'+(_cobFilterVendor===v.key?' selected':'')+'>'+v.label+'</option>';
     }).join('');
 
   // KPI tarjetas por vendedor
-  var kpiV=vKeys.map(function(k){
-    var d=byV[k];
+  var kpiV=_COB_VENDORS.filter(function(v){return byV[v.key].n>0;}).map(function(v){
+    var d=byV[v.key];
     return'<div class="cob-kpi"><div class="kv" style="font-size:1.25rem;">'+_cobFmtCLP(d.t)+'</div><div class="kl">'+d.l+' ('+d.n+')</div></div>';
   }).join('');
 
