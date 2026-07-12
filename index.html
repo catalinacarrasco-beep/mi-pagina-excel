@@ -3189,11 +3189,11 @@ function _cobSave(fname){
     records:_cobRawData.map(function(r){
       return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
     })};
-  try{localStorage.setItem('grantt_cob_v1',JSON.stringify(payload));}catch(e){}
+  try{localStorage.setItem('grantt_cob_v2',JSON.stringify(payload));}catch(e){}
 }
 function _cobRestore(){
   try{
-    var raw=localStorage.getItem('grantt_cob_v1');if(!raw)return false;
+    var raw=localStorage.getItem('grantt_cob_v2');if(!raw)return false;
     var d=JSON.parse(raw);if(!d||!d.records||!d.records.length)return false;
     _cobRawData=d.records.map(function(r){
       return{rut:r.rut,nombre:r.nombre,fecha:new Date(r.fechaISO),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
