@@ -2879,52 +2879,19 @@ async function _ctDeleteRow(id){
   _ctRender();
 }
 
-// ── Supabase Auth para storage ───────────────────────────────────────────────
+// ── Supabase Auth ─────────────────────────────────────────────────────────────
 function _ctHAuth(){
   var tok=_ctAuthToken&&Date.now()<_ctAuthExp?_ctAuthToken:_CT_KEY;
   return{'apikey':_CT_KEY,'Authorization':'Bearer '+tok,'Content-Type':'application/json'};
 }
-
-function _ctNeedAuth(){
-  return!_ctAuthToken||Date.now()>=_ctAuthExp;
-}
-
-function _ctShowAuthBar(){
-  var fb=document.getElementById('ct-feedback');
-  if(!fb)return;
-  fb.innerHTML='<div style="display:flex;align-items:center;gap:8px;background:#fefce8;border:1px solid #fde68a;border-radius:6px;padding:8px 14px;font-size:13px;color:#a16207;">'
-    +'<span>🔐 Ingresa tu contraseña para subir y descargar documentos:</span>'
-    +'<input type="password" id="ct-auth-pw" placeholder="Contraseña" style="padding:5px 9px;border:1px solid #d1d5db;border-radius:5px;font-size:13px;width:160px;" onkeydown="if(event.key===\'Enter\')_ctDoAuth()">'
-    +'<button onclick="_ctDoAuth()" style="background:#0891b2;border:none;color:#fff;border-radius:5px;padding:5px 12px;font-size:13px;cursor:pointer;font-weight:600;">Acceder</button>'
-    +'<span id="ct-auth-err" style="color:#b91c1c;"></span>'
-    +'</div>';
-}
-
-async function _ctDoAuth(){
-  var pw=(document.getElementById('ct-auth-pw')||{}).value||'';
-  var err=document.getElementById('ct-auth-err');
-  if(!pw){if(err)err.textContent='Ingresa la contraseña.';return;}
-  if(err)err.textContent='…';
-  var emails=['catalina.carrasco@grantt.cl','viewer@grantt-embarques.app'];
-  for(var i=0;i<emails.length;i++){
-    var r=await fetch(_CT_URL+'/auth/v1/token?grant_type=password',{
-      method:'POST',
-      headers:{'apikey':_CT_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({email:emails[i],password:pw})
-    });
-    if(r.ok){
-      var d=await r.json();
-      if(d.access_token){
-        _ctAuthToken=d.access_token;
-        _ctAuthExp=Date.now()+(d.expires_in||3600)*1000-60000;
-        var fb=document.getElementById('ct-feedback');
-        if(fb)fb.innerHTML='<span class="ct-save-ok">✓ Documentos habilitados</span>';
-        setTimeout(function(){var fb=document.getElementById('ct-feedback');if(fb)fb.innerHTML='';},2000);
-        return;
-      }
-    }
-  }
-  if(err)err.textContent='Contraseña incorrecta.';
+function _ctNeedAuth(){return!_ctAuthToken||Date.now()>=_ctAuthExp;}
+// ponytail: called from lsSubmit at login time — no per-op prompts
+async function _ctSilentLogin(pw,role){
+  var email=role==='viewer'?'viewer@grantt-embarques.app':'catalina.carrasco@grantt.cl';
+  try{
+    var r=await fetch(_CT_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'apikey':_CT_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})});
+    if(r.ok){var d=await r.json();if(d.access_token){_ctAuthToken=d.access_token;_ctAuthExp=Date.now()+(d.expires_in||3600)*1000-60000;sessionStorage.setItem('gs_sb_tok',d.access_token);sessionStorage.setItem('gs_sb_exp',String(_ctAuthExp));}}
+  }catch(e){}
 }
 
 // ── Storage operations ───────────────────────────────────────────────────────
@@ -2933,7 +2900,7 @@ async function _ctHandleUpload(embarqueId,input){
   var tipoEl=document.getElementById('ct-dt-'+embarqueId);
   var tipo=tipoEl?tipoEl.value:_CT_DOC_TIPOS[0];
   input.value='';
-  if(_ctNeedAuth()){_ctShowAuthBar();return;}
+  if(_ctNeedAuth()){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
   var emb=_ctEmbarques.find(function(r){return r.id===embarqueId;});if(!emb)return;
   var uid=([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,function(c){return(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16);});
   var path=embarqueId+'/'+uid+'-'+file.name;
@@ -2954,7 +2921,7 @@ async function _ctHandleUpload(embarqueId,input){
 }
 
 async function _ctDeleteDoc(embarqueId,path){
-  if(_ctNeedAuth()){_ctShowAuthBar();return;}
+  if(_ctNeedAuth()){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
   await fetch(_CT_URL+'/storage/v1/object/'+_CT_BUCKET,{
     method:'DELETE',
     headers:{'apikey':_CT_KEY,'Authorization':'Bearer '+_ctAuthToken,'Content-Type':'application/json'},
@@ -2967,7 +2934,7 @@ async function _ctDeleteDoc(embarqueId,path){
 }
 
 async function _ctDownloadDoc(path){
-  if(_ctNeedAuth()){_ctShowAuthBar();return;}
+  if(_ctNeedAuth()){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
   var resp=await fetch(_CT_URL+'/storage/v1/object/sign/'+_CT_BUCKET+'/'+path,{
     method:'POST',
     headers:{'apikey':_CT_KEY,'Authorization':'Bearer '+_ctAuthToken,'Content-Type':'application/json'},
@@ -2999,8 +2966,7 @@ function _ctExportCSV(){
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
-const ADMIN_PWD='adminGrantt26';
-var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var ok=inp.value===LS_PWD||inp.value===ADMIN_PWD;if(ok){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',inp.value===ADMIN_PWD?'admin':'user');sessionStorage.setItem('gs_screen','home');const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
+var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'||pw==='adminGrantt26'?'admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin(pw,role);const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
@@ -3032,6 +2998,8 @@ function checkAndRefresh(btn){
 }
 /* restaurar sesión tras reload — salta login y vuelve al módulo activo */
 (function(){
+  var sbTok=sessionStorage.getItem('gs_sb_tok');var sbExp=sessionStorage.getItem('gs_sb_exp');
+  if(sbTok&&sbExp&&Date.now()<+sbExp){_ctAuthToken=sbTok;_ctAuthExp=+sbExp;}
   var a=sessionStorage.getItem('gs_auth');
   if(!a)return;
   var ls=document.getElementById('loginScreen');
