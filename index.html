@@ -3154,9 +3154,11 @@ function _cobParseFile(data,fname){
   _cobFechaCorte=viernes;
 
   _cobRawData=[];
+  var _dbgDesc={};
   for(var row=hdr+1;row<rows.length;row++){
     var rv=rows[row];if(!rv)continue;
-    var desc=(rv[cDesc]||'').toString().toLowerCase();
+    var desc=(rv[cDesc]||'').toString().toLowerCase().trim();
+    _dbgDesc[desc]=(_dbgDesc[desc]||0)+1;
     if(desc.indexOf('clientes nacionales')<0)continue;
     var tipo=(rv[cTipo]||'').toString().toLowerCase();
     var vnom=(rv[cVend]||'').toString().trim();
@@ -3174,7 +3176,8 @@ function _cobParseFile(data,fname){
   }
 
   _cobFilterYear='all';_cobFilterVendor='all';
-  _cobFb(true,'✓ '+_cobRawData.length+' documentos cargados · '+fname+' · Corte: '+_cobFmtDate(viernes));
+  var _dbgDescKeys=Object.keys(_dbgDesc).sort(function(a,b){return _dbgDesc[b]-_dbgDesc[a];}).slice(0,4);
+  _cobFb(true,'✓ '+_cobRawData.length+' doc · Descripciones encontradas: '+(_dbgDescKeys.join(' | ')||'ninguna'));
   _cobRender();
   _cobSave(fname);
   _cobUpdateHdrInfo();
