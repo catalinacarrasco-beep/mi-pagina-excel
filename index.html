@@ -998,21 +998,12 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   <div class="cob-header">
     <button class="cob-back" onclick="volverHomeFromCobranza()">← Volver</button>
     <div class="cob-title">Cobranza</div>
-    <label class="cob-upload-lbl">↑ Cargar Excel<input type="file" accept=".xlsx,.xls" hidden onchange="_cobHandleUpload(this)"></label>
+    <div id="cob-hdr-info" style="font-size:.72rem;color:var(--muted);font-family:'DM Sans',sans-serif;letter-spacing:.04em"></div>
+    <button id="cob-cfg-btn" onclick="_cobOpenCfg()" style="display:none;padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Actualizar</button>
   </div>
   <div class="cob-body">
     <div id="cob-fb"></div>
-    <div id="cob-main">
-      <div class="cob-upload-zone"
-        onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()"
-        ondragover="event.preventDefault();this.classList.add('drag-over')"
-        ondragleave="this.classList.remove('drag-over')"
-        ondrop="event.preventDefault();this.classList.remove('drag-over');_cobHandleFile(event.dataTransfer.files[0])">
-        <div class="cob-up-icon">📋</div>
-        <p><strong>Cargar archivo de cobranza</strong></p>
-        <p>Haz clic o arrastra el Excel aquí</p>
-      </div>
-    </div>
+    <div id="cob-main"></div>
   </div>
 </div>
 <div id="proximamente">
@@ -2044,6 +2035,7 @@ function enterCobranza(){
   sessionStorage.setItem('gs_screen','cobranza');
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('cobranzasScreen'));
+    _cobInit();
   });
 }
 function volverHomeFromCobranza(){
@@ -2289,21 +2281,12 @@ function volverHomeFromMuestras(){
   <div class="cob-header">
     <button class="cob-back" onclick="volverHomeFromCobranza()">← Volver</button>
     <div class="cob-title">Cobranza</div>
-    <label class="cob-upload-lbl">↑ Cargar Excel<input type="file" accept=".xlsx,.xls" hidden onchange="_cobHandleUpload(this)"></label>
+    <div id="cob-hdr-info" style="font-size:.72rem;color:var(--muted);font-family:'DM Sans',sans-serif;letter-spacing:.04em"></div>
+    <button id="cob-cfg-btn" onclick="_cobOpenCfg()" style="display:none;padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Actualizar</button>
   </div>
   <div class="cob-body">
     <div id="cob-fb"></div>
-    <div id="cob-main">
-      <div class="cob-upload-zone"
-        onclick="this.closest('#cobranzasScreen').querySelector('input[type=file]').click()"
-        ondragover="event.preventDefault();this.classList.add('drag-over')"
-        ondragleave="this.classList.remove('drag-over')"
-        ondrop="event.preventDefault();this.classList.remove('drag-over');_cobHandleFile(event.dataTransfer.files[0])">
-        <div class="cob-up-icon">📋</div>
-        <p><strong>Cargar archivo de cobranza</strong></p>
-        <p>Haz clic o arrastra el Excel aquí</p>
-      </div>
-    </div>
+    <div id="cob-main"></div>
   </div>
 </div>
 <div id="proximamente">
@@ -2608,6 +2591,7 @@ function enterCobranza(){
   sessionStorage.setItem('gs_screen','cobranza');
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('cobranzasScreen'));
+    _cobInit();
   });
 }
 function volverHomeFromCobranza(){
@@ -3193,7 +3177,52 @@ function _cobParseFile(data,fname){
   _cobFilterYear='all';_cobFilterVendor='all';
   _cobFb(true,'✓ '+_cobRawData.length+' documentos cargados · '+fname+' · Corte: '+_cobFmtDate(viernes));
   _cobRender();
+  _cobSave(fname);
+  _cobUpdateHdrInfo();
 }
+
+function _cobSave(fname){
+  _cobLastFname=fname||'';_cobLastTs=Date.now();
+  var payload={ts:_cobLastTs,fname:_cobLastFname,
+    cutoff:_cobFechaCorte?_cobFechaCorte.toISOString():null,
+    records:_cobRawData.map(function(r){
+      return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
+    })};
+  try{localStorage.setItem('grantt_cob_v1',JSON.stringify(payload));}catch(e){}
+}
+function _cobRestore(){
+  try{
+    var raw=localStorage.getItem('grantt_cob_v1');if(!raw)return false;
+    var d=JSON.parse(raw);if(!d||!d.records||!d.records.length)return false;
+    _cobRawData=d.records.map(function(r){
+      return{rut:r.rut,nombre:r.nombre,fecha:new Date(r.fechaISO),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
+    });
+    _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
+    _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
+    return true;
+  }catch(e){return false;}
+}
+function _cobUpdateHdrInfo(){
+  var el=document.getElementById('cob-hdr-info');
+  if(el&&_cobLastTs){var dt=new Date(_cobLastTs);el.textContent='Datos al '+dt.getDate().toString().padStart(2,'0')+'/'+(dt.getMonth()+1).toString().padStart(2,'0')+'/'+dt.getFullYear();}
+  else if(el)el.textContent='';
+  var btn=document.getElementById('cob-cfg-btn');
+  if(btn)btn.style.display=_ctIsAdmin()?'':'none';
+}
+function _cobInit(){
+  if(!_cobRawData.length)_cobRestore();
+  _cobFilterYear='all';_cobFilterVendor='all';
+  _cobRender();_cobUpdateHdrInfo();
+}
+function _cobOpenCfg(){
+  var m=document.getElementById('cob-cfg-bg');if(!m)return;
+  var li=document.getElementById('cob-cfg-last');
+  if(li)li.textContent=_cobLastTs?(function(){var dt=new Date(_cobLastTs);return'Última carga: '+(_cobLastFname||'archivo')+' ('+dt.getDate().toString().padStart(2,'0')+'/'+(dt.getMonth()+1).toString().padStart(2,'0')+'/'+dt.getFullYear()+')';})():'';
+  m.style.display='flex';
+}
+function _cobCloseCfg(){var m=document.getElementById('cob-cfg-bg');if(m)m.style.display='none';}
+
+var _cobLastFname='';var _cobLastTs=0;
 
 function _cobFiltered(){
   return _cobRawData.filter(function(r){
@@ -3208,6 +3237,10 @@ function _cobSetVendor(v){_cobFilterVendor=v;_cobRender();}
 
 function _cobRender(){
   var main=document.getElementById('cob-main');if(!main)return;
+  if(!_cobRawData.length){
+    main.innerHTML='<div style="padding:4rem 2rem;text-align:center;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-size:.9rem">No hay datos cargados.<br><span style="font-size:.82em;display:block;margin-top:.4rem">Usa <strong style="color:var(--text)">⚙ Actualizar</strong> para cargar el archivo Excel.</span></div>';
+    return;
+  }
   var data=_cobFiltered();
   var hoy=new Date();hoy.setHours(0,0,0,0);
   var total=data.reduce(function(s,r){return s+r.saldo;},0);
@@ -3352,7 +3385,7 @@ function checkAndRefresh(btn){
     var hs4=document.getElementById('homeScreen');
     var cob=document.getElementById('cobranzasScreen');
     if(hs4)hs4.style.display='none';
-    if(cob){cob.style.display='flex';cob.style.opacity='1';}
+    if(cob){cob.style.display='flex';cob.style.opacity='1';setTimeout(function(){if(typeof _cobInit==='function')_cobInit();},50);}
   }
 })();
 </script>
@@ -3629,6 +3662,28 @@ function _pushData(parsed){
 function _openCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.style.display='flex';}
 function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.style.display='none';}
 </script>
+<div id="cob-cfg-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;align-items:center;justify-content:center" onclick="if(event.target===this)_cobCloseCfg()">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;width:100%;max-width:460px;margin:1rem;position:relative">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <span style="font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Actualizar Cobranza</span>
+      <button onclick="_cobCloseCfg()" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.2rem;line-height:1;padding:.2rem" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">✕</button>
+    </div>
+    <div id="cob-cfg-last" style="font-size:.78rem;color:var(--muted);font-family:'DM Sans',sans-serif;margin-bottom:1rem;min-height:1rem"></div>
+    <div style="border:1.5px dashed var(--border);border-radius:10px;padding:2.25rem 1.5rem;text-align:center;cursor:pointer;transition:border-color .2s"
+      onclick="document.getElementById('cob-cfg-input').click()"
+      onmouseover="this.style.borderColor='var(--accent)'"
+      onmouseout="this.style.borderColor='var(--border)'"
+      ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+      ondragleave="this.style.borderColor='var(--border)'"
+      ondrop="event.preventDefault();this.style.borderColor='var(--border)';_cobHandleFile(event.dataTransfer.files[0]);_cobCloseCfg()">
+      <div style="font-size:2rem;margin-bottom:.75rem">📋</div>
+      <p style="color:var(--text);font-size:.88rem;margin-bottom:.35rem;font-weight:600;font-family:'DM Sans',sans-serif">Cargar Excel de cobranza</p>
+      <p style="color:var(--muted);font-size:.76rem;font-family:'DM Sans',sans-serif">Haz clic o arrastra el archivo .xlsx aquí</p>
+      <input type="file" id="cob-cfg-input" accept=".xlsx,.xls" style="display:none" onchange="_cobHandleUpload(this);_cobCloseCfg()">
+      <div style="margin-top:1.25rem"><span style="display:inline-block;padding:.35rem 1.1rem;border:1px solid var(--accent);border-radius:5px;color:var(--accent);font-size:.78rem;font-weight:600;letter-spacing:.06em;font-family:'DM Sans',sans-serif">↑ Seleccionar archivo</span></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 
