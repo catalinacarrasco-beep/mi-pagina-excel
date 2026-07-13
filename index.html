@@ -3275,8 +3275,8 @@ function _cobRender(){
   var _hasOtros=_cobRawData.some(function(r){return r.year!==2025&&r.year!==2026;});
   var _yList=[
     {k:'2025',l:'2025'},
-    {k:'2026prev',l:'2026 Anteriores'},
-    {k:'2026now',l:_mNames[_curMes]+' 2026'}
+    {k:'2026prev',l:'2026'},
+    {k:'2026now',l:'Mes actual'}
   ];
   if(_hasOtros)_yList.push({k:'otros',l:'Otros años'});
   var yBtns=_yList.map(function(y){
@@ -3325,8 +3325,8 @@ function _cobRender(){
     +'</div>'
     +(data.length===0
       ?'<div class="cob-empty">Sin documentos para los filtros seleccionados.</div>'
-      :'<div class="cob-bar"><span>'+data.length+' documentos</span><span>·</span>'
-        +'<span>2026: corte al '+_cobFmtDate(_cobFechaCorte)+'</span>'
+      :'<div class="cob-bar"><span>'+data.length+' documentos</span>'
+        +(_cobFilterYear==='2026now'?'<span>·</span><span>Corte al '+_cobFmtDate(_cobFechaCorte)+'</span>':'')
         +'<button class="cob-csv" onclick="_cobExportCSV()">⬇ Exportar CSV</button></div>'
       +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
         +'<th>RUT</th>'
