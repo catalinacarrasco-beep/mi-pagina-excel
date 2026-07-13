@@ -450,15 +450,16 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
 .cob-vsel{padding:.32rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;}
 .cob-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:.65rem;margin-bottom:1.1rem;}
-.cob-kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;}
+.cob-kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;transition:border-color .2s;}
 .cob-kpi .kv{font-family:'Bebas Neue',sans-serif;font-size:1.65rem;letter-spacing:.04em;color:var(--accent);}
-.cob-kpi .kl{font-size:.7rem;color:var(--muted);margin-top:.12rem;letter-spacing:.04em;}
+.cob-kpi .kl{font-size:.7rem;color:#9ba3b5;margin-top:.12rem;letter-spacing:.04em;}
 .cob-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
 .cob-tbl{width:100%;border-collapse:collapse;font-size:.81rem;}
 .cob-tbl thead th{background:var(--surface2);padding:.6rem .9rem;text-align:left;font-weight:600;font-size:.72rem;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
 .cob-tbl tbody td{padding:.5rem .9rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.cob-tbl tbody tr:nth-child(even){background:rgba(255,255,255,.02);}
 .cob-tbl tbody tr:last-child td{border-bottom:none;}
-.cob-tbl tbody tr:hover{background:var(--surface);}
+.cob-tbl tbody tr:hover{background:rgba(59,168,212,.06);}
 .cob-amt{font-weight:600;text-align:right;font-variant-numeric:tabular-nums;}
 .cob-amt.venc{color:var(--negative);}
 .cob-dt.venc{color:var(--negative);}
@@ -467,7 +468,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-info.ok{background:rgba(46,158,106,.1);color:var(--positive);}
 .cob-info.err{background:rgba(192,80,80,.1);color:var(--negative);}
 .cob-empty{padding:3rem;text-align:center;color:var(--muted);font-size:.85rem;}
-.cob-bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.7rem;font-size:.78rem;color:var(--muted);}
+.cob-bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.7rem;font-size:.78rem;color:#9ba3b5;}
 .cob-csv{margin-left:auto;padding:.28rem .7rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.73rem;transition:all .15s;}
 .cob-csv:hover{border-color:var(--accent);color:var(--accent);}
 
@@ -3054,13 +3055,14 @@ var _cobSortKey='fecha';
 var _cobSortDir=1;
 
 var _COB_VENDORS=[
-  {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado'},
-  {key:'marcelo',  label:'Marcelo Herrera',  match:'marcelo herrera'},
-  {key:'joel',     label:'Joel Córdova',     match:'joel cord'},
-  {key:'oscar',    label:'Oscar Bucarey',    match:'oscar bucarey'},
-  {key:'sandra',   label:'Sandra Ortega',    match:'sandra ortega'},
-  {key:'diego',    label:'Diego Rivera',     match:'diego river'}
+  {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado',color:'#4db8e8',bg:'rgba(77,184,232,.10)'},
+  {key:'marcelo',  label:'Marcelo Herrera',  match:'marcelo herrera',  color:'#e8a44d',bg:'rgba(232,164,77,.10)'},
+  {key:'joel',     label:'Joel Córdova',     match:'joel cord',        color:'#8be84d',bg:'rgba(139,232,77,.10)'},
+  {key:'oscar',    label:'Oscar Bucarey',    match:'oscar bucarey',    color:'#e84da0',bg:'rgba(232,77,160,.10)'},
+  {key:'sandra',   label:'Sandra Ortega',    match:'sandra ortega',    color:'#a07de8',bg:'rgba(160,125,232,.10)'},
+  {key:'diego',    label:'Diego Rivera',     match:'diego river',      color:'#e8d44d',bg:'rgba(232,212,77,.10)'}
 ];
+var _cobVendorColor={};_COB_VENDORS.forEach(function(v){_cobVendorColor[v.key]={c:v.color,bg:v.bg};});
 
 function _cobFb(ok,msg){
   var el=document.getElementById('cob-fb');if(!el)return;
@@ -3291,8 +3293,8 @@ function _cobRender(){
 
   // KPI tarjetas por vendedor
   var kpiV=_COB_VENDORS.filter(function(v){return byV[v.key].n>0;}).map(function(v){
-    var d=byV[v.key];
-    return'<div class="cob-kpi"><div class="kv" style="font-size:1.25rem;">'+_cobFmtCLP(d.t)+'</div><div class="kl">'+d.l+' ('+d.n+')</div></div>';
+    var d=byV[v.key];var vc=_cobVendorColor[v.key];
+    return'<div class="cob-kpi" style="border-color:'+vc.c+'30"><div class="kv" style="font-size:1.25rem;color:'+vc.c+'">'+_cobFmtCLP(d.t)+'</div><div class="kl">'+d.l+' ('+d.n+')</div></div>';
   }).join('');
 
   // Filas ordenadas
@@ -3309,7 +3311,7 @@ function _cobRender(){
       +'<td>'+r.nombre+'</td>'
       +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
-      +'<td><span class="cob-vtag">'+r.vlbl+'</span></td>'
+      +'<td><span class="cob-vtag" style="color:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].c:'var(--accent)')+';background:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].bg:'rgba(59,168,212,.12)')+'">'+r.vlbl+'</span></td>'
       +(canEdit?'<td style="text-align:center"><button onclick="_cobRemove('+r._id+')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--negative)\'" onmouseout="this.style.color=\'var(--muted)\'">✕</button></td>':'')
       +'</tr>';
   }).join('');
@@ -3320,7 +3322,7 @@ function _cobRender(){
     +'</div>'
     +'<div class="cob-kpis">'
       +'<div class="cob-kpi"><div class="kv">'+_cobFmtCLP(total)+'</div><div class="kl">Total por cobrar ('+data.length+' doc.)</div></div>'
-      +'<div class="cob-kpi"><div class="kv" style="color:var(--negative)">'+_cobFmtCLP(vencSum)+'</div><div class="kl">Vencido ('+vencData.length+' doc.)</div></div>'
+      +'<div class="cob-kpi" style="border-color:rgba(192,80,80,.3)"><div class="kv" style="color:var(--negative)">'+_cobFmtCLP(vencSum)+'</div><div class="kl">Vencido ('+vencData.length+' doc.)</div></div>'
       +kpiV
     +'</div>'
     +(data.length===0
