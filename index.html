@@ -972,7 +972,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <div class="home-line"></div>
   </div>
   <div class="home-cards">
-    <div class="home-card ventas" onclick="enterVentas()">
+    <div class="home-card ventas" data-mod="ventas" onclick="enterVentas()">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="6" y="28" width="8" height="14" rx="2" fill="var(--accent)" opacity=".55"/>
         <rect x="20" y="18" width="8" height="24" rx="2" fill="var(--accent)" opacity=".78"/>
@@ -981,7 +981,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="hc-title">Ventas</div>
       <div class="hc-sub">Comparativo anual por vendedor y categoría</div>
     </div>
-    <div class="home-card cobranza" onclick="enterCobranza()">
+    <div class="home-card cobranza" data-mod="cobranza" onclick="enterCobranza()">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="10" y="8" width="28" height="34" rx="3" stroke="var(--accent)" stroke-width="1.5"/>
         <line x1="16" y1="18" x2="32" y2="18" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/>
@@ -991,7 +991,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="hc-title">Cobranza</div>
       <div class="hc-sub">Facturas y estados de pago por cliente</div>
     </div>
-    <div class="home-card muestras" onclick="enterMuestras()">
+    <div class="home-card muestras" data-mod="muestras" onclick="enterMuestras()">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="8" y="20" width="32" height="22" rx="3" stroke="#2db47a" stroke-width="1.5"/>
         <polyline points="16,20 16,10 32,10 32,20" stroke="#2db47a" stroke-width="1.5" stroke-linejoin="round"/>
@@ -1003,7 +1003,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="hc-title">Muestras</div>
       <div class="hc-sub">Estado de certificaciones SEC</div>
     </div>
-    <div class="home-card" style="border-color:rgba(91,192,196,.25)" onclick="enterVendedores()">
+    <div class="home-card" data-mod="vendedores" style="border-color:rgba(91,192,196,.25)" onclick="enterVendedores()">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="24" cy="16" r="7" stroke="#5bc0c4" stroke-width="1.5"/>
         <path d="M12 40c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#5bc0c4" stroke-width="1.5" stroke-linecap="round"/>
@@ -1013,7 +1013,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="hc-title">Vendedores</div>
       <div class="hc-sub">Gestión comercial por vendedor</div>
     </div>
-    <div class="home-card cargo" onclick="enterCargoTracking()">
+    <div class="home-card cargo" data-mod="cargo" onclick="enterCargoTracking()">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="6" y="18" width="26" height="18" rx="2" stroke="#d49a3b" stroke-width="1.5"/>
         <path d="M32 22h6l4 6v8h-10V22z" stroke="#d49a3b" stroke-width="1.5" stroke-linejoin="round"/>
@@ -3841,7 +3841,14 @@ function _cobExportCSV(){
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
-var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
+function _applyRoleVisibility(){
+  var role=sessionStorage.getItem('gs_role')||'';
+  var hide=role==='viewer'?['ventas','vendedores','cobranza','muestras']:role==='cob-admin'?['ventas','vendedores','muestras']:[];
+  document.querySelectorAll('#homeScreen [data-mod]').forEach(function(c){
+    c.style.display=hide.indexOf(c.getAttribute('data-mod'))>-1?'none':'';
+  });
+}
+var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
@@ -3877,6 +3884,7 @@ function checkAndRefresh(btn){
   if(sbTok&&sbExp&&Date.now()<+sbExp){_ctAuthToken=sbTok;_ctAuthExp=+sbExp;}
   var a=sessionStorage.getItem('gs_auth');
   if(!a)return;
+  _applyRoleVisibility();
   var ls=document.getElementById('loginScreen');
   if(ls){ls.style.transition='none';ls.style.opacity='0';ls.style.display='none';}
   var scr=sessionStorage.getItem('gs_screen')||'home';
