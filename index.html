@@ -536,16 +536,41 @@ footer p{font-size:.75rem;color:var(--muted);}
 #muestrasScreen .ms-kpi .kl{
   font-size:.72rem;color:#9ba3b5;letter-spacing:.04em;margin-top:.2rem;
 }
+#muestrasScreen .ms-filters{
+  display:flex;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;
+}
+#muestrasScreen .ms-filters .ms-fgroup{
+  display:flex;align-items:center;gap:.5rem;
+}
+#muestrasScreen .ms-filters .ms-flabel{
+  font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;
+  font-family:'DM Sans',sans-serif;font-weight:500;
+}
+#muestrasScreen .ms-filters input,
+#muestrasScreen .ms-filters select{
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  padding:5px 10px;font-size:.75rem;color:var(--text);outline:none;
+  font-family:'DM Sans',sans-serif;transition:border-color .15s;
+}
+#muestrasScreen .ms-filters input:focus,
+#muestrasScreen .ms-filters select:focus{border-color:var(--accent);}
+#muestrasScreen .ms-filters input{width:160px;}
+#muestrasScreen .ms-fclear{
+  font-size:.65rem;color:var(--muted);background:none;border:1px solid var(--border);
+  border-radius:6px;padding:5px 10px;cursor:pointer;letter-spacing:.05em;
+  font-family:'DM Sans',sans-serif;transition:all .15s;
+}
+#muestrasScreen .ms-fclear:hover{border-color:var(--accent);color:var(--accent);}
 #muestrasScreen .ms-table-wrap{
   background:var(--surface);border-radius:12px;
-  border:1px solid var(--border);overflow:hidden;
+  border:1px solid var(--border);overflow:hidden;overflow-x:auto;
 }
 #muestrasScreen .ms-section-hdr{
   padding:.6rem 1.2rem;font-size:.6rem;font-weight:500;
   letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
   background:var(--surface2);border-bottom:1px solid var(--border);
 }
-#muestrasScreen .ms-tbl{width:100%;border-collapse:collapse;}
+#muestrasScreen .ms-tbl{width:100%;border-collapse:collapse;min-width:700px;}
 #muestrasScreen .ms-tbl th{
   font-size:.6rem;font-weight:500;color:var(--muted);
   text-transform:uppercase;letter-spacing:.08em;
@@ -564,6 +589,12 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ms-bar-wrap{height:6px;border-radius:3px;background:rgba(59,168,212,.08);min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;}
 .ms-obs{font-size:.68rem;color:var(--muted);line-height:1.5;}
+.ms-obs-cell{max-width:220px;font-size:.72rem;color:var(--muted);line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;
+  transition:all .2s;position:relative;}
+.ms-obs-cell:hover{white-space:normal;overflow:visible;
+  background:var(--surface2);border-radius:4px;padding:.4rem .6rem;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:10;}
 .ms-row-edit,.ms-row-del{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s,color .12s;color:var(--muted);}
 .ms-row-edit:hover{background:rgba(59,168,212,.1);color:var(--accent);}
 .ms-row-del:hover{background:rgba(192,80,80,.1);color:var(--negative);}
@@ -859,20 +890,20 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="ms-kpi"><div class="kv" id="ms-kpi-avg" style="color:var(--accent);">—</div><div class="kl">Días hábiles promedio</div></div>
       <div class="ms-kpi"><div class="kv" id="ms-kpi-max" style="color:var(--text);">—</div><div class="kl">Días hábiles máximo</div></div>
     </div>
-    <div style="display:flex;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;">
-      <div style="display:flex;align-items:center;gap:.5rem;">
-        <span style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">Factura</span>
-        <input id="ms-filter-factura" type="text" placeholder="Buscar..." oninput="msFilter()" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);width:160px;outline:none;"/>
+    <div class="ms-filters">
+      <div class="ms-fgroup">
+        <span class="ms-flabel">Factura</span>
+        <input id="ms-filter-factura" type="text" placeholder="Buscar..." oninput="msFilter()"/>
       </div>
-      <div style="display:flex;align-items:center;gap:.5rem;">
-        <span style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">Estado</span>
-        <select id="ms-filter-estado" onchange="msFilter()" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;color:var(--text);outline:none;">
+      <div class="ms-fgroup">
+        <span class="ms-flabel">Estado</span>
+        <select id="ms-filter-estado" onchange="msFilter()">
           <option value="">Todos</option>
           <option value="EN PROCESO">En proceso</option>
           <option value="CERRADO">Cerrado</option>
         </select>
       </div>
-      <button onclick="msClearFilters()" style="font-size:.65rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;letter-spacing:.05em;">Limpiar</button>
+      <button class="ms-fclear" onclick="msClearFilters()">Limpiar</button>
     </div>
     <div class="ms-table-wrap" style="margin-bottom:1.5rem;">
       <div class="ms-section-hdr" style="display:flex;align-items:center;justify-content:space-between;">
@@ -2140,7 +2171,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
     var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#3ba8d4;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.68rem;color:#d4a03c;">En tr\u00e1mite</div>';
     var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
     var adminTd=admin?('<td><button class="ms-row-edit" data-id="'+r.id+'" data-tipo="'+tipo+'" onclick="openMsModal(this.dataset.id,this.dataset.tipo)">&#9998;</button>'+'<button class="ms-row-del" data-id="'+r.id+'" onclick="deleteMsRow(this.dataset.id)">&#10005;</button></td>'):'';
-    return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.65rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td style="max-width:260px;white-space:normal;word-break:break-word;font-size:.75rem;color:var(--muted);line-height:1.4;">'+r.obs+'</td>'+adminTd+'</tr>';
+    return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.65rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td class="ms-obs-cell" title="'+r.obs.replace(/"/g,'&quot;')+'">'+r.obs+'</td>'+adminTd+'</tr>';
   }).join('');
 }
 function openMsModal(id,tipo){
