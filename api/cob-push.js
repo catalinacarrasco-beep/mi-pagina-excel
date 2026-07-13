@@ -3,11 +3,11 @@ const https = require('https');
 const REPO = 'catalinacarrasco-beep/mi-pagina-excel';
 const FILE = 'cob-data.json';
 
-function gh(path, method, body) {
+function gh(path, method, body, token) {
   return new Promise((res, rej) => {
     const d = body ? Buffer.from(JSON.stringify(body)) : null;
     const req = https.request({ hostname: 'api.github.com', path, method, headers: {
-      'Authorization': 'token ' + process.env.GITHUB_TOKEN,
+      'Authorization': 'token ' + token,
       'User-Agent': 'ventas-grantt',
       'Accept': 'application/vnd.github.v3+json',
       ...(d ? { 'Content-Type': 'application/json', 'Content-Length': d.length } : {})
@@ -20,7 +20,8 @@ function gh(path, method, body) {
 
 module.exports = async function(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  if (!process.env.GITHUB_TOKEN) return res.status(500).json({ error: 'GITHUB_TOKEN no configurado' });
+  const tk = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  if (!tk) return res.status(500).json({ error: 'GITHUB_TOKEN no configurado' });
 
   const payload = req.body;
   if (!payload || !payload.records || !payload.records.length) return res.status(400).json({ error: 'No hay registros' });
@@ -28,7 +29,7 @@ module.exports = async function(req, res) {
   try {
     let sha = null;
     try {
-      const existing = await gh('/repos/' + REPO + '/contents/' + FILE, 'GET');
+      const existing = await gh('/repos/' + REPO + '/contents/' + FILE, 'GET', null, tk);
       if (existing && existing.sha) sha = existing.sha;
     } catch(e) {}
 
@@ -37,7 +38,7 @@ module.exports = async function(req, res) {
       message: 'Actualización datos cobranzas',
       content,
       ...(sha ? { sha } : {})
-    });
+    }, tk);
 
     if (!push.commit) return res.status(500).json({ error: 'GitHub rechazó el push', detail: JSON.stringify(push).slice(0, 300) });
     res.json({ ok: true, commit: push.commit.sha.slice(0, 10) });
