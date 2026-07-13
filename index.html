@@ -529,15 +529,40 @@ footer p{font-size:.75rem;color:var(--muted);}
 #muestrasScreen .ms-kpi{
   background:var(--surface);border-radius:8px;
   padding:1.1rem 1.2rem;border:1px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+#muestrasScreen .ms-kpi.ms-kpi-primary{
+  padding:1.3rem 1.4rem;
+}
+#muestrasScreen .ms-kpi.ms-kpi-primary .kv{
+  font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.04em;
+}
+#muestrasScreen .ms-kpi.ms-kpi-secondary{
+  border-color:transparent;background:var(--surface);
+  box-shadow:none;border:1px solid rgba(42,48,69,.5);
+}
+#muestrasScreen .ms-kpi.ms-kpi-secondary .kv{
+  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.04em;
 }
 #muestrasScreen .ms-kpi .kv{
   font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em;
 }
 #muestrasScreen .ms-kpi .kl{
   font-size:.72rem;color:#9ba3b5;letter-spacing:.04em;margin-top:.2rem;
+  font-family:'DM Sans',sans-serif;font-weight:500;
+}
+#muestrasScreen .ms-filter-bar{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:.7rem 1.2rem;margin-bottom:1.2rem;
+  display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;
 }
 #muestrasScreen .ms-filters{
-  display:flex;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;
+  display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;
+}
+#muestrasScreen .ms-filter-count{
+  font-size:.72rem;color:var(--muted);font-family:'DM Sans',sans-serif;
+  letter-spacing:.03em;
 }
 #muestrasScreen .ms-filters .ms-fgroup{
   display:flex;align-items:center;gap:.5rem;
@@ -564,11 +589,14 @@ footer p{font-size:.75rem;color:var(--muted);}
 #muestrasScreen .ms-table-wrap{
   background:var(--surface);border-radius:12px;
   border:1px solid var(--border);overflow:hidden;overflow-x:auto;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
 }
 #muestrasScreen .ms-section-hdr{
-  padding:.6rem 1.2rem;font-size:.6rem;font-weight:500;
-  letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  padding:.7rem 1.2rem;font-size:.68rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
   background:var(--surface2);border-bottom:1px solid var(--border);
+  font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:space-between;
 }
 #muestrasScreen .ms-tbl{width:100%;border-collapse:collapse;min-width:700px;}
 #muestrasScreen .ms-tbl th{
@@ -885,28 +913,31 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   </div>
   <div class="ms-body">
     <div class="ms-kpis">
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-proc" style="color:#d4a03c;">—</div><div class="kl">En proceso</div></div>
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-cerr" style="color:#2e9e6a;">—</div><div class="kl">Cerrados</div></div>
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-avg" style="color:var(--accent);">—</div><div class="kl">Días hábiles promedio</div></div>
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-max" style="color:var(--text);">—</div><div class="kl">Días hábiles máximo</div></div>
+      <div class="ms-kpi ms-kpi-primary"><div class="kv" id="ms-kpi-proc" style="color:#d4a03c;">—</div><div class="kl">En proceso</div></div>
+      <div class="ms-kpi ms-kpi-primary"><div class="kv" id="ms-kpi-cerr" style="color:#2e9e6a;">—</div><div class="kl">Cerrados</div></div>
+      <div class="ms-kpi ms-kpi-secondary"><div class="kv" id="ms-kpi-avg" style="color:var(--accent);">—</div><div class="kl">Días hábiles promedio</div></div>
+      <div class="ms-kpi ms-kpi-secondary"><div class="kv" id="ms-kpi-max" style="color:var(--text);">—</div><div class="kl">Días hábiles máximo</div></div>
     </div>
-    <div class="ms-filters">
-      <div class="ms-fgroup">
-        <span class="ms-flabel">Factura</span>
-        <input id="ms-filter-factura" type="text" placeholder="Buscar..." oninput="msFilter()"/>
+    <div class="ms-filter-bar">
+      <div class="ms-filters">
+        <div class="ms-fgroup">
+          <span class="ms-flabel">Factura</span>
+          <input id="ms-filter-factura" type="text" placeholder="Buscar..." oninput="msFilter()"/>
+        </div>
+        <div class="ms-fgroup">
+          <span class="ms-flabel">Estado</span>
+          <select id="ms-filter-estado" onchange="msFilter()">
+            <option value="">Todos</option>
+            <option value="EN PROCESO">En proceso</option>
+            <option value="CERRADO">Cerrado</option>
+          </select>
+        </div>
+        <button class="ms-fclear" onclick="msClearFilters()">Limpiar</button>
       </div>
-      <div class="ms-fgroup">
-        <span class="ms-flabel">Estado</span>
-        <select id="ms-filter-estado" onchange="msFilter()">
-          <option value="">Todos</option>
-          <option value="EN PROCESO">En proceso</option>
-          <option value="CERRADO">Cerrado</option>
-        </select>
-      </div>
-      <button class="ms-fclear" onclick="msClearFilters()">Limpiar</button>
+      <span class="ms-filter-count" id="ms-count"></span>
     </div>
     <div class="ms-table-wrap" style="margin-bottom:1.5rem;">
-      <div class="ms-section-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="ms-section-hdr">
         <span>Para seguimiento</span>
         <button id="ms-add-seg" onclick="openMsModal(null,'SEG')" style="display:none;font-size:.7rem;padding:.25rem .65rem;border-radius:5px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">+ Nueva</button>
       </div>
@@ -918,7 +949,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       </table>
     </div>
     <div class="ms-table-wrap">
-      <div class="ms-section-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="ms-section-hdr">
         <span>Para tipo y aprobación</span>
         <button id="ms-add-tip" onclick="openMsModal(null,'TIP')" style="display:none;font-size:.7rem;padding:.25rem .65rem;border-radius:5px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">+ Nueva</button>
       </div>
@@ -2151,14 +2182,19 @@ function renderMuestrasScreen(){
 function msFilter(){
   var fac=((document.getElementById('ms-filter-factura')||{}).value||'').toLowerCase();
   var est=(document.getElementById('ms-filter-estado')||{}).value||'';
+  var total=0,visible=0;
   ['ms-tbody-seg','ms-tbody-tip'].forEach(function(id){
     var tb=document.getElementById(id);
     if(!tb)return;
     Array.from(tb.rows).forEach(function(tr){
+      total++;
       var ok=(!fac||tr.dataset.factura.includes(fac))&&(!est||tr.dataset.estado===est);
       tr.style.display=ok?'':'none';
+      if(ok)visible++;
     });
   });
+  var cEl=document.getElementById('ms-count');
+  if(cEl)cEl.textContent=visible===total?total+' registros':'Mostrando '+visible+' de '+total;
 }
 function msFillTable(tbodyId,rows,admin,maxDays){
   var tb=document.getElementById(tbodyId);
