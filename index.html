@@ -3166,7 +3166,7 @@ function _cobParseFile(data,fname){
     var vnom=(rv[cVend]||'').toString().trim();
     var vm=_cobMatchVendor(vnom);if(!vm)continue;
     var fecha=_cobParseDate(rv[cFecha]);if(!fecha)continue;
-    var yr=fecha.getFullYear();if(yr!==2025&&yr!==2026)continue;
+    var yr=fecha.getFullYear();
     if(yr===2026&&fecha>viernes)continue;
     var saldo=typeof rv[cSaldo]==='number'?rv[cSaldo]:parseFloat((rv[cSaldo]||'').toString().replace(/[^\d.-]/g,''))||0;
     _cobRawData.push({
@@ -3235,6 +3235,7 @@ function _cobFiltered(){
     if(_cobFilterYear==='2025'&&r.year!==2025)return false;
     if(_cobFilterYear==='2026now'&&(r.year!==2026||r.mes!==curMes))return false;
     if(_cobFilterYear==='2026prev'&&(r.year!==2026||r.mes>=curMes))return false;
+    if(_cobFilterYear==='otros'&&(r.year===2025||r.year===2026))return false;
     if(_cobFilterVendor!=='all'&&r.vkey!==_cobFilterVendor)return false;
     return true;
   });
@@ -3271,11 +3272,14 @@ function _cobRender(){
   // Botones de año
   var _mNames=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   var _curMes=new Date().getMonth();
-  var yBtns=[
+  var _hasOtros=_cobRawData.some(function(r){return r.year!==2025&&r.year!==2026;});
+  var _yList=[
     {k:'2025',l:'2025'},
     {k:'2026prev',l:'2026 Anteriores'},
     {k:'2026now',l:_mNames[_curMes]+' 2026'}
-  ].map(function(y){
+  ];
+  if(_hasOtros)_yList.push({k:'otros',l:'Otros años'});
+  var yBtns=_yList.map(function(y){
     return'<button class="cob-fbtn'+((_cobFilterYear===y.k)?' active':'')+'" onclick="_cobSetYear(\''+y.k+'\')">'+y.l+'</button>';
   }).join('');
 
