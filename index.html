@@ -522,27 +522,45 @@ footer p{font-size:.75rem;color:var(--muted);}
   font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.2em;
   text-transform:uppercase;color:var(--text);
 }
+#muestrasScreen .ms-admin-btn{
+  display:none;align-items:center;gap:.4rem;
+  font-size:.7rem;padding:.35rem .85rem;border-radius:6px;
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--muted);cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-weight:500;
+  letter-spacing:.04em;transition:all .15s;
+}
+#muestrasScreen .ms-admin-btn:hover{
+  border-color:var(--accent);color:var(--accent);
+  background:rgba(59,168,212,.06);
+}
 #muestrasScreen .ms-body{padding:1.5rem 2rem 3rem;}
 #muestrasScreen .ms-kpis{
-  display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:.7rem;
 }
 #muestrasScreen .ms-kpi{
   background:var(--surface);border-radius:8px;
-  padding:1.1rem 1.2rem;border:1px solid var(--border);
-  box-shadow:0 2px 8px rgba(0,0,0,.15);
+  padding:1rem 1.2rem;border:1px solid var(--border);
 }
 #muestrasScreen .ms-kpi.ms-kpi-primary{
-  padding:1.3rem 1.4rem;
+  padding:1.4rem 1.5rem;border-left:3px solid;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
 }
 #muestrasScreen .ms-kpi.ms-kpi-primary .kv{
-  font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.04em;
+  font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:.04em;
+}
+#muestrasScreen .ms-kpi.ms-kpi-primary .kl{
+  font-size:.75rem;margin-top:.3rem;
 }
 #muestrasScreen .ms-kpi.ms-kpi-secondary{
-  border-color:transparent;background:var(--surface);
-  box-shadow:none;border:1px solid rgba(42,48,69,.5);
+  background:transparent;border:1px solid rgba(42,48,69,.4);
+  box-shadow:none;padding:.7rem 1.2rem;
 }
 #muestrasScreen .ms-kpi.ms-kpi-secondary .kv{
-  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.04em;
+  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.04em;
+}
+#muestrasScreen .ms-kpi.ms-kpi-secondary .kl{
+  font-size:.65rem;margin-top:.15rem;
 }
 #muestrasScreen .ms-kpi .kv{
   font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em;
@@ -553,7 +571,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #muestrasScreen .ms-filter-bar{
   background:var(--surface);border:1px solid var(--border);border-radius:8px;
-  padding:.7rem 1.2rem;margin-bottom:1.2rem;
+  padding:.6rem 1.2rem;margin-bottom:.9rem;
   display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;
   justify-content:space-between;
 }
@@ -909,12 +927,12 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   <div class="ms-header">
     <button class="ms-back" onclick="volverHomeFromMuestras()">← Volver</button>
     <div class="ms-title">Estado de Muestras</div>
-    <button id="ms-admin-btn" onclick="openMsModal(null,null)" style="display:none;align-items:center;gap:.4rem;font-size:.72rem;padding:.35rem .8rem;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">⚙ Admin</button>
+    <button id="ms-admin-btn" class="ms-admin-btn" onclick="openMsModal(null,null)">⚙ Admin</button>
   </div>
   <div class="ms-body">
     <div class="ms-kpis">
-      <div class="ms-kpi ms-kpi-primary"><div class="kv" id="ms-kpi-proc" style="color:#d4a03c;">—</div><div class="kl">En proceso</div></div>
-      <div class="ms-kpi ms-kpi-primary"><div class="kv" id="ms-kpi-cerr" style="color:#2e9e6a;">—</div><div class="kl">Cerrados</div></div>
+      <div class="ms-kpi ms-kpi-primary" style="border-left-color:#d4a03c;"><div class="kv" id="ms-kpi-proc" style="color:#d4a03c;">—</div><div class="kl">En proceso</div></div>
+      <div class="ms-kpi ms-kpi-primary" style="border-left-color:#2e9e6a;"><div class="kv" id="ms-kpi-cerr" style="color:#2e9e6a;">—</div><div class="kl">Cerrados</div></div>
       <div class="ms-kpi ms-kpi-secondary"><div class="kv" id="ms-kpi-avg" style="color:var(--accent);">—</div><div class="kl">Días hábiles promedio</div></div>
       <div class="ms-kpi ms-kpi-secondary"><div class="kv" id="ms-kpi-max" style="color:var(--text);">—</div><div class="kl">Días hábiles máximo</div></div>
     </div>
