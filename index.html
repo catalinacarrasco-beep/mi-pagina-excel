@@ -3042,8 +3042,10 @@ function volverHomeFromCobranza(){
     fadeIn(document.getElementById('homeScreen'));
   });
 }
+var _ctPrefetch=null;
 function enterCargoTracking(){
   sessionStorage.setItem('gs_screen','cargo');
+  _ctPrefetch=fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctHAuth()});
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('cargoScreen'));
     if(typeof loadCargo==='function') loadCargo();
@@ -3183,7 +3185,7 @@ async function _ctUpdateField(id,patch,skipRender){
   _ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?Object.assign({},r,patch):r;});
   if(!skipRender)_ctUpdateStats();
   var resp=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
-    method:'PATCH',headers:Object.assign(_ctH(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+    method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
   });
   if(!resp.ok){
     if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();}
@@ -3199,8 +3201,9 @@ function loadCargo(){
   el.innerHTML='<div class="ct-loading">Cargando embarques...</div>';
   var addBtn=document.getElementById('ct-add');
   if(addBtn)addBtn.style.display=_ctIsAdmin()?'':'none';
-  fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctH()})
-  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+  var p=_ctPrefetch||fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctHAuth()});
+  _ctPrefetch=null;
+  p.then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
   .then(function(data){
     _ctEmbarques=data;
     var exp=document.getElementById('ct-export');if(exp)exp.style.display=data.length?'':'none';
@@ -3363,7 +3366,7 @@ async function _ctBulkStatus(estado){
   _ctSelected=new Set();_ctUpdateActionBar();_ctRender();
   await Promise.all(ids.map(function(id){
     return fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
-      method:'PATCH',headers:Object.assign(_ctH(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+      method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
     });
   }));
   _ctFeedback(true);
@@ -3376,7 +3379,7 @@ async function _ctAddRow(){
   if(btn){btn.disabled=true;btn.textContent='Agregando…';}
   var resp=await fetch(_CT_URL+'/rest/v1/embarques',{
     method:'POST',
-    headers:Object.assign(_ctH(),{'Prefer':'return=representation'}),
+    headers:Object.assign(_ctHAuth(),{'Prefer':'return=representation'}),
     body:JSON.stringify({estado_embarque:'en_origen'})
   });
   if(btn){btn.disabled=false;btn.textContent='+ Nuevo embarque';}
@@ -3394,7 +3397,7 @@ async function _ctAddRow(){
 
 async function _ctDeleteRow(id){
   if(!confirm('¿Eliminar este embarque permanentemente?'))return;
-  await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{method:'DELETE',headers:_ctH()});
+  await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{method:'DELETE',headers:_ctHAuth()});
   _ctEmbarques=_ctEmbarques.filter(function(r){return r.id!==id;});
   _ctSelected.delete(id);
   if(_ctEditingId===id)_ctEditingId=null;
