@@ -450,16 +450,16 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
 .cob-vsel{padding:.32rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;}
 .cob-hero{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.8rem;}
-.cob-hero-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.2rem;}
-.cob-hero-card .kv{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em;color:var(--accent);}
-.cob-hero-card .kl{font-size:.72rem;color:#9ba3b5;margin-top:.2rem;letter-spacing:.04em;}
-.cob-vendors-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.1rem;}
-.cob-vchip{display:flex;align-items:baseline;gap:.4rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.45rem .75rem;transition:border-color .2s;}
+.cob-hero-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.3rem 1.4rem;border-left:3px solid var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.cob-hero-card .kv{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.04em;color:var(--accent);}
+.cob-hero-card .kl{font-size:.72rem;color:#9ba3b5;margin-top:.3rem;letter-spacing:.04em;font-family:'DM Sans',sans-serif;font-weight:500;}
+.cob-vendors-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem;padding-bottom:.7rem;border-bottom:1px solid var(--border);}
+.cob-vchip{display:flex;align-items:baseline;gap:.4rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.45rem .75rem;transition:border-color .2s;box-shadow:0 1px 4px rgba(0,0,0,.1);}
 .cob-vchip .vc-amt{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.03em;}
 .cob-vchip .vc-name{font-size:.68rem;color:#9ba3b5;letter-spacing:.03em;}
 .cob-tbl tbody tr{transition:opacity .25s,transform .25s;}
 .cob-tbl tbody tr.cob-removing{opacity:0;transform:translateX(30px);}
-.cob-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
+.cob-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.12);}
 .cob-tbl{width:100%;border-collapse:collapse;font-size:.81rem;}
 .cob-tbl thead th{background:var(--surface2);padding:.6rem .9rem;text-align:left;font-weight:600;font-size:.72rem;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
 .cob-tbl tbody td{padding:.5rem .9rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
@@ -3418,7 +3418,7 @@ function _cobRender(){
     +'</div>'
     +'<div class="cob-hero">'
       +'<div class="cob-hero-card"><div class="kv">'+_cobFmtCLP(total)+'</div><div class="kl">Total por cobrar · '+data.length+' documentos</div></div>'
-      +'<div class="cob-hero-card" style="border-color:rgba(192,80,80,.25)"><div class="kv" style="color:var(--negative)">'+_cobFmtCLP(vencSum)+'</div><div class="kl">Vencido · '+vencData.length+' documentos</div></div>'
+      +'<div class="cob-hero-card" style="border-left-color:var(--negative)"><div class="kv" style="color:var(--negative)">'+_cobFmtCLP(vencSum)+'</div><div class="kl">Vencido · '+vencData.length+' documentos</div></div>'
     +'</div>'
     +(vChips?'<div class="cob-vendors-row">'+vChips+'</div>':'')
     +(data.length===0
