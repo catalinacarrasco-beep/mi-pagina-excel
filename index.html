@@ -253,7 +253,10 @@ footer p{font-size:.75rem;color:var(--muted);}
   background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:2rem;z-index:1000;padding:2rem;
+  padding-top:max(2rem,env(safe-area-inset-top));
+  padding-bottom:max(2rem,env(safe-area-inset-bottom));
   opacity:1;transition:opacity .35s ease;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 #homeScreen .home-logo{text-align:center;}
 #homeScreen .home-logo h1{
@@ -302,9 +305,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 @media(prefers-reduced-motion:reduce){.ct-ship,.ct-row-anim{animation:none!important;}}
 #cargoScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:#f0f2f5;overflow-y:auto;
+  background:#f0f2f5;overflow-y:auto;-webkit-overflow-scrolling:touch;
   display:none;flex-direction:column;
   z-index:1000;opacity:0;transition:opacity .35s ease;
+  padding-bottom:env(safe-area-inset-bottom);
   font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#1a1d23;
 }
 #cargoScreen .ct-topbar{
@@ -431,7 +435,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-empty-state p{margin:0 0 16px;font-size:15px;color:#374151;}
 #cargoScreen .ct-tbl td{white-space:nowrap;vertical-align:top;}
 /* ── MÓDULO COBRANZAS ─────────────────────── */
-#cobranzasScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);overflow-y:auto;display:none;flex-direction:column;z-index:1000;opacity:0;transition:opacity .35s ease;}
+#cobranzasScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;flex-direction:column;z-index:1000;opacity:0;transition:opacity .35s ease;padding-bottom:env(safe-area-inset-bottom);}
 .cob-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
 .cob-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;padding:0;transition:color .15s;}
 .cob-back:hover{color:var(--accent);}
@@ -504,9 +508,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 /* ── MÓDULO MUESTRAS ──────────────────────── */
 #muestrasScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:var(--bg);overflow-y:auto;
+  background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
   display:none;flex-direction:column;
   z-index:1000;opacity:0;transition:opacity .35s ease;
+  padding-bottom:env(safe-area-inset-bottom);
 }
 #muestrasScreen .ms-header{
   display:flex;align-items:center;justify-content:space-between;
@@ -647,9 +652,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 /* ── MÓDULO VENDEDORES ───────────────────── */
 #vendedoresScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:#1e2235;overflow-y:auto;
+  background:#1e2235;overflow-y:auto;-webkit-overflow-scrolling:touch;
   display:none;flex-direction:column;
   z-index:1000;opacity:0;transition:opacity .35s ease;
+  padding-bottom:env(safe-area-inset-bottom);
 }
 .vd-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(30,34,53,.95);position:sticky;top:0;z-index:10;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
 .vd-back{font-size:.75rem;color:var(--muted);cursor:pointer;letter-spacing:.08em;background:none;border:none;padding:.4rem;display:flex;align-items:center;gap:.4rem;transition:color .15s;}
@@ -839,7 +845,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
   .kpi-value{font-size:1.8rem !important;}
 }
 @media(max-width:480px){
-  #homeScreen .home-card{min-width:100%;flex:1 1 100%;}
+  #homeScreen{justify-content:flex-start;padding-top:max(1.5rem,env(safe-area-inset-top));gap:1.2rem;}
+  #homeScreen .home-card{min-width:100%;flex:1 1 100%;padding:1.4rem 1.2rem 1.2rem;gap:.8rem;}
+  #homeScreen .home-card svg{width:40px;height:40px;}
+  #homeScreen .hc-sub{display:none;}
   #homeScreen .home-logo h1{font-size:1.9rem;letter-spacing:.35em;text-indent:.35em;}
   .ls-card{padding:2rem 1.25rem 1.5rem;}
   .ls-brand-name{font-size:2.2rem;}
