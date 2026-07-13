@@ -504,7 +504,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 /* ── MÓDULO MUESTRAS ──────────────────────── */
 #muestrasScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:linear-gradient(135deg,#0d1e16 60%,#0d2018);overflow-y:auto;
+  background:var(--bg);overflow-y:auto;
   display:none;flex-direction:column;
   z-index:1000;opacity:0;transition:opacity .35s ease;
 }
@@ -515,20 +515,27 @@ footer p{font-size:.75rem;color:var(--muted);}
 #muestrasScreen .ms-header .ms-back{
   font-size:.75rem;color:var(--muted);cursor:pointer;
   letter-spacing:.08em;background:none;border:none;padding:0;
-  display:flex;align-items:center;gap:.4rem;
+  display:flex;align-items:center;gap:.4rem;transition:color .15s;
 }
-#muestrasScreen .ms-header .ms-back:hover{color:#2db47a;}
+#muestrasScreen .ms-header .ms-back:hover{color:var(--accent);}
 #muestrasScreen .ms-header .ms-title{
-  font-size:.8rem;letter-spacing:.25em;text-transform:uppercase;color:#e8eaf0;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.2em;
+  font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--text);
 }
 #muestrasScreen .ms-body{padding:1.5rem 2rem 3rem;}
-#muestrasScreen .ms-kpis{display:flex;gap:1rem;margin-bottom:1.5rem;}
-#muestrasScreen .ms-kpi{
-  flex:1;background:var(--surface);border-radius:10px;
-  padding:.9rem 1.2rem;border:1px solid var(--border);
+#muestrasScreen .ms-kpis{
+  display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1rem;
 }
-#muestrasScreen .ms-kpi .kv{font-size:1.8rem;font-weight:300;color:var(--text);}
-#muestrasScreen .ms-kpi .kl{font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem;}
+#muestrasScreen .ms-kpi{
+  background:var(--surface);border-radius:8px;
+  padding:1.1rem 1.2rem;border:1px solid var(--border);
+}
+#muestrasScreen .ms-kpi .kv{
+  font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em;
+}
+#muestrasScreen .ms-kpi .kl{
+  font-size:.72rem;color:#9ba3b5;letter-spacing:.04em;margin-top:.2rem;
+}
 #muestrasScreen .ms-table-wrap{
   background:var(--surface);border-radius:12px;
   border:1px solid var(--border);overflow:hidden;
@@ -549,13 +556,17 @@ footer p{font-size:.75rem;color:var(--muted);}
   border-bottom:1px solid var(--border);vertical-align:middle;
 }
 #muestrasScreen .ms-tbl tr:last-child td{border-bottom:none;}
-#muestrasScreen .ms-tbl tr:hover td{background:var(--surface2);}
-.ms-pill{display:inline-block;font-size:.6rem;font-weight:500;padding:2px 9px;border-radius:20px;}
-.ms-pill-proc{background:#2a3a1a;color:#4db870;}
-.ms-pill-cerr{background:#1a2a3a;color:#4a90d4;}
-.ms-bar-wrap{height:6px;border-radius:3px;background:#1a2535;min-width:60px;}
+#muestrasScreen .ms-tbl tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+#muestrasScreen .ms-tbl tr:hover td{background:rgba(59,168,212,.06);}
+.ms-pill{display:inline-block;font-size:.6rem;font-weight:600;padding:2px 9px;border-radius:20px;letter-spacing:.03em;}
+.ms-pill-proc{background:rgba(210,160,60,.12);color:#d4a03c;}
+.ms-pill-cerr{background:rgba(46,158,106,.12);color:#2e9e6a;}
+.ms-bar-wrap{height:6px;border-radius:3px;background:rgba(59,168,212,.08);min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;}
 .ms-obs{font-size:.68rem;color:var(--muted);line-height:1.5;}
+.ms-row-edit,.ms-row-del{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s,color .12s;color:var(--muted);}
+.ms-row-edit:hover{background:rgba(59,168,212,.1);color:var(--accent);}
+.ms-row-del:hover{background:rgba(192,80,80,.1);color:var(--negative);}
 /* ── PANTALLA LOGIN ─────────────────────── */
 #loginScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
@@ -676,25 +687,13 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 /* /mobile-logo */
 /* muestras */
 #muestrasSection{padding:1.5rem 2rem;}
-.ms-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
-.ms-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:var(--text);}
-.ms-block{background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:1.5rem;overflow:hidden;}
-.ms-block-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border);}
-.ms-block-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:var(--accent);}
-.ms-add-btn{padding:.3rem .75rem;border-radius:4px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;transition:all .15s;}
-.ms-add-btn:hover{background:var(--accent);color:#fff;}
-.ms-table{width:100%;border-collapse:collapse;font-size:.78rem;}
-.ms-table th{padding:.5rem .75rem;text-align:left;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
-.ms-table td{padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text);vertical-align:middle;}
-.ms-table tr:last-child td{border-bottom:none;}
-.ms-table tr:hover td{background:rgba(255,255,255,.03);}
-.ms-empty{padding:1.5rem;text-align:center;color:var(--muted);font-size:.8rem;}
+/* ── Muestras legacy (Ventas tab) ── */
 .ms-estado{display:inline-block;padding:3px 10px;border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:.04em;}
-.ms-estado.cerrado{background:rgba(74,222,128,.18);color:#4ade80;}
-.ms-estado.tramite{background:rgba(251,191,36,.18);color:#fbbf24;}
-.ms-estado.pendiente{background:rgba(148,163,184,.15);color:#94a3b8;}
+.ms-estado.cerrado{background:rgba(46,158,106,.15);color:#2e9e6a;}
+.ms-estado.tramite{background:rgba(210,160,60,.15);color:#d4a03c;}
+.ms-estado.pendiente{background:rgba(123,132,153,.15);color:#9ba3b5;}
 .ms-action-btn{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s;color:var(--muted);}
-.ms-action-btn:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.ms-action-btn:hover{background:rgba(59,168,212,.1);color:var(--accent);}
 .ms-dias{font-weight:600;color:var(--text);}
 .ms-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;}
 .ms-modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
@@ -855,10 +854,10 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   </div>
   <div class="ms-body">
     <div class="ms-kpis">
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-proc" style="color:#f0a830;">—</div><div class="kl">En proceso</div></div>
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-cerr" style="color:#4a90d4;">—</div><div class="kl">Cerrados</div></div>
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-avg">—</div><div class="kl">Días hábiles promedio</div></div>
-      <div class="ms-kpi"><div class="kv" id="ms-kpi-max">—</div><div class="kl">Días hábiles máximo</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-proc" style="color:#d4a03c;">—</div><div class="kl">En proceso</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-cerr" style="color:#2e9e6a;">—</div><div class="kl">Cerrados</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-avg" style="color:var(--accent);">—</div><div class="kl">Días hábiles promedio</div></div>
+      <div class="ms-kpi"><div class="kv" id="ms-kpi-max" style="color:var(--text);">—</div><div class="kl">Días hábiles máximo</div></div>
     </div>
     <div style="display:flex;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;">
       <div style="display:flex;align-items:center;gap:.5rem;">
@@ -903,7 +902,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </div>
 <!-- ADMIN MODAL MUESTRAS -->
 <div id="msMod" onclick="if(event.target===this)closeMsModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:3000;align-items:center;justify-content:center;padding:1rem;">
-  <div style="background:#1a2030;border:1px solid var(--border);border-radius:10px;padding:1.5rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;">
     <div id="msModTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--text);margin-bottom:1.2rem;">Nueva Entrada</div>
     <input type="hidden" id="msModId"><input type="hidden" id="msModTipo">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
@@ -2138,7 +2137,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
   tb.innerHTML=rows.map(function(r){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
-    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#1fa060;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.68rem;color:#f0a830;">En tr\u00e1mite</div>';
+    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#3ba8d4;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.68rem;color:#d4a03c;">En tr\u00e1mite</div>';
     var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
     var adminTd=admin?('<td><button class="ms-row-edit" data-id="'+r.id+'" data-tipo="'+tipo+'" onclick="openMsModal(this.dataset.id,this.dataset.tipo)">&#9998;</button>'+'<button class="ms-row-del" data-id="'+r.id+'" onclick="deleteMsRow(this.dataset.id)">&#10005;</button></td>'):'';
     return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.65rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td style="max-width:260px;white-space:normal;word-break:break-word;font-size:.75rem;color:var(--muted);line-height:1.4;">'+r.obs+'</td>'+adminTd+'</tr>';
