@@ -44,18 +44,27 @@ module.exports = async function(req, res) {
     const fileSha = (tree.tree || []).find(f => f.path === 'index.html')?.sha;
     if (!fileSha) return res.status(500).json({ error: 'index.html no encontrado en árbol' });
 
-    // Replace constants (same logic as update_html.mjs)
+    // Replace only constants that have data — 2025 constants stay untouched
     const map = {
-      DETAIL_GEN26: data.gen26, DETAIL_GEN25: data.gen25,
-      DETAIL_2026: data.vend26, DETAIL_2025: data.vend25,
-      CANALES_DETAIL26: data.canales26, CANALES_DETAIL25: data.canales25,
+      DETAIL_GEN26: data.gen26,
+      DETAIL_2026: data.vend26,
+      CANALES_DETAIL26: data.canales26,
+      EXTRAS_DETAIL26: data.extras26,
       RESUMEN_CANALES: data.resumenCanales,
-      EXTRAS_DETAIL26: data.extras26, RESUMEN_EXTRAS: data.resumenExtras,
-      RESUMEN: data.resumen, STOCK: data.stock,
-      CLIENTES26: data.cli26, CLIENTES25: data.cli25,
+      RESUMEN: data.resumen,
+      RESUMEN_EXTRAS: data.resumenExtras,
+      STOCK: data.stock,
+      CLIENTES26: data.cli26,
     };
+    // Also include 2025 if provided (backwards compatible)
+    if (data.gen25) map.DETAIL_GEN25 = data.gen25;
+    if (data.vend25) map.DETAIL_2025 = data.vend25;
+    if (data.canales25) map.CANALES_DETAIL25 = data.canales25;
+    if (data.cli25) map.CLIENTES25 = data.cli25;
+
     let lines = rawHtml.split('\n');
     for (const [name, value] of Object.entries(map)) {
+      if (value == null) continue;
       const p1 = 'const ' + name + ' = ', p2 = 'const ' + name + '={', p3 = 'const ' + name + '= ';
       const nl = 'const ' + name + ' = ' + JSON.stringify(value) + ';';
       for (let i = 0; i < lines.length; i++) {
