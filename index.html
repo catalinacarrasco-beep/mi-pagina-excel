@@ -3625,6 +3625,10 @@ function _cobSave(fname){
       return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
     })};
   try{localStorage.setItem('grantt_cob_v3',JSON.stringify(payload));}catch(e){}
+  fetch('/api/cob-push',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+  .then(function(r){return r.json();})
+  .then(function(d){if(d&&d.ok)_cobFb(true,'✓ Sincronizado – visible para todos en ~30s');})
+  .catch(function(){});
 }
 function _cobRestore(){
   try{
@@ -3647,9 +3651,22 @@ function _cobUpdateHdrInfo(){
   if(btn)btn.style.display=_cobCanEdit()?'':'none';
 }
 function _cobInit(){
-  if(!_cobRawData.length)_cobRestore();
   _cobFilterYear='2026now';_cobFilterVendor='all';
+  if(_cobRawData.length){_cobRender();_cobUpdateHdrInfo();return;}
+  if(_cobRestore()){_cobRender();_cobUpdateHdrInfo();return;}
   _cobRender();_cobUpdateHdrInfo();
+  fetch('/cob-data.json?_='+Date.now()).then(function(r){return r.ok?r.json():null;})
+  .then(function(d){
+    if(!d||!d.records||!d.records.length)return;
+    _cobRawData=d.records.map(function(r){
+      var f=new Date(r.fechaISO);
+      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
+    });
+    _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
+    _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
+    _cobFilterYear='2026now';_cobFilterVendor='all';
+    _cobRender();_cobUpdateHdrInfo();
+  }).catch(function(){});
 }
 function _cobOpenCfg(){
   var m=document.getElementById('cob-cfg-bg');if(!m)return;
