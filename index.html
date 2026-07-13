@@ -2743,7 +2743,7 @@ var _CT_TLBL={aereo:'Aéreo',maritimo:'Marítimo'};
 var _CT_DOC_TIPOS=['Invoice','Packing List','Certificado de Origen','BL','AWB','Otro'];
 
 function _ctIsAdmin(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cargo-admin';}
-function _cobCanEdit(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cargo-admin'||r==='cob-admin';}
+function _cobCanEdit(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cob-admin';}
 
 function _ctH(extra){
   var h={'apikey':_CT_KEY,'Authorization':'Bearer '+_CT_KEY,'Content-Type':'application/json'};
