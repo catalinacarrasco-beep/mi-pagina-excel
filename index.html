@@ -3184,6 +3184,7 @@ async function _ctUpdateField(id,patch,skipRender){
   var prev=_ctEmbarques.find(function(r){return r.id===id;});
   _ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?Object.assign({},r,patch):r;});
   if(!skipRender)_ctUpdateStats();
+  await _ctEnsureAuth();
   var resp=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
     method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
   });
@@ -3364,6 +3365,7 @@ async function _ctBulkStatus(estado){
   var patch={estado_embarque:estado};
   _ctEmbarques=_ctEmbarques.map(function(r){return _ctSelected.has(r.id)?Object.assign({},r,patch):r;});
   _ctSelected=new Set();_ctUpdateActionBar();_ctRender();
+  await _ctEnsureAuth();
   await Promise.all(ids.map(function(id){
     return fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
       method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
@@ -3377,6 +3379,7 @@ async function _ctAddRow(){
   _ctAdding=true;
   var btn=document.getElementById('ct-add');
   if(btn){btn.disabled=true;btn.textContent='Agregando…';}
+  await _ctEnsureAuth();
   var resp=await fetch(_CT_URL+'/rest/v1/embarques',{
     method:'POST',
     headers:Object.assign(_ctHAuth(),{'Prefer':'return=representation'}),
@@ -3397,6 +3400,7 @@ async function _ctAddRow(){
 
 async function _ctDeleteRow(id){
   if(!confirm('¿Eliminar este embarque permanentemente?'))return;
+  await _ctEnsureAuth();
   await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{method:'DELETE',headers:_ctHAuth()});
   _ctEmbarques=_ctEmbarques.filter(function(r){return r.id!==id;});
   _ctSelected.delete(id);
@@ -3412,7 +3416,14 @@ function _ctHAuth(){
   return{'apikey':_CT_KEY,'Authorization':'Bearer '+tok,'Content-Type':'application/json'};
 }
 function _ctNeedAuth(){return!_ctAuthToken||Date.now()>=_ctAuthExp;}
-// ponytail: called from lsSubmit at login time — no per-op prompts
+async function _ctEnsureAuth(){
+  if(_ctAuthToken&&Date.now()<_ctAuthExp)return true;
+  var role=sessionStorage.getItem('gs_role');
+  var pw={'cargo-admin':'gerenciaGrantt','admin':'adminGrantt26','cob-admin':'cobranzasGrantt','viewer':'grantt2026'}[role];
+  if(!pw)return false;
+  await _ctSilentLogin(pw,role);
+  return!!_ctAuthToken;
+}
 async function _ctSilentLogin(pw,role){
   var email=role==='viewer'?'viewer@grantt-embarques.app':'catalina.carrasco@grantt.cl';
   try{
