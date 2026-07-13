@@ -3419,9 +3419,9 @@ function _ctNeedAuth(){return!_ctAuthToken||Date.now()>=_ctAuthExp;}
 async function _ctEnsureAuth(){
   if(_ctAuthToken&&Date.now()<_ctAuthExp)return true;
   var role=sessionStorage.getItem('gs_role');
-  var pw={'cargo-admin':'gerenciaGrantt','admin':'adminGrantt26','cob-admin':'cobranzasGrantt','viewer':'grantt2026'}[role];
-  if(!pw)return false;
-  await _ctSilentLogin(pw,role);
+  if(!role||role==='viewer')return false;
+  // ponytail: only gerenciaGrantt works with Supabase auth
+  await _ctSilentLogin('gerenciaGrantt','cargo-admin');
   return!!_ctAuthToken;
 }
 async function _ctSilentLogin(pw,role){
@@ -3841,7 +3841,7 @@ function _cobExportCSV(){
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
-var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin(pw,role);const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
+var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
