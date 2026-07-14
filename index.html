@@ -2223,10 +2223,6 @@ function togglePlacaGroup(gId){
 }
 </script>
 <script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister()));
-}
-
 // ── HOME NAVIGATION ──────────────────────────
 function fadeOut(el, cb){
   el.style.opacity='0';
@@ -3009,10 +3005,6 @@ function togglePlacaGroup(gId){
 }
 </script>
 <script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister()));
-}
-
 // ── HOME NAVIGATION ──────────────────────────
 function fadeOut(el, cb){
   el.style.opacity='0';
@@ -4299,6 +4291,70 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       <input type="file" id="cob-cfg-input" accept=".xlsx,.xls" style="display:none" onchange="_cobHandleUpload(this);_cobCloseCfg()">
       <div style="margin-top:1.25rem"><span style="display:inline-block;padding:.35rem 1.1rem;border:1px solid var(--accent);border-radius:5px;color:var(--accent);font-size:.78rem;font-weight:600;letter-spacing:.06em;font-family:'DM Sans',sans-serif">↑ Seleccionar archivo</span></div>
     </div>
+  </div>
+</div>
+<script>
+/* ── PWA INSTALL ─────────────────────────────── */
+(function(){
+  var svgSrc='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#12151e"/><path d="M 70,33 A 26,26 0 1,0 76,50 L 50,50" stroke="#3ba8d4" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  var img=new Image();
+  img.onload=function(){
+    var icons=[];
+    [192,512].forEach(function(s){
+      var c=document.createElement('canvas');c.width=c.height=s;
+      c.getContext('2d').drawImage(img,0,0,s,s);
+      icons.push({src:c.toDataURL('image/png'),sizes:s+'x'+s,type:'image/png'});
+    });
+    var manifest={name:'Grantt',short_name:'Grantt',start_url:'/',display:'standalone',background_color:'#12151e',theme_color:'#12151e',icons:icons};
+    var blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+    var link=document.createElement('link');link.rel='manifest';link.href=URL.createObjectURL(blob);
+    document.head.appendChild(link);
+  };
+  img.src=svgSrc;
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
+})();
+
+var _pwaPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();_pwaPrompt=e;
+  var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='flex';
+});
+window.addEventListener('appinstalled',function(){
+  _pwaPrompt=null;
+  var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';
+});
+function _pwaInstall(){
+  if(!_pwaPrompt)return;
+  _pwaPrompt.prompt();
+  _pwaPrompt.userChoice.then(function(){_pwaPrompt=null;var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';});
+}
+function _pwaDismiss(){var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';}
+
+/* ── AUTO-REFRESH ────────────────────────────── */
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState!=='visible')return;
+  var scr=sessionStorage.getItem('gs_screen')||'home';
+  if(scr==='cargo'&&typeof loadCargo==='function') loadCargo();
+  else if(scr==='cobranza'&&typeof _cobInit==='function'){_cobRawData=[];_cobInit();}
+});
+var _autoRefreshTimer=null;
+function _startAutoRefresh(){
+  if(_autoRefreshTimer)clearInterval(_autoRefreshTimer);
+  _autoRefreshTimer=setInterval(function(){
+    if(document.visibilityState==='hidden')return;
+    var scr=sessionStorage.getItem('gs_screen')||'home';
+    if(scr==='cargo'&&typeof loadCargo==='function') loadCargo();
+    else if(scr==='cobranza'&&typeof _cobInit==='function'){_cobRawData=[];_cobInit();}
+  },30000);
+}
+_startAutoRefresh();
+</script>
+
+<div id="pwa-install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 20px;align-items:center;justify-content:space-between;z-index:9999;font-family:'DM Sans',sans-serif">
+  <span style="color:var(--text);font-size:.85rem">Instala Grantt para acceso directo</span>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button onclick="_pwaDismiss()" style="background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:4px 8px">Ahora no</button>
+    <button onclick="_pwaInstall()" style="padding:6px 16px;border:none;border-radius:6px;background:var(--accent);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer">Instalar</button>
   </div>
 </div>
 </body>
