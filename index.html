@@ -4301,16 +4301,27 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catc
 var _pwaPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){
   e.preventDefault();_pwaPrompt=e;
-  var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='flex';
 });
 window.addEventListener('appinstalled',function(){
   _pwaPrompt=null;
   var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';
 });
+(function(){
+  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  if(!isStandalone){
+    var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='flex';
+  }
+})();
 function _pwaInstall(){
-  if(!_pwaPrompt)return;
-  _pwaPrompt.prompt();
-  _pwaPrompt.userChoice.then(function(){_pwaPrompt=null;var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';});
+  if(_pwaPrompt){
+    _pwaPrompt.prompt();
+    _pwaPrompt.userChoice.then(function(){_pwaPrompt=null;var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';});
+  } else {
+    var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+    var msg=isIOS?'Toca el icono de compartir y luego "Agregar a pantalla de inicio"':'Usa el menu de tu navegador para instalar la app';
+    var tip=document.getElementById('pwa-install-tip');
+    if(tip){tip.textContent=msg;tip.style.display='block';setTimeout(function(){tip.style.display='none';},5000);}
+  }
 }
 function _pwaDismiss(){var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';}
 
@@ -4334,12 +4345,15 @@ function _startAutoRefresh(){
 _startAutoRefresh();
 </script>
 
-<div id="pwa-install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 20px;align-items:center;justify-content:space-between;z-index:9999;font-family:'DM Sans',sans-serif">
+<div id="pwa-install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 20px;z-index:9999;font-family:'DM Sans',sans-serif">
+  <div style="display:flex;align-items:center;justify-content:space-between">
   <span style="color:var(--text);font-size:.85rem">Instala Grantt para acceso directo</span>
   <div style="display:flex;gap:8px;align-items:center">
     <button onclick="_pwaDismiss()" style="background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:4px 8px">Ahora no</button>
     <button onclick="_pwaInstall()" style="padding:6px 16px;border:none;border-radius:6px;background:var(--accent);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer">Instalar</button>
   </div>
+  </div>
+  <div id="pwa-install-tip" style="display:none;color:var(--muted);font-size:.78rem;margin-top:6px"></div>
 </div>
 </body>
 </html>
