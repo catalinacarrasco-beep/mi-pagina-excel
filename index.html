@@ -3805,19 +3805,17 @@ function _cobRender(){
       +'<div class="cob-hero-card" style="border-left-color:var(--negative)"><div class="kv" style="color:var(--negative)">'+_cobFmtCLP(vencSum)+'</div><div class="kl">Vencido · '+vencData.length+' documentos</div></div>'
     +'</div>'
     +(vChips?'<div class="cob-vendors-row">'+vChips+'</div>':'')
-    +(data.length===0
-      ?'<div class="cob-empty">Sin documentos para los filtros seleccionados.</div>'
-      :'<div class="cob-bar"><span>'+data.length+' documentos</span>'
+    +(data.length>0?'<div class="cob-bar"><span>'+data.length+' documentos</span>'
         +(_cobFilterYear==='2026now'?'<span>·</span><span>Corte al '+_cobFmtDate(_cobFechaCorte)+'</span>':'')
-        +'<button class="cob-csv" onclick="_cobExportCSV()">⬇ Exportar CSV</button></div>'
-      +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
+        +'<button class="cob-csv" onclick="_cobExportCSV()">⬇ Exportar CSV</button></div>':'')
+    +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
         +'<th>RUT</th>'
         +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'nombre\')">Cliente'+(_cobSortKey==='nombre'?(_cobSortDir>0?' ▲':' ▼'):'')+' <input type="text" placeholder="🔍 Buscar…" value="'+_ctEsc(_cobFilterSearch)+'" oninput="event.stopPropagation();_cobSetSearch(this.value)" onclick="event.stopPropagation()" style="margin-left:6px;padding:3px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-family:\'DM Sans\',sans-serif;font-size:.75rem;width:120px;outline:none;font-weight:400"></th>'
         +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'fecha\')">Vencimiento'+(_cobSortKey==='fecha'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
         +'<th style="text-align:right;cursor:pointer;user-select:none" onclick="_cobToggleSort(\'saldo\')">Saldo'+(_cobSortKey==='saldo'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
         +'<th>Vendedor</th>'
         +(canEdit?'<th style="width:40px"></th>':'')
-        +'</tr></thead><tbody>'+tRows+'</tbody>'
+        +'</tr></thead><tbody>'+(tRows||'<tr><td colspan="'+(canEdit?6:5)+'" style="text-align:center;padding:2rem;color:var(--muted)">Sin resultados para la búsqueda.</td></tr>')+'</tbody>'
         +'<tfoot><tr style="border-top:2px solid var(--border);font-weight:700">'
         +'<td></td><td></td><td style="text-align:right;color:var(--muted);font-size:.78rem">TOTAL</td>'
         +'<td class="cob-amt" style="font-size:1.05rem">'+_cobFmtCLP(total)+'</td>'
