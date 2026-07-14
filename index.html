@@ -3042,10 +3042,8 @@ function volverHomeFromCobranza(){
     fadeIn(document.getElementById('homeScreen'));
   });
 }
-var _ctPrefetch=null;
 function enterCargoTracking(){
   sessionStorage.setItem('gs_screen','cargo');
-  _ctPrefetch=fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctHAuth()});
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('cargoScreen'));
     if(typeof loadCargo==='function') loadCargo();
@@ -3196,15 +3194,15 @@ async function _ctUpdateField(id,patch,skipRender){
   }
 }
 
-function loadCargo(){
+async function loadCargo(){
   var el=document.getElementById('ct-content');if(!el)return;
   _ctSelected=new Set();_ctEditingId=null;
   el.innerHTML='<div class="ct-loading">Cargando embarques...</div>';
   var addBtn=document.getElementById('ct-add');
   if(addBtn)addBtn.style.display=_ctIsAdmin()?'':'none';
-  var p=_ctPrefetch||fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctHAuth()});
-  _ctPrefetch=null;
-  p.then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+  await _ctEnsureAuth();
+  fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctHAuth()})
+  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
   .then(function(data){
     _ctEmbarques=data;
     var exp=document.getElementById('ct-export');if(exp)exp.style.display=data.length?'':'none';
@@ -3505,6 +3503,7 @@ function _ctExportCSV(){
 var _cobRawData=[];
 var _cobFilterYear='2026now';
 var _cobFilterVendor='all';
+var _cobFilterSearch='';
 var _cobFechaCorte=null;
 var _cobNextId=1;
 var _cobSortKey='fecha';
@@ -3712,12 +3711,14 @@ function _cobFiltered(){
     if(_cobFilterYear==='2026prev'&&(r.year!==2026||r.mes>=curMes))return false;
     if(_cobFilterYear==='otros'&&(r.year===2025||r.year===2026))return false;
     if(_cobFilterVendor!=='all'&&r.vkey!==_cobFilterVendor)return false;
+    if(_cobFilterSearch&&r.nombre.toLowerCase().indexOf(_cobFilterSearch)<0)return false;
     return true;
   });
 }
 
 function _cobSetYear(y){_cobFilterYear=y;_cobRender();}
 function _cobSetVendor(v){_cobFilterVendor=v;_cobRender();}
+function _cobSetSearch(v){_cobFilterSearch=v.toLowerCase().trim();_cobRender();}
 function _cobToggleSort(key){
   if(_cobSortKey===key){_cobSortDir*=-1;}else{_cobSortKey=key;_cobSortDir=1;}
   _cobRender();
@@ -3798,6 +3799,7 @@ function _cobRender(){
   main.innerHTML=
     '<div class="cob-filters">'+yBtns
       +'<select class="cob-vsel" onchange="_cobSetVendor(this.value)">'+vOpts+'</select>'
+      +'<input type="text" class="cob-search" placeholder="Buscar cliente…" value="'+_ctEsc(_cobFilterSearch)+'" oninput="_cobSetSearch(this.value)" style="margin-left:auto;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:\'DM Sans\',sans-serif;font-size:.82rem;width:180px;outline:none">'
     +'</div>'
     +'<div class="cob-hero">'
       +'<div class="cob-hero-card"><div class="kv">'+_cobFmtCLP(total)+'</div><div class="kl">Total por cobrar · '+data.length+' documentos</div></div>'
