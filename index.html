@@ -3718,7 +3718,7 @@ function _cobFiltered(){
 
 function _cobSetYear(y){_cobFilterYear=y;_cobRender();}
 function _cobSetVendor(v){_cobFilterVendor=v;_cobRender();}
-function _cobSetSearch(v){_cobFilterSearch=v.toLowerCase().trim();_cobRender();}
+function _cobSetSearch(v){_cobFilterSearch=v.toLowerCase();_cobRender();var inp=document.querySelector('.cob-tbl th input[type="text"]');if(inp){inp.focus();inp.selectionStart=inp.selectionEnd=inp.value.length;}}
 function _cobToggleSort(key){
   if(_cobSortKey===key){_cobSortDir*=-1;}else{_cobSortKey=key;_cobSortDir=1;}
   _cobRender();
