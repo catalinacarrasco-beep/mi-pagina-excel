@@ -3810,7 +3810,7 @@ function _cobRender(){
         +'<button class="cob-csv" onclick="_cobExportCSV()">⬇ Exportar CSV</button></div>':'')
     +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
         +'<th>RUT</th>'
-        +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'nombre\')">Cliente'+(_cobSortKey==='nombre'?(_cobSortDir>0?' ▲':' ▼'):'')+' <input type="text" placeholder="🔍 Buscar…" value="'+_ctEsc(_cobFilterSearch)+'" oninput="event.stopPropagation();_cobSetSearch(this.value)" onclick="event.stopPropagation()" style="margin-left:6px;padding:3px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-family:\'DM Sans\',sans-serif;font-size:.75rem;width:120px;outline:none;font-weight:400"></th>'
+        +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'nombre\')">Cliente'+(_cobSortKey==='nombre'?(_cobSortDir>0?' ▲':' ▼'):'')+' <input type="text" placeholder="Buscar..." value="'+_ctEsc(_cobFilterSearch)+'" oninput="event.stopPropagation();_cobSetSearch(this.value)" onclick="event.stopPropagation()" style="margin-left:6px;padding:3px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:.75rem;width:120px;outline:none;font-weight:400"></th>'
         +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'fecha\')">Vencimiento'+(_cobSortKey==='fecha'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
         +'<th style="text-align:right;cursor:pointer;user-select:none" onclick="_cobToggleSort(\'saldo\')">Saldo'+(_cobSortKey==='saldo'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
         +'<th>Vendedor</th>'
