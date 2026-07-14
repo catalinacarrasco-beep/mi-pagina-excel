@@ -3042,8 +3042,10 @@ function volverHomeFromCobranza(){
     fadeIn(document.getElementById('homeScreen'));
   });
 }
+var _ctPrefetch=null;
 function enterCargoTracking(){
   sessionStorage.setItem('gs_screen','cargo');
+  _ctPrefetch=fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctH()});
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('cargoScreen'));
     if(typeof loadCargo==='function') loadCargo();
@@ -3200,8 +3202,9 @@ async function loadCargo(){
   el.innerHTML='<div class="ct-loading">Cargando embarques...</div>';
   var addBtn=document.getElementById('ct-add');
   if(addBtn)addBtn.style.display=_ctIsAdmin()?'':'none';
-  await _ctEnsureAuth();
-  fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctHAuth()})
+  var p=_ctPrefetch||fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctH()});
+  _ctPrefetch=null;
+  p
   .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
   .then(function(data){
     _ctEmbarques=data;
