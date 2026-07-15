@@ -4320,17 +4320,6 @@ document.addEventListener('visibilitychange',function(){
   if(scr==='cargo'&&typeof loadCargo==='function') loadCargo();
   else if(scr==='cobranza'&&typeof _cobInit==='function'){_cobRawData=[];_cobInit();}
 });
-var _autoRefreshTimer=null;
-function _startAutoRefresh(){
-  if(_autoRefreshTimer)clearInterval(_autoRefreshTimer);
-  _autoRefreshTimer=setInterval(function(){
-    if(document.visibilityState==='hidden')return;
-    var scr=sessionStorage.getItem('gs_screen')||'home';
-    if(scr==='cargo'&&typeof loadCargo==='function') loadCargo();
-    else if(scr==='cobranza'&&typeof _cobInit==='function'){_cobRawData=[];_cobInit();}
-  },30000);
-}
-_startAutoRefresh();
 </script>
 
 <div id="pwa-install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 20px;z-index:9999;font-family:'DM Sans',sans-serif">
