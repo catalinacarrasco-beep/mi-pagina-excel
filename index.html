@@ -4306,12 +4306,6 @@ window.addEventListener('appinstalled',function(){
   _pwaPrompt=null;
   var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';
 });
-document.addEventListener('DOMContentLoaded',function(){
-  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
-  if(!isStandalone){
-    var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='flex';
-  }
-});
 function _pwaInstall(){
   if(_pwaPrompt){
     _pwaPrompt.prompt();
@@ -4355,6 +4349,14 @@ _startAutoRefresh();
   </div>
   <div id="pwa-install-tip" style="display:none;color:var(--muted);font-size:.78rem;margin-top:6px"></div>
 </div>
+<script>
+(function(){
+  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  if(!isStandalone){
+    var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='flex';
+  }
+})();
+</script>
 </body>
 </html>
 
