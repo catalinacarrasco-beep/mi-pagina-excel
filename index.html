@@ -6,6 +6,7 @@
 <title>Dashboard Ventas 2026</title>
 <script>!function(){try{var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#12151e"/><path d="M 70,33 A 26,26 0 1,0 76,50 L 50,50" stroke="#3ba8d4" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',i=new Image;i.onload=function(){var c=document.createElement("canvas");c.width=c.height=180;c.getContext("2d").drawImage(i,0,0,180,180);var l=document.querySelector('link[rel="apple-touch-icon"]')||document.createElement("link");l.rel="apple-touch-icon";l.href=c.toDataURL("image/png");document.head.appendChild(l)};i.src="data:image/svg+xml,"+encodeURIComponent(s)}catch(e){}}();</script>
 <link rel="manifest" href="/manifest.json">
+<script>var _pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_pwaPrompt=e;var b=document.getElementById('pwa-install-bar');if(b)b.style.display='flex';});</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2312151e'/%3E%3Cpath d='M 70,33 A 26,26 0 1,0 76,50 L 50,50' stroke='%233ba8d4' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2312151e'/%3E%3Cpath d='M 70,33 A 26,26 0 1,0 76,50 L 50,50' stroke='%233ba8d4' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4298,10 +4299,7 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
 /* ── PWA INSTALL ─────────────────────────────── */
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
 
-var _pwaPrompt=null;
-window.addEventListener('beforeinstallprompt',function(e){
-  e.preventDefault();_pwaPrompt=e;
-});
+if(typeof _pwaPrompt==='undefined')var _pwaPrompt=null;
 window.addEventListener('appinstalled',function(){
   _pwaPrompt=null;
   var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';
@@ -4312,9 +4310,17 @@ function _pwaInstall(){
     _pwaPrompt.userChoice.then(function(){_pwaPrompt=null;var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';});
   } else {
     var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-    var msg=isIOS?'Toca el icono de compartir y luego "Agregar a pantalla de inicio"':'Usa el menu de tu navegador para instalar la app';
+    var isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     var tip=document.getElementById('pwa-install-tip');
-    if(tip){tip.textContent=msg;tip.style.display='block';setTimeout(function(){tip.style.display='none';},5000);}
+    if(!tip)return;
+    if(isIOS){
+      tip.innerHTML='<strong>En Safari:</strong> Toca el icono <span style="font-size:1.1em">⎙</span> de compartir (abajo) y luego <em>"Agregar a pantalla de inicio"</em>';
+    } else if(isMobile){
+      tip.innerHTML='<strong>En Chrome:</strong> Toca el menú <span style="font-size:1.1em">⋮</span> (arriba derecha) → <em>"Instalar aplicación"</em> o <em>"Agregar a pantalla de inicio"</em>';
+    } else {
+      tip.innerHTML='<strong>En Chrome:</strong> Haz clic en el icono <span style="font-size:1.1em">⊕</span> en la barra de direcciones (arriba derecha), o ve a Menú <span style="font-size:1.1em">⋮</span> → <em>"Instalar Grantt..."</em>';
+    }
+    tip.style.display='block';
   }
 }
 function _pwaDismiss(){var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';}
