@@ -4306,12 +4306,12 @@ window.addEventListener('appinstalled',function(){
   _pwaPrompt=null;
   var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='none';
 });
-(function(){
+document.addEventListener('DOMContentLoaded',function(){
   var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
   if(!isStandalone){
     var bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='flex';
   }
-})();
+});
 function _pwaInstall(){
   if(_pwaPrompt){
     _pwaPrompt.prompt();
