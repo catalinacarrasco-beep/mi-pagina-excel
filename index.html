@@ -3297,7 +3297,7 @@ function _ctRender(){
       h+='<td><select onchange="_ctBlurField(\''+e.id+'\',\'proveedor\',this)">';
       h+='<option value="">— Seleccionar —</option>';
       _CT_PROVEEDORES.forEach(function(p){
-        h+='<option value="'+_ctEsc(p.abrev)+'"'+(e.proveedor===p.abrev?' selected':'')+'>'+_ctEscH(p.nombre)+'</option>';
+        h+='<option value="'+_ctEsc(p.abrev)+'"'+(e.proveedor===p.abrev?' selected':'')+'>'+_ctEscH(p.abrev)+' · '+_ctEscH(p.productos)+'</option>';
       });
       h+='</select></td>';
       // OC
