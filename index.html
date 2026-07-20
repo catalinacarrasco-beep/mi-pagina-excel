@@ -465,8 +465,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-doc-gauge-text{font-size:12px;font-weight:600;}
 .ct-inv-link{color:#0891b2;text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
 .ct-inv-link:hover{color:#0e7490;}
-.ct-filter-row td{padding:4px 6px;}
-.ct-filter-row select{width:100%;padding:3px 4px;font-size:11px;border:1px solid #374151;border-radius:4px;background:#1a1d26;color:#d1d5db;}
+.ct-th-filter{padding:1px 2px;font-size:10px;border:1px solid #475569;border-radius:3px;background:#1a1d26;color:#94a3b8;margin-left:4px;vertical-align:middle;cursor:pointer;}
 .ct-sortable{cursor:pointer;user-select:none;}
 .ct-sortable:hover{color:#0891b2;}
 .ct-estado-sel{padding:3px 6px;font-size:11px;font-weight:600;border-radius:4px;border:none;cursor:pointer;appearance:auto;}
@@ -3253,27 +3252,21 @@ function _ctRender(){
   }
   var isAdmin=_ctIsAdmin();
   var sa=function(col){return _ctSort.col===col?(_ctSort.dir==='asc'?' ▲':' ▼'):'';};
+  var fsel=function(col,opts){
+    var v=_ctFilters[col];
+    var s='<select class="ct-th-filter" onchange="_ctSetFilter(\''+col+'\',this.value)"><option value="">▼</option>';
+    opts.forEach(function(o){s+='<option value="'+o[0]+'"'+(v===o[0]?' selected':'')+'>'+o[1]+'</option>';});
+    return s+'</select>';
+  };
   var h='<table class="ct-tbl"><thead><tr>';
-  h+='<th>Estado</th><th>Proveedor</th><th>OC</th><th>Invoice</th><th>Tipo</th><th>BL/AWB</th>';
+  h+='<th>Estado '+fsel('estado',[['en_origen','Origen'],['en_transito','Tránsito'],['arribo','Arribo']])+'</th>';
+  h+='<th>Proveedor '+fsel('proveedor',_CT_PROVEEDORES.map(function(p){return[p.abrev,p.abrev];}))+'</th>';
+  h+='<th>OC</th><th>Invoice</th><th>Tipo</th><th>BL/AWB</th>';
   h+='<th class="ct-sortable" onclick="_ctToggleSort(\'eto\')">ETO'+sa('eto')+'</th>';
   h+='<th class="ct-sortable" onclick="_ctToggleSort(\'etd\')">ETD'+sa('etd')+'</th>';
   h+='<th class="ct-sortable" onclick="_ctToggleSort(\'eta\')">ETA'+sa('eta')+'</th>';
-  h+='<th>Certificable</th><th>Docs</th>';
+  h+='<th>Cert. '+fsel('certificable',[['si','Sí'],['no','No']])+'</th><th>Docs</th>';
   if(isAdmin)h+='<th></th>';
-  h+='</tr>';
-  // Filter row
-  h+='<tr class="ct-filter-row">';
-  h+='<td><select onchange="_ctSetFilter(\'estado\',this.value)"><option value="">Todos</option><option value="en_origen"'+ (_ctFilters.estado==='en_origen'?' selected':'')+'>Origen</option><option value="en_transito"'+(_ctFilters.estado==='en_transito'?' selected':'')+'>Tránsito</option><option value="arribo"'+(_ctFilters.estado==='arribo'?' selected':'')+'>Arribo</option></select></td>';
-  h+='<td><select onchange="_ctSetFilter(\'proveedor\',this.value)"><option value="">Todos</option>';
-  _CT_PROVEEDORES.forEach(function(p){h+='<option value="'+_ctEsc(p.abrev)+'"'+(_ctFilters.proveedor===p.abrev?' selected':'')+'>'+_ctEscH(p.abrev)+'</option>';});
-  h+='</select></td>';
-  h+='<td></td><td></td><td></td><td></td>';
-  h+='<td class="ct-sortable" onclick="_ctToggleSort(\'eto\')" title="Ordenar">⇅</td>';
-  h+='<td class="ct-sortable" onclick="_ctToggleSort(\'etd\')" title="Ordenar">⇅</td>';
-  h+='<td class="ct-sortable" onclick="_ctToggleSort(\'eta\')" title="Ordenar">⇅</td>';
-  h+='<td><select onchange="_ctSetFilter(\'certificable\',this.value)"><option value="">Todos</option><option value="si"'+(_ctFilters.certificable==='si'?' selected':'')+'>Sí</option><option value="no"'+(_ctFilters.certificable==='no'?' selected':'')+'>No</option></select></td>';
-  h+='<td></td>';
-  if(isAdmin)h+='<td></td>';
   h+='</tr></thead><tbody>';
 
   if(!filtered.length){
