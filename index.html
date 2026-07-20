@@ -465,7 +465,8 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-doc-gauge-text{font-size:12px;font-weight:600;}
 .ct-inv-link{color:#0891b2;text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
 .ct-inv-link:hover{color:#0e7490;}
-.ct-th-filter{padding:1px 2px;font-size:10px;border:1px solid #475569;border-radius:3px;background:#1a1d26;color:#94a3b8;margin-left:4px;vertical-align:middle;cursor:pointer;}
+.ct-th-filter{padding:0;font-size:10px;border:none;background:transparent;color:#64748b;margin-left:3px;vertical-align:middle;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;opacity:.6;transition:opacity .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2394a3b8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;padding-right:10px;}
+.ct-th-filter:hover,.ct-th-filter:focus{opacity:1;}
 .ct-sortable{cursor:pointer;user-select:none;}
 .ct-sortable:hover{color:#0891b2;}
 .ct-estado-sel{padding:3px 6px;font-size:11px;font-weight:600;border-radius:4px;border:none;cursor:pointer;appearance:auto;}
@@ -3254,7 +3255,7 @@ function _ctRender(){
   var sa=function(col){return _ctSort.col===col?(_ctSort.dir==='asc'?' ▲':' ▼'):'';};
   var fsel=function(col,opts){
     var v=_ctFilters[col];
-    var s='<select class="ct-th-filter" onchange="_ctSetFilter(\''+col+'\',this.value)"><option value="">▼</option>';
+    var s='<select class="ct-th-filter" onchange="_ctSetFilter(\''+col+'\',this.value)"><option value="">Todo</option>';
     opts.forEach(function(o){s+='<option value="'+o[0]+'"'+(v===o[0]?' selected':'')+'>'+o[1]+'</option>';});
     return s+'</select>';
   };
