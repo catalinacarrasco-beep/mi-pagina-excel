@@ -3432,8 +3432,7 @@ function _ctNeedAuth(){return!_ctAuthToken||Date.now()>=_ctAuthExp;}
 async function _ctEnsureAuth(){
   if(_ctAuthToken&&Date.now()<_ctAuthExp)return true;
   var role=sessionStorage.getItem('gs_role');
-  if(!role||role==='viewer')return false;
-  // ponytail: only gerenciaGrantt works with Supabase auth
+  if(!role)return false;
   await _ctSilentLogin('gerenciaGrantt','cargo-admin');
   return!!_ctAuthToken;
 }
@@ -3536,6 +3535,7 @@ function _ctShowDocs(id){
   var e=_ctEmbarques.find(function(r){return r.id===id;});if(!e)return;
   var m=document.getElementById('ct-docs-modal');if(!m)return;
   var isA=_ctIsAdmin();
+  var isViewer=sessionStorage.getItem('gs_role')==='viewer';
   var docs=_ctAllDocs(e);
   var html='<div class="ct-modal-card ct-docs-card">';
   html+='<button class="ct-modal-close" onclick="_ctCloseDocs()">×</button>';
@@ -3559,7 +3559,8 @@ function _ctShowDocs(id){
         html+='<button class="ct-di-btn ct-di-btn-dl" onclick="_ctDownloadDoc(\''+dp+'\')">⬇ Descargar</button>';
         if(isA&&!doc.isLegacy)html+='<button class="ct-di-btn-del" onclick="_ctDeleteDoc(\''+e.id+'\',\''+dp+'\');setTimeout(function(){_ctShowDocs(\''+e.id+'\')},500)" title="Eliminar">×</button>';
       }
-      if(isA){
+      var isLocal=grupo.grupo==='DOCUMENTACIÓN LOCAL';
+      if(isA||(isViewer&&isLocal)){
         html+='<label class="ct-di-btn ct-di-btn-up">Subir<input type="file" accept="application/pdf,.xlsx,.xls" hidden onchange="_ctUploadDocType(\''+e.id+'\',\''+_ctEsc(tipo)+'\',this)"></label>';
       }
       html+='</div>';
