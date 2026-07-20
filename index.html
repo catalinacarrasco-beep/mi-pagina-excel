@@ -463,11 +463,11 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-di-btn-up:hover{border-color:#0891b2;color:#0891b2;}
 .ct-di-btn-del{background:none;border:none;color:#9ca3af;cursor:pointer;font-size:16px;padding:0 4px;}
 .ct-di-btn-del:hover{color:#dc2626;}
-.ct-doc-dots{display:flex;gap:3px;align-items:center;cursor:pointer;}
-.ct-doc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.ct-doc-dot-up{background:#22c55e;}
-.ct-doc-dot-pend{background:#eab308;}
-.ct-doc-count{font-size:11px;color:#6b7280;margin-left:4px;}
+.ct-doc-gauge{display:flex;align-items:center;gap:6px;cursor:pointer;}
+.ct-doc-gauge svg{width:30px;height:30px;transform:rotate(-90deg);}
+.ct-doc-gauge-bg{fill:none;stroke:#333;stroke-width:3;}
+.ct-doc-gauge-fill{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset 0.4s;}
+.ct-doc-gauge-text{font-size:12px;font-weight:600;}
 .ct-inv-link{color:#0891b2;text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
 .ct-inv-link:hover{color:#0e7490;}
 /* ── MÓDULO COBRANZAS ─────────────────────── */
@@ -3246,9 +3246,13 @@ function _ctRender(){
       h+='<td class="cell-text">'+(e.bl_awb?_ctEscH(e.bl_awb):'<span class="cell-empty">—</span>')+'</td>';
       h+='<td class="cell-text">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="cell-empty">—</span>')+'</td>';
       var upCount=0;_CT_DOC_TIPOS.forEach(function(t){if(docs.some(function(d){return d.tipo===t;}))upCount++;});
-      h+='<td><div class="ct-doc-dots" onclick="_ctShowDocs(\''+e.id+'\')">';
-      _CT_DOC_TIPOS.forEach(function(t){var has=docs.some(function(d){return d.tipo===t;});h+='<span class="ct-doc-dot '+(has?'ct-doc-dot-up':'ct-doc-dot-pend')+'" title="'+t+'"></span>';});
-      h+='<span class="ct-doc-count">'+upCount+'/'+_CT_DOC_TIPOS.length+'</span></div></td>';
+      var total=_CT_DOC_TIPOS.length,pct=Math.round(upCount/total*100);
+      var gc=pct===0?'#e8b931':pct<50?'#f9a825':pct<100?'#4caf50':'#2e7d32';
+      var dash=Math.round(upCount/total*100);
+      h+='<td><div class="ct-doc-gauge" onclick="_ctShowDocs(\''+e.id+'\')">';
+      h+='<svg viewBox="0 0 36 36"><circle class="ct-doc-gauge-bg" cx="18" cy="18" r="15.9"/>';
+      h+='<circle class="ct-doc-gauge-fill" cx="18" cy="18" r="15.9" stroke="'+gc+'" stroke-dasharray="'+dash+', 100"/></svg>';
+      h+='<span class="ct-doc-gauge-text" style="color:'+gc+'">'+upCount+'/'+total+'</span></div></td>';
       if(isAdmin)h+='<td class="row-actions"><button class="btn-edit" onclick="_ctStartEdit(\''+e.id+'\')">Editar</button></td>';
     }
     h+='</tr>';
