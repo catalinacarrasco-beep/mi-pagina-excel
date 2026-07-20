@@ -435,6 +435,41 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-empty-state{text-align:center;padding:4rem 2rem;color:#6b7280;font-size:14px;}
 #cargoScreen .ct-empty-state p{margin:0 0 16px;font-size:15px;color:#374151;}
 #cargoScreen .ct-tbl td{white-space:nowrap;vertical-align:top;}
+.ct-modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10001;background:rgba(0,0,0,.45);}
+.ct-modal-card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:10px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.18);max-height:85vh;overflow-y:auto;}
+.ct-modal-close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#9ca3af;line-height:1;}
+.ct-modal-close:hover{color:#1a1d23;}
+.ct-detail-card{max-width:480px;width:90vw;}
+.ct-detail-title{font-size:15px;font-weight:700;color:#1a1d23;margin-bottom:4px;}
+.ct-detail-sub{font-size:12px;color:#6b7280;margin-bottom:12px;}
+.ct-detail-desc{font-size:14px;color:#374151;line-height:1.6;white-space:pre-wrap;min-height:40px;}
+.ct-detail-desc:empty::before{content:'Sin descripción';color:#d1d5db;}
+.ct-detail-ta{width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:6px;padding:8px;font-size:14px;font-family:inherit;resize:vertical;color:#1a1d23;box-sizing:border-box;}
+.ct-detail-actions{display:flex;gap:8px;margin-top:10px;}
+.ct-detail-actions button{padding:6px 14px;border-radius:5px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;}
+.ct-docs-card{max-width:560px;width:95vw;}
+.ct-docs-title{font-size:15px;font-weight:700;color:#1a1d23;margin-bottom:14px;}
+.ct-doc-list{display:flex;flex-direction:column;gap:6px;}
+.ct-doc-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid #e2e5ea;border-radius:8px;gap:10px;}
+.ct-doc-item.ct-di-up{border-color:#86efac;background:#f0fdf4;}
+.ct-doc-item.ct-di-pend{border-color:#fde68a;background:#fffbeb;}
+.ct-di-info{flex:1;min-width:0;}
+.ct-di-name{font-size:13px;font-weight:600;color:#1a1d23;}
+.ct-di-sub{font-size:11px;color:#6b7280;margin-top:2px;}
+.ct-di-btn{padding:5px 12px;border-radius:5px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;white-space:nowrap;}
+.ct-di-btn-dl{background:#fff;border:1px solid #86efac;color:#15803d;}
+.ct-di-btn-dl:hover{background:#f0fdf4;}
+.ct-di-btn-up{background:#fff;border:1px solid #d1d5db;color:#6b7280;}
+.ct-di-btn-up:hover{border-color:#0891b2;color:#0891b2;}
+.ct-di-btn-del{background:none;border:none;color:#9ca3af;cursor:pointer;font-size:16px;padding:0 4px;}
+.ct-di-btn-del:hover{color:#dc2626;}
+.ct-doc-dots{display:flex;gap:3px;align-items:center;cursor:pointer;}
+.ct-doc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ct-doc-dot-up{background:#22c55e;}
+.ct-doc-dot-pend{background:#eab308;}
+.ct-doc-count{font-size:11px;color:#6b7280;margin-left:4px;}
+.ct-inv-link{color:#0891b2;text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
+.ct-inv-link:hover{color:#0e7490;}
 /* ── MÓDULO COBRANZAS ─────────────────────── */
 #cobranzasScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;flex-direction:column;z-index:1000;opacity:0;transition:opacity .35s ease;padding-bottom:env(safe-area-inset-bottom);}
 .cob-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
@@ -1192,6 +1227,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div id="ct-content"><div class="ct-loading">Cargando embarques...</div></div>
     </div>
   </div>
+  <div id="ct-detail-modal" class="ct-modal-bg" onclick="if(event.target===this)_ctCloseDetail()"></div>
+  <div id="ct-docs-modal" class="ct-modal-bg" onclick="if(event.target===this)_ctCloseDocs()"></div>
 </div>
 <!-- PRÓXIMAMENTE -->
 <div id="cobranzasScreen">
@@ -2661,60 +2698,6 @@ function volverHomeFromMuestras(){
 </script>
 
 
-<!-- CARGO TRACKING -->
-<div id="cargoScreen">
-  <div class="ct-topbar">
-    <button class="ct-back" onclick="volverHomeFromCargo()">← Volver</button>
-    <div class="ct-brand">
-      <svg width="22" height="22" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#0891b2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="ct-wordmark">GRANTT</span>
-    </div>
-    <span class="ct-badge">CARGO TRACKING</span>
-  </div>
-  <div class="ct-body">
-    <div class="ct-title-row">
-      <div>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <h1 class="ct-title">Cargo Tracking</h1>
-          <svg class="ct-ship" width="40" height="30" viewBox="-55 -42 115 76" style="flex-shrink:0;animation:ship-float 3s ease-in-out infinite;">
-            <path d="M-55 28 Q-40 18,-25 28 Q-10 38,5 28 Q20 18,35 28 Q50 38,60 28" fill="none" stroke="#0891b2" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
-            <path d="M-40 4 L44 4 L38 24 Q0 30,-34 24 Z" fill="#0891b2"/>
-            <rect x="-40" y="0" width="84" height="6" rx="3" fill="#0e7490"/>
-            <rect x="-34" y="-10" width="12" height="12" rx="2" fill="#0e7490"/>
-            <rect x="-20" y="-10" width="12" height="12" rx="2" fill="#0891b2"/>
-            <rect x="-6" y="-10" width="12" height="12" rx="2" fill="#0e7490"/>
-            <rect x="-28" y="-20" width="12" height="10" rx="2" fill="#0891b2" opacity="0.85"/>
-            <rect x="-14" y="-20" width="12" height="10" rx="2" fill="#0e7490" opacity="0.85"/>
-            <rect x="18" y="-22" width="20" height="24" rx="4" fill="#0e7490"/>
-            <rect x="22" y="-18" width="12" height="6" rx="2" fill="#164e63"/>
-            <rect x="22" y="-34" width="10" height="12" rx="3" fill="#0891b2"/>
-            <circle cx="38" cy="-34" r="6" fill="#0891b2" opacity="0.25"/>
-            <circle cx="46" cy="-42" r="4.5" fill="#0891b2" opacity="0.15"/>
-          </svg>
-        </div>
-        <p class="ct-subtitle" id="ct-subtitle">Cargando...</p>
-      </div>
-    </div>
-    <div id="ct-feedback" style="min-height:0;padding:2px 0 6px;"></div>
-    <div class="ct-toolbar" style="flex-wrap:wrap;gap:8px;align-items:center;">
-      <div id="ct-action-bar" style="display:none;" class="ct-action-bar">
-        <div class="ct-action-bar-inner">
-          <span id="ct-action-count"></span>
-          <button onclick="_ctBulkStatus('en_origen')">En Origen</button>
-          <button onclick="_ctBulkStatus('en_transito')">En Tránsito</button>
-          <button onclick="_ctBulkStatus('en_bodega')">En Bodega</button>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-left:auto;">
-        <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="_ctExportCSV()">↓ Exportar CSV</button>
-        <button class="ct-btn-add" id="ct-add" style="display:none;" onclick="_ctAddRow()">+ Nuevo embarque</button>
-      </div>
-    </div>
-    <div class="ct-table-wrap">
-      <div id="ct-content"><div class="ct-loading">Cargando embarques...</div></div>
-    </div>
-  </div>
-</div>
 <!-- PRÓXIMAMENTE -->
 <div id="cobranzasScreen">
   <div class="cob-header">
@@ -3086,7 +3069,7 @@ var _ctAuthToken=null;  // Supabase JWT for storage ops
 var _ctAuthExp=0;
 var _CT_ELBL={en_origen:'En Origen',en_transito:'En Tránsito',en_bodega:'En Bodega'};
 var _CT_TLBL={aereo:'Aéreo',maritimo:'Marítimo'};
-var _CT_DOC_TIPOS=['Invoice','Packing List','Certificado de Origen','BL','AWB','Otro'];
+var _CT_DOC_TIPOS=['Invoice','Packing List','CO','Seguro','BL','Factura Flete','Provisión Fondos','DIN','Otras Facturas','Planilla Costo'];
 
 function _ctIsAdmin(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cargo-admin';}
 function _cobCanEdit(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cob-admin';}
@@ -3222,7 +3205,7 @@ function _ctRender(){
   var allSel=_ctEmbarques.length>0&&_ctSelected.size===_ctEmbarques.length;
   var h='<table class="ct-tbl"><thead><tr>';
   if(isAdmin)h+='<th class="col-check"><input type="checkbox"'+(allSel?' checked':'')+'onchange="_ctToggleAll()" aria-label="Todos"></th>';
-  h+='<th>Estado</th><th>Invoice</th><th>Descripción</th><th>Tipo</th><th>ETD</th><th>ETA</th><th>BL/AWB</th><th>Unidades</th><th>Certificable</th><th>Documentación</th>';
+  h+='<th>Estado</th><th>Invoice</th><th>Tipo</th><th>ETO</th><th>ETD</th><th>ETA</th><th>F.Bodega</th><th>BL/AWB</th><th>Cert.</th><th>Docs</th>';
   if(isAdmin)h+='<th></th>';
   h+='</tr></thead><tbody>';
   _ctEmbarques.forEach(function(e){
@@ -3236,74 +3219,36 @@ function _ctRender(){
     if(editing){
       // ── EDIT ROW ──
       h+='<td><input type="text" value="'+_ctEsc(e.invoice||'')+'" onblur="_ctBlurField(\''+e.id+'\',\'invoice\',this)"></td>';
-      h+='<td><input type="text" value="'+_ctEsc(e.descripcion||'')+'" placeholder="Ej: CANALETAS / ILUMINACION" onblur="_ctBlurField(\''+e.id+'\',\'descripcion\',this,true)"></td>';
       h+='<td><div class="ct-toggle-group" id="ct-tg-tipo-'+e.id+'">';
       h+='<button data-v="aereo" class="'+(e.tipo_transporte==='aereo'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'tipo_transporte\',\'aereo\',\'ct-tg-tipo-'+e.id+'\')">Aéreo</button>';
       h+='<button data-v="maritimo" class="'+(e.tipo_transporte==='maritimo'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'tipo_transporte\',\'maritimo\',\'ct-tg-tipo-'+e.id+'\')">Marítimo</button>';
       h+='</div></td>';
+      h+='<td><input type="date" value="'+(e.eto||'')+'" onchange="_ctBlurField(\''+e.id+'\',\'eto\',this,true)"></td>';
       h+='<td><input type="date" value="'+(e.etd||'')+'" onchange="_ctBlurField(\''+e.id+'\',\'etd\',this,true)"></td>';
       h+='<td><input type="date" value="'+(e.eta||'')+'" onchange="_ctBlurField(\''+e.id+'\',\'eta\',this,true)"></td>';
+      h+='<td><input type="date" value="'+(e.fecha_bodega||'')+'" onchange="_ctBlurField(\''+e.id+'\',\'fecha_bodega\',this,true)"></td>';
       h+='<td><input type="text" value="'+_ctEsc(e.bl_awb||'')+'" onblur="_ctBlurField(\''+e.id+'\',\'bl_awb\',this,true)"></td>';
-      h+='<td><div class="ct-qty-stack">';
-      h+='<label class="ct-qty-label"><span class="ct-qty-tag">UND</span><input inputmode="numeric" value="'+(e.unidades!=null?e.unidades:'')+'" onblur="_ctBlurQty(\''+e.id+'\',\'unidades\',this)"></label>';
-      h+='<label class="ct-qty-label"><span class="ct-qty-tag">CAJAS</span><input inputmode="numeric" value="'+(e.cajas!=null?e.cajas:'')+'" onblur="_ctBlurQty(\''+e.id+'\',\'cajas\',this)"></label>';
-      h+='</div></td>';
       h+='<td><div class="ct-toggle-group" id="ct-tg-cert-'+e.id+'">';
       h+='<button data-v="si" class="'+(e.certificable==='si'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'certificable\',\'si\',\'ct-tg-cert-'+e.id+'\')">Sí</button>';
       h+='<button data-v="no" class="'+(e.certificable==='no'?'active':'')+'" onclick="_ctToggle(\''+e.id+'\',\'certificable\',\'no\',\'ct-tg-cert-'+e.id+'\')">No</button>';
       h+='</div></td>';
-      // Doc cell — edit mode
-      h+='<td class="doc-cell">';
-      docs.forEach(function(doc){
-        var dp=doc.path.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        h+='<div class="doc-row"><span class="doc-tipo-tag">'+_ctEscH(doc.tipo)+'</span>';
-        if(_ctIsExpired(doc.subido_at)){
-          h+='<span class="doc-expired-sm">Expirado '+_ctExpDate(doc.subido_at)+'</span>';
-        } else {
-          h+='<button class="doc-dl-btn" onclick="_ctDownloadDoc(\''+dp+'\')">⬇ '+_ctEscH(doc.nombre)+'</button>';
-        }
-        h+='<span class="doc-hint">exp. '+_ctExpDate(doc.subido_at)+'</span>';
-        if(!doc.isLegacy){
-          h+='<button class="doc-del-btn" onclick="_ctDeleteDoc(\''+e.id+'\',\''+dp+'\')" aria-label="Eliminar">×</button>';
-        }
-        h+='</div>';
-      });
-      h+='<div class="doc-add-row"><select class="doc-tipo-select" id="ct-dt-'+e.id+'">';
-      _CT_DOC_TIPOS.forEach(function(t){h+='<option>'+t+'</option>';});
-      h+='</select><label class="upload-btn">+ Subir<input type="file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" hidden onchange="_ctHandleUpload(\''+e.id+'\',this)"></label></div>';
-      h+='</td>';
+      h+='<td><button class="ct-di-btn ct-di-btn-up" onclick="_ctShowDocs(\''+e.id+'\')">Gestionar</button></td>';
       h+='<td class="row-actions"><button class="btn-done" onclick="_ctStopEdit()">Listo</button><button class="row-delete" onclick="_ctDeleteRow(\''+e.id+'\')">Eliminar</button></td>';
     } else {
       // ── READ ROW ──
-      h+='<td class="cell-text">'+(e.invoice?_ctEscH(e.invoice):'<span class="cell-empty">—</span>')+'</td>';
-      h+='<td class="cell-text" style="white-space:normal;min-width:120px;">'+(e.descripcion?_ctEscH(e.descripcion):'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td>'+(e.invoice?'<button class="ct-inv-link" onclick="_ctShowDetail(\''+e.id+'\')">'+_ctEscH(e.invoice)+'</button>':'<span class="cell-empty">—</span>')+'</td>';
       h+='<td class="cell-text">'+(_CT_TLBL[e.tipo_transporte]||'<span class="cell-empty">—</span>')+'</td>';
-      var ec=_ctDateClass(e.etd),ac=_ctDateClass(e.eta);
+      var etoC=_ctDateClass(e.eto),ec=_ctDateClass(e.etd),ac=_ctDateClass(e.eta),fbC=_ctDateClass(e.fecha_bodega);
+      h+='<td class="cell-text">'+(e.eto?'<span class="'+etoC+'">'+_ctFmtDate(e.eto)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
       h+='<td class="cell-text">'+(e.etd?'<span class="'+ec+'">'+_ctFmtDate(e.etd)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
       h+='<td class="cell-text">'+(e.eta?'<span class="'+ac+'">'+_ctFmtDate(e.eta)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
+      h+='<td class="cell-text">'+(e.fecha_bodega?'<span class="'+fbC+'">'+_ctFmtDate(e.fecha_bodega)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
       h+='<td class="cell-text">'+(e.bl_awb?_ctEscH(e.bl_awb):'<span class="cell-empty">—</span>')+'</td>';
-      h+='<td class="cell-text"><div class="ct-qty-stack-read">';
-      if(e.unidades!=null)h+='<span><span class="ct-qty-tag-r">UND</span>'+e.unidades.toLocaleString('es-CL')+'</span>';
-      if(e.cajas!=null)h+='<span><span class="ct-qty-tag-r">CAJAS</span>'+e.cajas.toLocaleString('es-CL')+'</span>';
-      if(e.unidades==null&&e.cajas==null)h+='<span class="cell-empty">—</span>';
-      h+='</div></td>';
       h+='<td class="cell-text">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="cell-empty">—</span>')+'</td>';
-      h+='<td class="doc-cell">';
-      if(!docs.length){
-        h+='<span class="cell-empty">Sin doc</span>';
-      } else {
-        h+='<div class="doc-chips">';
-        docs.forEach(function(doc){
-          var dp=doc.path.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-          if(_ctIsExpired(doc.subido_at)){
-            h+='<span class="doc-chip doc-chip-expired" title="Expirado '+_ctExpDate(doc.subido_at)+'">⚠ '+_ctEscH(doc.tipo)+'</span>';
-          } else {
-            h+='<button class="doc-chip" onclick="_ctDownloadDoc(\''+dp+'\')" title="'+_ctEsc(doc.nombre)+'">⬇ '+_ctEscH(doc.tipo)+'</button>';
-          }
-        });
-        h+='</div>';
-      }
-      h+='</td>';
+      var upCount=0;_CT_DOC_TIPOS.forEach(function(t){if(docs.some(function(d){return d.tipo===t;}))upCount++;});
+      h+='<td><div class="ct-doc-dots" onclick="_ctShowDocs(\''+e.id+'\')">';
+      _CT_DOC_TIPOS.forEach(function(t){var has=docs.some(function(d){return d.tipo===t;});h+='<span class="ct-doc-dot '+(has?'ct-doc-dot-up':'ct-doc-dot-pend')+'" title="'+t+'"></span>';});
+      h+='<span class="ct-doc-count">'+upCount+'/'+_CT_DOC_TIPOS.length+'</span></div></td>';
       if(isAdmin)h+='<td class="row-actions"><button class="btn-edit" onclick="_ctStartEdit(\''+e.id+'\')">Editar</button></td>';
     }
     h+='</tr>';
@@ -3481,11 +3426,93 @@ async function _ctDownloadDoc(path){
   var a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.click();
 }
 
+// ── Detail popup (invoice click) ──
+function _ctShowDetail(id){
+  var e=_ctEmbarques.find(function(r){return r.id===id;});if(!e)return;
+  var m=document.getElementById('ct-detail-modal');if(!m)return;
+  var isA=_ctIsAdmin();
+  var html='<div class="ct-modal-card ct-detail-card">';
+  html+='<button class="ct-modal-close" onclick="_ctCloseDetail()">×</button>';
+  html+='<div class="ct-detail-title">Invoice: '+(e.invoice?_ctEscH(e.invoice):'—')+'</div>';
+  html+='<div class="ct-detail-sub">'+(_CT_TLBL[e.tipo_transporte]||'')+(e.etd?' · ETD '+_ctFmtDate(e.etd):'')+(e.eta?' · ETA '+_ctFmtDate(e.eta):'')+'</div>';
+  if(isA){
+    html+='<textarea class="ct-detail-ta" id="ct-detail-ta">'+_ctEscH(e.descripcion||'')+'</textarea>';
+    html+='<div class="ct-detail-actions"><button style="background:#0891b2;border:none;color:#fff;" onclick="_ctSaveDetail(\''+e.id+'\')">Guardar</button><button style="background:#fff;border:1px solid #d1d5db;color:#374151;" onclick="_ctCloseDetail()">Cancelar</button></div>';
+  } else {
+    html+='<div class="ct-detail-desc">'+_ctEscH(e.descripcion||'')+'</div>';
+  }
+  if(e.unidades!=null||e.cajas!=null){
+    html+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid #e2e5ea;font-size:13px;color:#6b7280;">';
+    if(e.unidades!=null)html+='UND: '+e.unidades.toLocaleString('es-CL')+' ';
+    if(e.cajas!=null)html+='CAJAS: '+e.cajas.toLocaleString('es-CL');
+    html+='</div>';
+  }
+  html+='</div>';
+  m.innerHTML=html;m.style.display='block';
+}
+function _ctCloseDetail(){var m=document.getElementById('ct-detail-modal');if(m){m.style.display='none';m.innerHTML='';}}
+async function _ctSaveDetail(id){
+  var ta=document.getElementById('ct-detail-ta');if(!ta)return;
+  await _ctUpdateField(id,{descripcion:ta.value||null},true);
+  _ctCloseDetail();
+}
+
+// ── Document panel ──
+function _ctShowDocs(id){
+  var e=_ctEmbarques.find(function(r){return r.id===id;});if(!e)return;
+  var m=document.getElementById('ct-docs-modal');if(!m)return;
+  var isA=_ctIsAdmin();
+  var docs=_ctAllDocs(e);
+  var html='<div class="ct-modal-card ct-docs-card">';
+  html+='<button class="ct-modal-close" onclick="_ctCloseDocs()">×</button>';
+  html+='<div class="ct-docs-title">Documentos — '+(e.invoice?_ctEscH(e.invoice):'Embarque')+'</div>';
+  html+='<div class="ct-doc-list">';
+  _CT_DOC_TIPOS.forEach(function(tipo){
+    var doc=docs.find(function(d){return d.tipo===tipo;});
+    html+='<div class="ct-doc-item '+(doc?'ct-di-up':'ct-di-pend')+'">';
+    html+='<div class="ct-di-info"><div class="ct-di-name">'+_ctEscH(tipo)+'</div>';
+    if(doc){
+      html+='<div class="ct-di-sub">'+_ctEscH(doc.nombre)+' · subido '+_ctFmtDate((doc.subido_at||'').substring(0,10))+'</div>';
+    } else {
+      html+='<div class="ct-di-sub">Pendiente</div>';
+    }
+    html+='</div>';
+    if(doc){
+      var dp=doc.path.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      html+='<button class="ct-di-btn ct-di-btn-dl" onclick="_ctDownloadDoc(\''+dp+'\')">⬇ Descargar</button>';
+      if(isA&&!doc.isLegacy)html+='<button class="ct-di-btn-del" onclick="_ctDeleteDoc(\''+e.id+'\',\''+dp+'\');setTimeout(function(){_ctShowDocs(\''+e.id+'\')},500)" title="Eliminar">×</button>';
+    } else if(isA){
+      html+='<label class="ct-di-btn ct-di-btn-up">Subir PDF<input type="file" accept="application/pdf,.xlsx,.xls" hidden onchange="_ctUploadDocType(\''+e.id+'\',\''+_ctEsc(tipo)+'\',this)"></label>';
+    }
+    html+='</div>';
+  });
+  html+='</div></div>';
+  m.innerHTML=html;m.style.display='block';
+}
+function _ctCloseDocs(){var m=document.getElementById('ct-docs-modal');if(m){m.style.display='none';m.innerHTML='';}}
+async function _ctUploadDocType(embarqueId,tipo,input){
+  var file=input.files&&input.files[0];if(!file)return;
+  input.value='';
+  await _ctEnsureAuth();
+  var ts=Date.now();
+  var safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  var path=embarqueId+'/'+tipo.replace(/\s+/g,'_')+'_'+ts+'_'+safe;
+  var upResp=await fetch(_CT_URL+'/storage/v1/object/'+_CT_BUCKET+'/'+path,{
+    method:'POST',headers:{'apikey':_CT_KEY,'Authorization':'Bearer '+_ctAuthToken,'Content-Type':file.type||'application/octet-stream','x-upsert':'false'},body:file
+  });
+  if(!upResp.ok){_ctFeedback(false,'Error al subir');return;}
+  var e=_ctEmbarques.find(function(r){return r.id===embarqueId;});if(!e)return;
+  var docArr=(e.documentos||[]).concat([{path:path,nombre:file.name,tipo:tipo,subido_at:new Date().toISOString()}]);
+  await _ctUpdateField(embarqueId,{documentos:docArr});
+  _ctRender();
+  _ctShowDocs(embarqueId);
+}
+
 function _ctExportCSV(){
   if(!_ctEmbarques.length)return;
-  var rows=[['Estado','Invoice','Descripción','Tipo','ETD','ETA','BL/AWB','Unidades','Cajas','Certificable','Documentos']];
+  var rows=[['Estado','Invoice','Descripción','Tipo','ETO','ETD','ETA','F.Bodega','BL/AWB','Unidades','Cajas','Certificable','Documentos']];
   _ctEmbarques.forEach(function(e){
-    rows.push([_CT_ELBL[e.estado_embarque]||'',e.invoice||'',e.descripcion||'',e.tipo_transporte||'',e.etd||'',e.eta||'',e.bl_awb||'',e.unidades!=null?e.unidades:'',e.cajas!=null?e.cajas:'',e.certificable||'',_ctAllDocs(e).map(function(d){return d.tipo+': '+d.nombre;}).join(' | ')]);
+    rows.push([_CT_ELBL[e.estado_embarque]||'',e.invoice||'',e.descripcion||'',e.tipo_transporte||'',e.eto||'',e.etd||'',e.eta||'',e.fecha_bodega||'',e.bl_awb||'',e.unidades!=null?e.unidades:'',e.cajas!=null?e.cajas:'',e.certificable||'',_ctAllDocs(e).map(function(d){return d.tipo+': '+d.nombre;}).join(' | ')]);
   });
   var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n');
   var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
