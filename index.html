@@ -3583,7 +3583,9 @@ async function _ctUploadDocType(embarqueId,tipo,input){
   });
   if(!upResp.ok){_ctFeedback(false,'Error al subir');return;}
   var e=_ctEmbarques.find(function(r){return r.id===embarqueId;});if(!e)return;
-  var docArr=(e.documentos||[]).concat([{path:path,nombre:file.name,tipo:tipo,subido_at:new Date().toISOString()}]);
+  var oldDoc=(e.documentos||[]).find(function(d){return d.tipo===tipo;});
+  if(oldDoc)fetch(_CT_URL+'/storage/v1/object/'+_CT_BUCKET+'/'+oldDoc.path,{method:'DELETE',headers:{'apikey':_CT_KEY,'Authorization':'Bearer '+_ctAuthToken}}).catch(function(){});
+  var docArr=(e.documentos||[]).filter(function(d){return d.tipo!==tipo;}).concat([{path:path,nombre:file.name,tipo:tipo,subido_at:new Date().toISOString()}]);
   await _ctUpdateField(embarqueId,{documentos:docArr});
   _ctRender();
   _ctShowDocs(embarqueId);
