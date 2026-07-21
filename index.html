@@ -3199,7 +3199,7 @@ async function loadCargo(){
     var exp=document.getElementById('ct-export');if(exp)exp.style.display=data.length?'':'none';
     _ctUpdateStats();
     _ctRender();
-    _ctStartRealtime();
+    _ctStartSync();
   })
   .catch(function(err){
     console.error('cargo',err);
@@ -3604,43 +3604,22 @@ function _ctExportCSV(){
   URL.revokeObjectURL(url);
 }
 
-// ── Supabase Realtime ────────────────────────────────────────────────────────
-var _ctRtWs=null,_ctRtRef=0,_ctRtHb=null;
-function _ctStartRealtime(){
-  if(_ctRtWs)return;
-  try{_ctRtWs=new WebSocket(_CT_URL.replace('https://','wss://')+'/realtime/v1/websocket?apikey='+_CT_KEY+'&vsn=1.0.0');}catch(e){return;}
-  _ctRtWs.onopen=function(){
-    _ctRtWs.send(JSON.stringify({topic:'realtime:cargo-sync',event:'phx_join',payload:{config:{postgres_changes:[{event:'*',schema:'public',table:'embarques'}]},access_token:_CT_KEY},ref:String(++_ctRtRef)}));
-    _ctRtHb=setInterval(function(){if(_ctRtWs&&_ctRtWs.readyState===1)_ctRtWs.send(JSON.stringify({topic:'phoenix',event:'heartbeat',payload:{},ref:String(++_ctRtRef)}));},30000);
-  };
-  _ctRtWs.onmessage=function(evt){
-    try{
-      var msg=JSON.parse(evt.data);
-      if(msg.event==='postgres_changes'||msg.event==='INSERT'||msg.event==='UPDATE'||msg.event==='DELETE'){
-        var d=msg.payload&&msg.payload.data?msg.payload.data:msg.payload;
-        if(d&&d.type)_ctApplyRtChange(d);
+// ── Sync silencioso ──────────────────────────────────────────────────────────
+var _ctSyncTimer=null;
+function _ctStartSync(){
+  if(_ctSyncTimer)return;
+  _ctSyncTimer=setInterval(function(){
+    if(_ctEditingId)return;
+    fetch(_CT_URL+'/rest/v1/embarques?select=*&order=created_at.desc',{headers:_ctH()})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(data){
+      if(!data)return;
+      data=data.map(function(e){if(e.estado_embarque==='en_bodega')e.estado_embarque='arribo';return e;});
+      if(JSON.stringify(data.map(function(e){return e.id;}))!==JSON.stringify(_ctEmbarques.map(function(e){return e.id;}))||data.some(function(e){var cur=_ctEmbarques.find(function(c){return c.id===e.id;});return!cur||JSON.stringify(cur)!==JSON.stringify(e);})){
+        _ctEmbarques=data;_ctUpdateStats();_ctRender();
       }
-    }catch(e){}
-  };
-  _ctRtWs.onclose=function(){clearInterval(_ctRtHb);_ctRtHb=null;_ctRtWs=null;setTimeout(_ctStartRealtime,5000);};
-  _ctRtWs.onerror=function(){if(_ctRtWs)_ctRtWs.close();};
-}
-function _ctApplyRtChange(d){
-  var rec=d.record||d.new;
-  var old=d.old_record||d.old;
-  if(d.type==='UPDATE'&&rec){
-    if(rec.id===_ctEditingId)return;
-    if(rec.estado_embarque==='en_bodega')rec.estado_embarque='arribo';
-    _ctEmbarques=_ctEmbarques.map(function(e){return e.id===rec.id?rec:e;});
-    _ctUpdateStats();_ctRender();
-  }else if(d.type==='INSERT'&&rec){
-    if(rec.estado_embarque==='en_bodega')rec.estado_embarque='arribo';
-    if(!_ctEmbarques.some(function(e){return e.id===rec.id;}))_ctEmbarques=[rec].concat(_ctEmbarques);
-    _ctUpdateStats();_ctRender();
-  }else if(d.type==='DELETE'){
-    var id=old?old.id:(rec?rec.id:null);
-    if(id){_ctEmbarques=_ctEmbarques.filter(function(e){return e.id!==id;});_ctUpdateStats();_ctRender();}
-  }
+    }).catch(function(){});
+  },15000);
 }
 </script>
 <script>
