@@ -6,7 +6,7 @@
 <title>Dashboard Ventas 2026</title>
 <link rel="manifest" href="/manifest.json">
 <script>var _pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_pwaPrompt=e;var b=document.getElementById('pwa-install-bar');if(b)b.style.display='flex';});</script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2312151e'/%3E%3Cpath d='M 70,33 A 26,26 0 1,0 76,50 L 50,50' stroke='%233ba8d4' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230D181C'/%3E%3Cpath d='M65,15 A35,35 0 1,0 65,85' stroke='%23009FE3' stroke-width='12' stroke-linecap='round' fill='none'/%3E%3Crect x='42' y='42' width='26' height='16' rx='2' fill='%23009FE3'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,10 +14,27 @@
 <meta name="theme-color" content="#12151e">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#12151e;--surface:#1a1f2e;--surface2:#222840;--border:#2a3045;--accent:#3ba8d4;--accent2:#3ba8d4;--accent3:#3ba8d4;--accent4:#3ba8d4;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;}
+:root{--bg:#12151e;--surface:#1a1f2e;--surface2:#222840;--border:#2a3045;--accent:#009FE3;--accent2:#009FE3;--accent3:#009FE3;--accent4:#009FE3;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;--row-hover:rgba(0,159,227,.06);--row-even:rgba(255,255,255,.02);}
+[data-theme="light"]{--bg:#f4f6f9;--surface:#ffffff;--surface2:#edf0f5;--border:#d8dde6;--text:#0D181C;--muted:#6b7280;--row-hover:rgba(0,159,227,.06);--row-even:rgba(0,0,0,.02);}
+.theme-toggle{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;flex-shrink:0;}
+.theme-toggle:hover{border-color:var(--accent);}
+.theme-toggle svg{width:18px;height:18px;color:var(--accent);transition:transform .3s;}
+.theme-toggle:hover svg{transform:rotate(30deg);}
+.mod-header{display:flex;align-items:center;gap:1rem;padding:.8rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.mod-logo{display:flex;align-items:center;gap:.45rem;text-decoration:none;}
+.mod-logo svg{width:28px;height:28px;flex-shrink:0;}
+.mod-logo-text{font-family:'DM Sans',sans-serif;font-size:.7rem;color:var(--text);letter-spacing:.18em;font-weight:700;text-transform:uppercase;}
+.mod-sep{width:1px;height:28px;background:var(--border);flex-shrink:0;}
+.mod-title-area{display:flex;flex-direction:column;gap:.1rem;flex:1;min-width:0;}
+.mod-title-label{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.mod-title-name{font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);letter-spacing:.02em;}
+.mod-right{display:flex;align-items:center;gap:.6rem;margin-left:auto;flex-shrink:0;}
+.mod-date{font-size:.7rem;color:var(--muted);letter-spacing:.03em;white-space:nowrap;}
+.mod-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;letter-spacing:.06em;padding:0;transition:color .15s;}
+.mod-back:hover{color:var(--accent);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
-header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:linear-gradient(135deg,#12151e 60%,#151d2e);}
+header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:var(--surface);}
 .header-left h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);letter-spacing:.04em;line-height:1;color:#fff;}
 .header-left h1 span{color:var(--accent);}
 .header-left p{color:var(--muted);font-size:.85rem;margin-top:.4rem;}
@@ -287,8 +304,8 @@ footer p{font-size:.75rem;color:var(--muted);}
 #homeScreen .home-card.cobranza{border-top:2px solid var(--accent);}
 #homeScreen .home-card.muestras{border-top:2px solid #2db47a;}
 #homeScreen .home-card.cargo{border-top:2px solid #d49a3b;}
-#homeScreen .home-card.ventas:hover{border-color:rgba(59,168,212,.4);}
-#homeScreen .home-card.cobranza:hover{border-color:rgba(59,168,212,.3);}
+#homeScreen .home-card.ventas:hover{border-color:rgba(0,159,227,.4);}
+#homeScreen .home-card.cobranza:hover{border-color:rgba(0,159,227,.3);}
 #homeScreen .home-card.muestras:hover{border-color:rgba(45,180,122,.4);}
 #homeScreen .home-card.cargo:hover{border-color:rgba(212,154,59,.4);}
 #homeScreen .home-card svg{width:58px;height:58px;}
@@ -307,51 +324,51 @@ footer p{font-size:.75rem;color:var(--muted);}
 @media(prefers-reduced-motion:reduce){.ct-ship,.ct-row-anim{animation:none!important;}}
 #cargoScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:#f0f2f5;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
   display:none;flex-direction:column;
   z-index:1000;opacity:0;transition:opacity .35s ease;
   padding-bottom:env(safe-area-inset-bottom);
-  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#1a1d23;
+  font-family:'DM Sans',sans-serif;color:var(--text);
 }
 #cargoScreen .ct-topbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:13px 24px;background:#fff;border-bottom:1px solid #e2e5ea;
+  padding:13px 24px;background:var(--surface);border-bottom:1px solid var(--border);
 }
 #cargoScreen .ct-topbar .ct-back{
-  font-size:13px;color:#6b7280;cursor:pointer;
-  background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:6px 14px;
+  font-size:13px;color:var(--muted);cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 14px;
   font-family:inherit;
 }
-#cargoScreen .ct-topbar .ct-back:hover{background:#f6f7f9;color:#1a1d23;}
+#cargoScreen .ct-topbar .ct-back:hover{background:var(--surface2);color:var(--text);}
 #cargoScreen .ct-brand{display:flex;align-items:center;gap:10px;}
-#cargoScreen .ct-wordmark{font-size:13px;font-weight:700;letter-spacing:.18em;color:#1a1d23;}
-#cargoScreen .ct-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:4px;background:#e0f2fe;color:#0369a1;}
+#cargoScreen .ct-wordmark{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--text);}
+#cargoScreen .ct-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:4px;background:rgba(0,159,227,.12);color:var(--accent);}
 #cargoScreen .ct-body{padding:28px 24px 32px;}
-#cargoScreen .ct-title-row{display:flex;align-items:center;gap:12px;padding-bottom:24px;border-bottom:1px solid #e2e5ea;}
+#cargoScreen .ct-title-row{display:flex;align-items:center;gap:12px;padding-bottom:24px;border-bottom:1px solid var(--border);}
 #cargoScreen .ct-title{
-  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-family:'DM Sans',sans-serif;
   font-size:clamp(32px,5vw,48px);font-weight:900;letter-spacing:-0.02em;
-  text-transform:uppercase;line-height:1;color:#1a1d23;margin:0;
+  text-transform:uppercase;line-height:1;color:var(--text);margin:0;
 }
-#cargoScreen .ct-subtitle{font-size:13px;color:#6b7280;margin:8px 0 0;letter-spacing:.01em;}
+#cargoScreen .ct-subtitle{font-size:13px;color:var(--muted);margin:8px 0 0;letter-spacing:.01em;}
 #cargoScreen .ct-subtitle .ct-stat{font-variant-numeric:tabular-nums;}
-#cargoScreen .ct-subtitle .ct-dot{color:#d1d5db;margin:0 .2rem;}
+#cargoScreen .ct-subtitle .ct-dot{color:var(--border);margin:0 .2rem;}
 #cargoScreen .ct-toolbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:14px 0 16px;}
 #cargoScreen .ct-btn-export{
-  background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:8px 14px;
-  cursor:pointer;color:#6b7280;font-size:13px;font-family:inherit;white-space:nowrap;
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 14px;
+  cursor:pointer;color:var(--muted);font-size:13px;font-family:inherit;white-space:nowrap;
 }
-#cargoScreen .ct-btn-export:hover{background:#f6f7f9;color:#1a1d23;}
-#cargoScreen .ct-table-wrap{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto;}
+#cargoScreen .ct-btn-export:hover{background:var(--surface2);color:var(--text);}
+#cargoScreen .ct-table-wrap{background:var(--surface);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto;}
 #cargoScreen .ct-tbl{width:100%;border-collapse:collapse;min-width:900px;}
 #cargoScreen .ct-tbl th{
   font-size:11px;font-weight:600;color:#fff;background:#1e293b;
   text-transform:uppercase;letter-spacing:.07em;
-  padding:9px 10px;text-align:left;border-bottom:1px solid #f0f2f5;white-space:nowrap;
+  padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;
 }
 #cargoScreen .ct-tbl td{
-  padding:9px 10px;font-size:13px;color:#1a1d23;
-  border-bottom:1px solid #f0f2f5;vertical-align:top;white-space:nowrap;
+  padding:9px 10px;font-size:13px;color:var(--text);
+  border-bottom:1px solid var(--border);vertical-align:top;white-space:nowrap;
 }
 #cargoScreen .ct-tbl th:nth-child(2),#cargoScreen .ct-tbl td:nth-child(2){overflow:hidden;}
 #cargoScreen .ct-tbl td:nth-child(2) select{max-width:130px;overflow:hidden;text-overflow:ellipsis;}
@@ -359,8 +376,8 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-tbl td:nth-child(3){position:relative;}
 #cargoScreen .ct-tbl td:nth-child(3) input{transition:width .15s ease;}
 #cargoScreen .ct-tbl td:nth-child(3) input:focus{position:absolute;width:200px;z-index:2;left:0;top:50%;transform:translateY(-50%);}
-#cargoScreen .ct-tbl tr:nth-child(even) td{background:#f6f7f9;}
-#cargoScreen .ct-tbl tr:hover td{background:#eef0f4;}
+#cargoScreen .ct-tbl tr:nth-child(even) td{background:var(--row-even);}
+#cargoScreen .ct-tbl tr:hover td{background:var(--row-hover);}
 .ct-estado{display:inline-block;padding:4px 9px;border-radius:4px;font-size:12px;font-weight:600;border-width:1px;border-style:solid;}
 .ct-estado-en_origen{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8;}
 .ct-estado-en_transito{background:#fefce8;border-color:#fde68a;color:#a16207;}
@@ -383,15 +400,15 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-tbl td input:not([type]),
 #cargoScreen .ct-tbl td input[type="date"],
 #cargoScreen .ct-tbl td input[inputmode="numeric"]{
-  width:100%;padding:5px 7px;border:1px solid #d1d5db;border-radius:5px;font-size:13px;font-family:inherit;color:#1a1d23;background:#fff;box-sizing:border-box;
+  width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);box-sizing:border-box;
 }
-#cargoScreen .ct-tbl td input:focus{outline:none;border-color:#0891b2;box-shadow:0 0 0 2px rgba(8,145,178,.12);}
+#cargoScreen .ct-tbl td input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,159,227,.12);}
 #cargoScreen .ct-tbl td input[type="date"]{min-width:130px;}
 #cargoScreen .ct-tbl td input[inputmode="numeric"]{min-width:70px;width:75px;}
 #cargoScreen .ct-toggle-group{display:flex;gap:3px;}
-#cargoScreen .ct-toggle-group button{border:1px solid #d1d5db;background:#fff;border-radius:4px;padding:5px 9px;cursor:pointer;color:#6b7280;font-size:12px;font-weight:600;font-family:inherit;white-space:nowrap;}
-#cargoScreen .ct-toggle-group button:hover{border-color:#9ca3af;color:#1a1d23;}
-#cargoScreen .ct-toggle-group button.active{background:#0891b2;border-color:#0891b2;color:#fff;}
+#cargoScreen .ct-toggle-group button{border:1px solid var(--border);background:var(--surface);border-radius:4px;padding:5px 9px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:600;font-family:inherit;white-space:nowrap;}
+#cargoScreen .ct-toggle-group button:hover{border-color:var(--accent);color:var(--text);}
+#cargoScreen .ct-toggle-group button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 #cargoScreen .ct-qty-stack{display:flex;flex-direction:column;gap:4px;}
 #cargoScreen .ct-qty-label{display:flex;align-items:center;gap:4px;}
 #cargoScreen .ct-qty-label input{min-width:0;width:70px;}
@@ -402,12 +419,12 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen input[type="checkbox"]{width:14px;height:14px;min-width:14px;padding:0;border:none;background:none;accent-color:#0891b2;cursor:pointer;vertical-align:middle;}
 #cargoScreen .row-selected td{background:rgba(8,145,178,.06)!important;}
 #cargoScreen .row-actions{display:flex;gap:6px;align-items:center;white-space:nowrap;}
-#cargoScreen .btn-edit{background:none;border:1px solid #d1d5db;border-radius:4px;color:#6b7280;cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
-#cargoScreen .btn-edit:hover{border-color:#0891b2;color:#0891b2;}
-#cargoScreen .btn-done{background:none;border:1px solid #0891b2;border-radius:4px;color:#0891b2;cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;font-weight:600;}
-#cargoScreen .btn-done:hover{background:rgba(8,145,178,.08);}
-#cargoScreen .row-delete{background:none;border:1px solid #d1d5db;border-radius:4px;color:#6b7280;cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
-#cargoScreen .row-delete:hover{border-color:#dc2626;color:#dc2626;background:#fef2f2;}
+#cargoScreen .btn-edit{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
+#cargoScreen .btn-edit:hover{border-color:var(--accent);color:var(--accent);}
+#cargoScreen .btn-done{background:none;border:1px solid var(--accent);border-radius:4px;color:var(--accent);cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;font-weight:600;}
+#cargoScreen .btn-done:hover{background:rgba(0,159,227,.08);}
+#cargoScreen .row-delete{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
+#cargoScreen .row-delete:hover{border-color:#dc2626;color:#dc2626;background:rgba(220,38,38,.08);}
 #cargoScreen .cell-text{font-size:13px;color:#374151;}
 #cargoScreen .cell-empty{font-size:12px;color:#d1d5db;}
 #cargoScreen .date-past{color:#dc2626;}
@@ -438,26 +455,26 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-empty-state p{margin:0 0 16px;font-size:15px;color:#374151;}
 #cargoScreen .ct-tbl td{white-space:nowrap;vertical-align:top;}
 .ct-modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10001;background:rgba(0,0,0,.45);}
-.ct-modal-card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:10px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.18);max-height:85vh;overflow-y:auto;}
-.ct-modal-close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#9ca3af;line-height:1;}
-.ct-modal-close:hover{color:#1a1d23;}
+.ct-modal-card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--surface);border-radius:10px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.18);max-height:85vh;overflow-y:auto;}
+.ct-modal-close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;}
+.ct-modal-close:hover{color:var(--text);}
 .ct-detail-card{max-width:480px;width:90vw;}
-.ct-detail-title{font-size:15px;font-weight:700;color:#1a1d23;margin-bottom:4px;}
-.ct-detail-sub{font-size:12px;color:#6b7280;margin-bottom:12px;}
-.ct-detail-desc{font-size:14px;color:#374151;line-height:1.6;white-space:pre-wrap;min-height:40px;}
-.ct-detail-desc:empty::before{content:'Sin descripción';color:#d1d5db;}
-.ct-detail-ta{width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:6px;padding:8px;font-size:14px;font-family:inherit;resize:vertical;color:#1a1d23;box-sizing:border-box;}
+.ct-detail-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ct-detail-sub{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.ct-detail-desc{font-size:14px;color:var(--text);line-height:1.6;white-space:pre-wrap;min-height:40px;}
+.ct-detail-desc:empty::before{content:'Sin descripción';color:var(--border);}
+.ct-detail-ta{width:100%;min-height:80px;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:14px;font-family:inherit;resize:vertical;color:var(--text);background:var(--bg);box-sizing:border-box;}
 .ct-detail-actions{display:flex;gap:8px;margin-top:10px;}
 .ct-detail-actions button{padding:6px 14px;border-radius:5px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;}
 .ct-docs-card{max-width:560px;width:95vw;}
-.ct-docs-title{font-size:15px;font-weight:700;color:#1a1d23;margin-bottom:14px;}
+.ct-docs-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;}
 .ct-doc-list{display:flex;flex-direction:column;gap:6px;}
-.ct-doc-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid #e2e5ea;border-radius:8px;gap:10px;}
+.ct-doc-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;gap:10px;}
 .ct-doc-item.ct-di-up{border-color:#86efac;background:#f0fdf4;}
 .ct-doc-item.ct-di-pend{border-color:#fde68a;background:#fffbeb;}
 .ct-di-info{flex:1;min-width:0;}
-.ct-di-name{font-size:13px;font-weight:600;color:#1a1d23;}
-.ct-di-sub{font-size:11px;color:#6b7280;margin-top:2px;}
+.ct-di-name{font-size:13px;font-weight:600;color:var(--text);}
+.ct-di-sub{font-size:11px;color:var(--muted);margin-top:2px;}
 .ct-di-btn{padding:5px 12px;border-radius:5px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;white-space:nowrap;}
 .ct-di-btn-dl{background:#fff;border:1px solid #86efac;color:#15803d;}
 .ct-di-btn-dl:hover{background:#f0fdf4;}
@@ -494,7 +511,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-upload-lbl:hover{border-color:var(--accent);color:var(--accent);}
 .cob-body{padding:1.5rem;max-width:1400px;margin:0 auto;width:100%;box-sizing:border-box;}
 .cob-upload-zone{border:1.5px dashed var(--border);border-radius:10px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:1.5rem;}
-.cob-upload-zone:hover,.cob-upload-zone.drag-over{border-color:var(--accent);background:rgba(59,168,212,.08);}
+.cob-upload-zone:hover,.cob-upload-zone.drag-over{border-color:var(--accent);background:rgba(0,159,227,.08);}
 .cob-upload-zone.drag-over{transform:scale(1.01);transition:transform .1s;}
 .cob-upload-zone .cob-up-icon{font-size:2rem;margin-bottom:.6rem;opacity:.6;}
 .cob-upload-zone p{font-size:.82rem;color:var(--muted);margin:.25rem 0;}
@@ -519,11 +536,11 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-tbl tbody td{padding:.5rem .9rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
 .cob-tbl tbody tr:nth-child(even){background:rgba(255,255,255,.02);}
 .cob-tbl tbody tr:last-child td{border-bottom:none;}
-.cob-tbl tbody tr:hover{background:rgba(59,168,212,.06);}
+.cob-tbl tbody tr:hover{background:rgba(0,159,227,.06);}
 .cob-amt{font-weight:600;text-align:right;font-variant-numeric:tabular-nums;}
 .cob-amt.venc{color:var(--negative);}
 .cob-dt.venc{color:var(--negative);}
-.cob-vtag{display:inline-block;padding:.12rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600;letter-spacing:.04em;background:rgba(59,168,212,.12);color:var(--accent);}
+.cob-vtag{display:inline-block;padding:.12rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600;letter-spacing:.04em;background:rgba(0,159,227,.12);color:var(--accent);}
 .cob-info{padding:.65rem .9rem;border-radius:6px;font-size:.8rem;margin-bottom:.9rem;}
 .cob-info.ok{background:rgba(46,158,106,.1);color:var(--positive);}
 .cob-info.err{background:rgba(192,80,80,.1);color:var(--negative);}
@@ -587,7 +604,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #muestrasScreen .ms-admin-btn:hover{
   border-color:var(--accent);color:var(--accent);
-  background:rgba(59,168,212,.06);
+  background:rgba(0,159,227,.06);
 }
 #muestrasScreen .ms-body{padding:1.5rem 2rem 3rem;}
 #muestrasScreen .ms-kpis{
@@ -683,11 +700,11 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #muestrasScreen .ms-tbl tr:last-child td{border-bottom:none;}
 #muestrasScreen .ms-tbl tr:nth-child(even) td{background:rgba(255,255,255,.02);}
-#muestrasScreen .ms-tbl tr:hover td{background:rgba(59,168,212,.06);}
+#muestrasScreen .ms-tbl tr:hover td{background:rgba(0,159,227,.06);}
 .ms-pill{display:inline-block;font-size:.6rem;font-weight:600;padding:2px 9px;border-radius:20px;letter-spacing:.03em;}
 .ms-pill-proc{background:rgba(210,160,60,.12);color:#d4a03c;}
 .ms-pill-cerr{background:rgba(46,158,106,.12);color:#2e9e6a;}
-.ms-bar-wrap{height:6px;border-radius:3px;background:rgba(59,168,212,.08);min-width:60px;}
+.ms-bar-wrap{height:6px;border-radius:3px;background:rgba(0,159,227,.08);min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;}
 .ms-obs{font-size:.68rem;color:var(--muted);line-height:1.5;}
 .ms-obs-cell{max-width:220px;font-size:.72rem;color:var(--muted);line-height:1.4;
@@ -697,7 +714,7 @@ footer p{font-size:.75rem;color:var(--muted);}
   background:var(--surface2);border-radius:4px;padding:.4rem .6rem;
   box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:10;}
 .ms-row-edit,.ms-row-del{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s,color .12s;color:var(--muted);}
-.ms-row-edit:hover{background:rgba(59,168,212,.1);color:var(--accent);}
+.ms-row-edit:hover{background:rgba(0,159,227,.1);color:var(--accent);}
 .ms-row-del:hover{background:rgba(192,80,80,.1);color:var(--negative);}
 /* ── MÓDULO VENDEDORES ───────────────────── */
 #vendedoresScreen{
@@ -735,7 +752,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .vd-tbl tr:nth-child(even) td{background:rgba(255,255,255,.015);}
 .vd-tbl tr:last-child td{border-bottom:none;}
 .vd-pill{display:inline-block;font-size:.58rem;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.03em;}
-.vd-pill-credit{background:rgba(59,168,212,.12);color:#3ba8d4;}
+.vd-pill-credit{background:rgba(0,159,227,.12);color:#009FE3;}
 .vd-pill-cash{background:rgba(46,158,106,.12);color:#2e9e6a;}
 .vd-pill-transfer{background:rgba(210,160,60,.12);color:#d4a03c;}
 .vd-tabs{display:flex;gap:.35rem;margin-bottom:.8rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
@@ -748,7 +765,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .vd-profile-role{font-size:.68rem;color:var(--muted);font-family:'DM Sans',sans-serif;}
 .vd-fichas{display:grid;grid-template-columns:1fr;gap:.5rem;}
 .vd-ficha{display:flex;align-items:center;gap:.7rem;padding:.75rem 1rem;background:#252a3e;border:1px solid rgba(255,255,255,.05);border-radius:10px;cursor:pointer;transition:all .15s;}
-.vd-ficha:hover{border-color:var(--accent);background:rgba(59,168,212,.04);}
+.vd-ficha:hover{border-color:var(--accent);background:rgba(0,159,227,.04);}
 .vd-ficha:active{transform:scale(.98);}
 .vd-ficha-icon{font-size:1.3rem;}
 .vd-ficha-info{flex:1;}
@@ -795,7 +812,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #loginScreen::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 65% 55% at 50% 50%, rgba(59,168,212,.055) 0%, transparent 68%);
+  background:radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,159,227,.055) 0%, transparent 68%);
   pointer-events:none;
 }
 .ls-rings{position:absolute;inset:0;pointer-events:none;}
@@ -803,7 +820,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ls-card{
   background:var(--surface);
   border-radius:12px;
-  border:1px solid rgba(59,168,212,.22);
+  border:1px solid rgba(0,159,227,.22);
   padding:2.5rem 2.5rem 2rem;
   width:min(400px,calc(100vw - 2.5rem));
   display:flex;flex-direction:column;align-items:center;
@@ -914,7 +931,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 .ms-estado.tramite{background:rgba(210,160,60,.15);color:#d4a03c;}
 .ms-estado.pendiente{background:rgba(123,132,153,.15);color:#9ba3b5;}
 .ms-action-btn{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s;color:var(--muted);}
-.ms-action-btn:hover{background:rgba(59,168,212,.1);color:var(--accent);}
+.ms-action-btn:hover{background:rgba(0,159,227,.1);color:var(--accent);}
 .ms-dias{font-weight:600;color:var(--text);}
 .ms-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;}
 .ms-modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
@@ -951,8 +968,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 .stk-bdg{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:10px;}
 .stk-bdg-c{background:rgba(192,80,80,.18);color:#c05050;}
 .stk-bdg-w{background:rgba(192,130,24,.18);color:#c07a18;}
-.stk-btn{font-size:.65rem;font-weight:700;color:var(--accent);background:rgba(59,168,212,.1);border:1px solid rgba(59,168,212,.25);border-radius:4px;padding:4px 10px;cursor:pointer;white-space:nowrap;letter-spacing:.02em;}
-.stk-btn:hover{background:rgba(59,168,212,.2);}
+.stk-btn{font-size:.65rem;font-weight:700;color:var(--accent);background:rgba(0,159,227,.1);border:1px solid rgba(0,159,227,.25);border-radius:4px;padding:4px 10px;cursor:pointer;white-space:nowrap;letter-spacing:.02em;}
+.stk-btn:hover{background:rgba(0,159,227,.2);}
 #stkView{padding:0;}
 .stk-hdr{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:6px 6px 0 0;flex-wrap:wrap;}
 .stk-back{font-size:.7rem;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;}
@@ -989,19 +1006,19 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 <div id="loginScreen">
   <!-- Anillos concentricos: evoca data, radar, precision -->
   <svg class="ls-rings" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <circle cx="720" cy="450" r="200" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.13"/>
-    <circle cx="720" cy="450" r="370" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.10"/>
-    <circle cx="720" cy="450" r="540" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.08"/>
-    <circle cx="720" cy="450" r="710" fill="none" stroke="#3ba8d4" stroke-width="1" opacity="0.06"/>
-    <line x1="720" y1="0" x2="720" y2="900" stroke="#3ba8d4" stroke-width="1" opacity="0.025"/>
-    <line x1="0" y1="450" x2="1440" y2="450" stroke="#3ba8d4" stroke-width="1" opacity="0.02"/>
+    <circle cx="720" cy="450" r="200" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.13"/>
+    <circle cx="720" cy="450" r="370" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.10"/>
+    <circle cx="720" cy="450" r="540" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.08"/>
+    <circle cx="720" cy="450" r="710" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.06"/>
+    <line x1="720" y1="0" x2="720" y2="900" stroke="#009FE3" stroke-width="1" opacity="0.025"/>
+    <line x1="0" y1="450" x2="1440" y2="450" stroke="#009FE3" stroke-width="1" opacity="0.02"/>
   </svg>
   
   <div class="ls-card">
     <div class="ls-brand">
       <svg class="ls-logo-mark" viewBox="0 0 60 60" fill="none" aria-hidden="true">
-        <circle cx="30" cy="30" r="27" stroke="rgba(59,168,212,.18)" stroke-width="1"/>
-        <path d="M 47,16 A 22,22 0 1,0 52,30 L 30,30" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="30" cy="30" r="27" stroke="rgba(0,159,227,.18)" stroke-width="1"/>
+        <path d="M 47,16 A 22,22 0 1,0 52,30 L 30,30" stroke="#009FE3" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <div class="ls-brand-name">GRANTT</div>
       <div class="ls-brand-tag">Enciende tu energía</div>
@@ -1078,10 +1095,15 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 
 <!-- MUESTRAS SCREEN -->
 <div id="muestrasScreen">
-  <div class="ms-header">
-    <button class="ms-back" onclick="volverHomeFromMuestras()">← Volver</button>
-    <div class="ms-title">Estado de Muestras</div>
-    <button id="ms-admin-btn" class="ms-admin-btn" onclick="openMsModal(null,null)">⚙ Admin</button>
+  <div class="mod-header">
+    <button class="mod-back" onclick="volverHomeFromMuestras()">← Volver</button>
+    <div class="mod-logo"><svg viewBox="0 0 100 100" fill="none" width="28" height="28"><path d="M62,12 A40,40 0 1,0 62,88" stroke="#009FE3" stroke-width="14" stroke-linecap="round"/><rect x="40" y="42" width="28" height="16" rx="2" fill="#009FE3"/></svg><span class="mod-logo-text">Grantt</span></div>
+    <div class="mod-sep"></div>
+    <div class="mod-title-area"><span class="mod-title-name">Estado de Muestras</span></div>
+    <div class="mod-right">
+      <button id="ms-admin-btn" class="ms-admin-btn" onclick="openMsModal(null,null)">⚙ Admin</button>
+      <button class="theme-toggle" onclick="_toggleTheme()"></button>
+    </div>
   </div>
   <div class="ms-body">
     <div class="ms-kpis">
@@ -1190,13 +1212,14 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </div>
 <!-- CARGO TRACKING -->
 <div id="cargoScreen">
-  <div class="ct-topbar">
-    <button class="ct-back" onclick="volverHomeFromCargo()">← Volver</button>
-    <div class="ct-brand">
-      <svg width="22" height="22" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#0891b2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="ct-wordmark">GRANTT</span>
+  <div class="mod-header">
+    <button class="mod-back" onclick="volverHomeFromCargo()">← Volver</button>
+    <div class="mod-logo"><svg viewBox="0 0 100 100" fill="none" width="28" height="28"><path d="M62,12 A40,40 0 1,0 62,88" stroke="#009FE3" stroke-width="14" stroke-linecap="round"/><rect x="40" y="42" width="28" height="16" rx="2" fill="#009FE3"/></svg><span class="mod-logo-text">Grantt</span></div>
+    <div class="mod-sep"></div>
+    <div class="mod-title-area"><span class="mod-title-name">Cargo Tracking</span></div>
+    <div class="mod-right">
+      <button class="theme-toggle" onclick="_toggleTheme()"></button>
     </div>
-    <span class="ct-badge">CARGO TRACKING</span>
   </div>
   <div class="ct-body">
     <div class="ct-title-row">
@@ -1238,11 +1261,16 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </div>
 <!-- PRÓXIMAMENTE -->
 <div id="cobranzasScreen">
-  <div class="cob-header">
-    <button class="cob-back" onclick="volverHomeFromCobranza()">← Volver</button>
-    <div class="cob-title">Cobranza</div>
-    <div id="cob-hdr-info" style="font-size:.72rem;color:var(--muted);font-family:'DM Sans',sans-serif;letter-spacing:.04em"></div>
-    <button id="cob-cfg-btn" onclick="_cobOpenCfg()" style="display:none;padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Actualizar</button>
+  <div class="mod-header">
+    <button class="mod-back" onclick="volverHomeFromCobranza()">← Volver</button>
+    <div class="mod-logo"><svg viewBox="0 0 100 100" fill="none" width="28" height="28"><path d="M62,12 A40,40 0 1,0 62,88" stroke="#009FE3" stroke-width="14" stroke-linecap="round"/><rect x="40" y="42" width="28" height="16" rx="2" fill="#009FE3"/></svg><span class="mod-logo-text">Grantt</span></div>
+    <div class="mod-sep"></div>
+    <div class="mod-title-area"><span class="mod-title-name">Cobranza</span></div>
+    <div class="mod-right">
+      <span class="mod-date" id="cob-hdr-info"></span>
+      <button id="cob-cfg-btn" onclick="_cobOpenCfg()" style="display:none;padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Actualizar</button>
+      <button class="theme-toggle" onclick="_toggleTheme()"></button>
+    </div>
   </div>
   <div class="cob-body">
     <div id="cob-fb"></div>
@@ -1251,7 +1279,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </div>
 <div id="proximamente">
   <div style="position:absolute;top:1.2rem;left:1.5rem;">
-    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
+    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
   </div>
   <div class="prox-icon">🔒</div>
   <h2>PRÓXIMAMENTE</h2>
@@ -1259,19 +1287,19 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </div>
 
 <div id="ventasScreen" style="display:none;opacity:0;transition:opacity .35s ease;">
-<header>
-  <div class="header-left">
-    <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
+<div class="mod-header">
+  <button class="mod-back" onclick="volverHomeFromVentas()">← Volver</button>
+  <div class="mod-logo"><svg viewBox="0 0 100 100" fill="none" width="28" height="28"><path d="M62,12 A40,40 0 1,0 62,88" stroke="#009FE3" stroke-width="14" stroke-linecap="round"/><rect x="40" y="42" width="28" height="16" rx="2" fill="#009FE3"/></svg><span class="mod-logo-text">Grantt</span></div>
+  <div class="mod-sep"></div>
+  <div class="mod-title-area"><span class="mod-title-name">Ventas 2026</span></div>
+  <div class="mod-right">
+    <div class="year-badge">2026 vs 2025</div>
+    <span id="updateDate" class="mod-date">Datos al 13-07-2026</span>
+    <button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;transition:color .15s" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button>
+    <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:.2rem;line-height:1;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" title="Configuración">⚙</button>
+    <button class="theme-toggle" onclick="_toggleTheme()"></button>
   </div>
-  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
-    <div style="display:flex;align-items:center;gap:.6rem">
-      <div class="year-badge">2026 vs 2025</div>
-      <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:.2rem;line-height:1;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" title="Configuración">⚙</button>
-    </div>
-    <span id="updateDate" style="font-size:.7rem;color:#aaa;letter-spacing:.03em">Datos al 13-07-2026</span>
-  </div>
-</header>
+</div>
 <div class="tabs">
   <div class="tab active" data-v="GENERAL" onclick="setMainTab('GENERAL',this)">General</div>
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
@@ -1419,7 +1447,7 @@ const MESES_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov'
 const CATS_VENDOR=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 const CATS_GENERAL=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 function getCats(){return currentVendedor==='GENERAL'?CATS_GENERAL:CATS_VENDOR;}
-const COLORS={ALEJANDRA:'#3ba8d4',MARCELO:'#3ba8d4',JOEL:'#3ba8d4',GENERAL:'#3ba8d4',OSCAR:'#3ba8d4',DIEGO:'#3ba8d4',SANDRA:'#3ba8d4'};
+const COLORS={ALEJANDRA:'#009FE3',MARCELO:'#009FE3',JOEL:'#009FE3',GENERAL:'#009FE3',OSCAR:'#009FE3',DIEGO:'#009FE3',SANDRA:'#009FE3'};
 const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'General',OSCAR:'Oscar',DIEGO:'Diego',SANDRA:'Sandra'};
 
 let currentVendedor='GENERAL', currentView='valores';
@@ -2426,7 +2454,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
   tb.innerHTML=rows.map(function(r){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
-    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#3ba8d4;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.68rem;color:#d4a03c;">En tr\u00e1mite</div>';
+    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#009FE3;"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.68rem;color:#d4a03c;">En tr\u00e1mite</div>';
     var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
     var adminTd=admin?('<td><button class="ms-row-edit" data-id="'+r.id+'" data-tipo="'+tipo+'" onclick="openMsModal(this.dataset.id,this.dataset.tipo)">&#9998;</button>'+'<button class="ms-row-del" data-id="'+r.id+'" onclick="deleteMsRow(this.dataset.id)">&#10005;</button></td>'):'';
     return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.65rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td class="ms-obs-cell" title="'+r.obs.replace(/"/g,'&quot;')+'">'+r.obs+'</td>'+adminTd+'</tr>';
@@ -2513,7 +2541,7 @@ var _vdVendorKey=null;
 var _vdDetailTab='clientes';
 
 var _VD_GROUPS=[
-  {key:'alejandra',name:'Alejandra Hurtado',team:['Sandra Ortega','Diego Rivera'],color:'#3ba8d4'},
+  {key:'alejandra',name:'Alejandra Hurtado',team:['Sandra Ortega','Diego Rivera'],color:'#009FE3'},
   {key:'marcelo',name:'Marcelo Herrera',team:['Oscar Bucarey'],color:'#5bc0c4'},
   {key:'joel',name:'Joel Córdova',team:[],color:'#7b9ec7'}
 ];
@@ -2749,11 +2777,16 @@ function volverHomeFromMuestras(){
 
 <!-- PRÓXIMAMENTE -->
 <div id="cobranzasScreen">
-  <div class="cob-header">
-    <button class="cob-back" onclick="volverHomeFromCobranza()">← Volver</button>
-    <div class="cob-title">Cobranza</div>
-    <div id="cob-hdr-info" style="font-size:.72rem;color:var(--muted);font-family:'DM Sans',sans-serif;letter-spacing:.04em"></div>
-    <button id="cob-cfg-btn" onclick="_cobOpenCfg()" style="display:none;padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Actualizar</button>
+  <div class="mod-header">
+    <button class="mod-back" onclick="volverHomeFromCobranza()">← Volver</button>
+    <div class="mod-logo"><svg viewBox="0 0 100 100" fill="none" width="28" height="28"><path d="M62,12 A40,40 0 1,0 62,88" stroke="#009FE3" stroke-width="14" stroke-linecap="round"/><rect x="40" y="42" width="28" height="16" rx="2" fill="#009FE3"/></svg><span class="mod-logo-text">Grantt</span></div>
+    <div class="mod-sep"></div>
+    <div class="mod-title-area"><span class="mod-title-name">Cobranza</span></div>
+    <div class="mod-right">
+      <span class="mod-date" id="cob-hdr-info"></span>
+      <button id="cob-cfg-btn" onclick="_cobOpenCfg()" style="display:none;padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Actualizar</button>
+      <button class="theme-toggle" onclick="_toggleTheme()"></button>
+    </div>
   </div>
   <div class="cob-body">
     <div id="cob-fb"></div>
@@ -2762,7 +2795,7 @@ function volverHomeFromMuestras(){
 </div>
 <div id="proximamente">
   <div style="position:absolute;top:1.2rem;left:1.5rem;">
-    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
+    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
   </div>
   <div class="prox-icon">🔒</div>
   <h2>PRÓXIMAMENTE</h2>
@@ -2770,19 +2803,19 @@ function volverHomeFromMuestras(){
 </div>
 
 <div id="ventasScreen" style="display:none;opacity:0;transition:opacity .35s ease;">
-<header>
-  <div class="header-left">
-    <div style="display:flex;align-items:center;gap:.45rem;margin-bottom:.45rem;"><svg width="13" height="13" viewBox="0 0 44 44" fill="none"><path d="M 31,7 A 18,18 0 1,0 40,22 L 22,22" stroke="#3ba8d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#3ba8d4;letter-spacing:.24em;text-transform:uppercase;font-weight:600;">Grantt</span></div><h1>VENTAS <span>2026</span></h1>
-    <p>Reporte comparativo por vendedor · Categorías y productos &nbsp;·&nbsp; <button onclick="volverHomeFromVentas()" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">← Volver al inicio</button>&nbsp;·&nbsp;<button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;" onmouseover="this.style.color='#3ba8d4'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button></p>
+<div class="mod-header">
+  <button class="mod-back" onclick="volverHomeFromVentas()">← Volver</button>
+  <div class="mod-logo"><svg viewBox="0 0 100 100" fill="none" width="28" height="28"><path d="M62,12 A40,40 0 1,0 62,88" stroke="#009FE3" stroke-width="14" stroke-linecap="round"/><rect x="40" y="42" width="28" height="16" rx="2" fill="#009FE3"/></svg><span class="mod-logo-text">Grantt</span></div>
+  <div class="mod-sep"></div>
+  <div class="mod-title-area"><span class="mod-title-name">Ventas 2026</span></div>
+  <div class="mod-right">
+    <div class="year-badge">2026 vs 2025</div>
+    <span id="updateDate" class="mod-date">Datos al 13-07-2026</span>
+    <button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;transition:color .15s" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button>
+    <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:.2rem;line-height:1;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" title="Configuración">⚙</button>
+    <button class="theme-toggle" onclick="_toggleTheme()"></button>
   </div>
-  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
-    <div style="display:flex;align-items:center;gap:.6rem">
-      <div class="year-badge">2026 vs 2025</div>
-      <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:.2rem;line-height:1;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" title="Configuración">⚙</button>
-    </div>
-    <span id="updateDate" style="font-size:.7rem;color:#aaa;letter-spacing:.03em">Datos al 13-07-2026</span>
-  </div>
-</header>
+</div>
 <div class="tabs">
   <div class="tab active" data-v="GENERAL" onclick="setMainTab('GENERAL',this)">General</div>
   <div class="tab" data-v="CANALES" onclick="setMainTab('CANALES',this)">Canales</div>
@@ -3678,7 +3711,7 @@ var _cobSortKey='fecha';
 var _cobSortDir=1;
 
 var _COB_VENDORS=[
-  {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado',color:'#3ba8d4',bg:'rgba(59,168,212,.10)'},
+  {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado',color:'#009FE3',bg:'rgba(0,159,227,.10)'},
   {key:'marcelo',  label:'Marcelo Herrera',  match:'marcelo herrera',  color:'#5bc0c4',bg:'rgba(91,192,196,.10)'},
   {key:'joel',     label:'Joel Córdova',     match:'joel cord',        color:'#7b9ec7',bg:'rgba(123,158,199,.10)'},
   {key:'oscar',    label:'Oscar Bucarey',    match:'oscar bucarey',    color:'#9390c5',bg:'rgba(147,144,197,.10)'},
@@ -3969,7 +4002,7 @@ function _cobRender(){
       +'<td>'+r.nombre+'</td>'
       +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
-      +'<td><span class="cob-vtag" style="color:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].c:'var(--accent)')+';background:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].bg:'rgba(59,168,212,.12)')+'">'+r.vlbl+'</span></td>'
+      +'<td><span class="cob-vtag" style="color:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].c:'var(--accent)')+';background:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].bg:'rgba(0,159,227,.12)')+'">'+r.vlbl+'</span></td>'
       +(canEdit?'<td style="text-align:center"><button onclick="_cobRemove('+r._id+')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--negative)\'" onmouseout="this.style.color=\'var(--muted)\'">✕</button></td>':'')
       +'</tr>';
   }).join('');
@@ -4021,6 +4054,26 @@ function _cobExportExcel(){
 }
 </script>
 <script>
+// ponytail: theme toggle
+function _getTheme(){return localStorage.getItem('grantt_theme')||'dark';}
+function _applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t==='light'?'light':'');
+  if(t!=='light')document.documentElement.removeAttribute('data-theme');
+  document.querySelectorAll('.theme-toggle').forEach(function(btn){
+    btn.innerHTML=t==='light'
+      ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+      :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  });
+  var mc=document.querySelector('meta[name="theme-color"]');
+  if(mc)mc.setAttribute('content',t==='light'?'#f4f6f9':'#12151e');
+}
+function _toggleTheme(){
+  var t=_getTheme()==='dark'?'light':'dark';
+  localStorage.setItem('grantt_theme',t);
+  _applyTheme(t);
+}
+_applyTheme(_getTheme());
+
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
