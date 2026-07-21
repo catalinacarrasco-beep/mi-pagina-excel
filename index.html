@@ -3818,9 +3818,9 @@ function _cobSave(fname){
       return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
     })};
   try{localStorage.setItem('grantt_cob_v3',JSON.stringify(payload));}catch(e){}
-  fetch('/api/cob-push',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-  .then(function(r){return r.json();})
-  .then(function(d){if(d&&d.ok)_cobFb(true,'✓ Sincronizado – visible para todos en ~30s');})
+  var row={id:'current',ts:_cobLastTs,fname:_cobLastFname,cutoff:payload.cutoff,records:payload.records};
+  fetch(_CT_URL+'/rest/v1/cobranza_state',{method:'POST',headers:Object.assign({},_msH(),{'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(row)})
+  .then(function(r){if(r.ok)_cobFb(true,'✓ Sincronizado – visible para todos');})
   .catch(function(){});
 }
 function _cobRestore(){
@@ -3845,22 +3845,30 @@ function _cobUpdateHdrInfo(){
 }
 function _cobInit(){
   _cobFilterYear='2026';_cobFilterVendor='all';
-  if(_cobRawData.length){_cobRender();_cobUpdateHdrInfo();return;}
-  if(_cobRestore()){_cobRender();_cobUpdateHdrInfo();return;}
+  if(_cobRawData.length){_cobRender();_cobUpdateHdrInfo();_cobStartSync();return;}
+  if(_cobRestore()){_cobRender();_cobUpdateHdrInfo();}
   _cobRender();_cobUpdateHdrInfo();
-  fetch('/cob-data.json?_='+Date.now()).then(function(r){return r.ok?r.json():null;})
-  .then(function(d){
-    if(!d||!d.records||!d.records.length)return;
+  _cobFetchSupabase();
+  _cobStartSync();
+}
+function _cobFetchSupabase(){
+  fetch(_CT_URL+'/rest/v1/cobranza_state?id=eq.current&select=*',{headers:_msH()})
+  .then(function(r){return r.ok?r.json():null;})
+  .then(function(rows){
+    if(!rows||!rows.length)return;
+    var d=rows[0];
+    if(!d.records||!d.records.length)return;
+    if(d.ts&&d.ts===_cobLastTs)return;
     _cobRawData=d.records.map(function(r){
       var f=new Date(r.fechaISO);
       return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
     });
     _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
     _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
+    try{localStorage.setItem('grantt_cob_v3',JSON.stringify({ts:d.ts,fname:d.fname,cutoff:d.cutoff,records:d.records}));}catch(e){}
     _cobFilterYear='2026';_cobFilterVendor='all';
     _cobRender();_cobUpdateHdrInfo();
   }).catch(function(){});
-  _cobStartSync();
 }
 function _cobOpenCfg(){
   var m=document.getElementById('cob-cfg-bg');if(!m)return;
@@ -3873,22 +3881,7 @@ function _cobCloseCfg(){var m=document.getElementById('cob-cfg-bg');if(m)m.style
 var _cobLastFname='';var _cobLastTs=0;var _cobSyncTimer=null;
 function _cobStartSync(){
   if(_cobSyncTimer)return;
-  _cobSyncTimer=setInterval(function(){
-    fetch('/cob-data.json?_='+Date.now()).then(function(r){return r.ok?r.json():null;})
-    .then(function(d){
-      if(!d||!d.records||!d.records.length)return;
-      if(d.ts&&d.ts!==_cobLastTs){
-        _cobRawData=d.records.map(function(r){
-          var f=new Date(r.fechaISO);
-          return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
-        });
-        _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
-        _cobLastFname=d.fname||'';_cobLastTs=d.ts;
-        try{localStorage.setItem('grantt_cob_v3',JSON.stringify(d));}catch(e){}
-        _cobRender();_cobUpdateHdrInfo();
-      }
-    }).catch(function(){});
-  },15000);
+  _cobSyncTimer=setInterval(function(){_cobFetchSupabase();},15000);
 }
 
 function _cobFiltered(){
