@@ -515,10 +515,15 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-fbtn{padding:.32rem .8rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.78rem;transition:all .15s;}
 .cob-fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
 .cob-vsel{padding:.32rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;}
-.cob-hero{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.8rem;}
+.cob-hero{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.65rem;margin-bottom:.8rem;}
 .cob-hero-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.3rem 1.4rem;border-left:3px solid var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.18);}
 .cob-hero-card .kv{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.04em;color:var(--accent);}
 .cob-hero-card .kl{font-size:.72rem;color:#9ba3b5;margin-top:.3rem;letter-spacing:.04em;font-family:'DM Sans',sans-serif;font-weight:500;}
+.cob-prog{margin-top:.55rem;height:5px;background:rgba(0,0,0,.15);border-radius:3px;overflow:hidden;}
+.cob-prog-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s cubic-bezier(.2,.8,.2,1);}
+.cob-tabs{display:flex;gap:.4rem;margin-right:auto;}
+.cob-corte{font-size:.75rem;color:#9ba3b5;letter-spacing:.03em;white-space:nowrap;}
+@media(max-width:760px){.cob-hero{grid-template-columns:1fr;}}
 .cob-vendors-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem;padding-bottom:.7rem;border-bottom:1px solid var(--border);}
 .cob-vchip{display:flex;align-items:baseline;gap:.4rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.45rem .75rem;transition:border-color .2s;box-shadow:0 1px 4px rgba(0,0,0,.1);}
 .cob-vchip .vc-amt{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.03em;}
@@ -541,7 +546,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-info.err{background:rgba(192,80,80,.1);color:var(--negative);}
 .cob-empty{padding:3rem;text-align:center;color:var(--muted);font-size:.85rem;}
 .cob-bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.7rem;font-size:.78rem;color:#9ba3b5;}
-.cob-csv{margin-left:auto;padding:.28rem .7rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.73rem;transition:all .15s;}
+.cob-csv{padding:.28rem .7rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.73rem;transition:all .15s;}
 .cob-csv:hover{border-color:var(--accent);color:var(--accent);}
 
 /* Pantalla próximamente */
@@ -3823,7 +3828,7 @@ function _cobParseFile(data,fname){
       rut:(rv[cRut]||'').toString().trim(),
       nombre:(rv[cNom]||'').toString().trim(),
       fecha:fecha,year:yr,mes:fecha.getMonth(),saldo:saldo,
-      vnom:vnom,vkey:vm.key,vlbl:vm.label
+      vnom:vnom,vkey:vm.key,vlbl:vm.label,pagado:false
     });
   }
 
@@ -3839,7 +3844,7 @@ function _cobSave(fname){
   var payload={ts:_cobLastTs,fname:_cobLastFname,
     cutoff:_cobFechaCorte?_cobFechaCorte.toISOString():null,
     records:_cobRawData.map(function(r){
-      return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
+      return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
     })};
   try{localStorage.setItem('grantt_cob_v3',JSON.stringify(payload));}catch(e){}
   var row={id:'current',ts:_cobLastTs,fname:_cobLastFname,cutoff:payload.cutoff,records:payload.records};
@@ -3853,7 +3858,7 @@ function _cobRestore(){
     var d=JSON.parse(raw);if(!d||!d.records||!d.records.length)return false;
     _cobRawData=d.records.map(function(r){
       var f=new Date(r.fechaISO);
-      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
+      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
     });
     _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
     _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
@@ -3885,7 +3890,7 @@ function _cobFetchSupabase(){
     if(d.ts&&d.ts===_cobLastTs)return;
     _cobRawData=d.records.map(function(r){
       var f=new Date(r.fechaISO);
-      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl};
+      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
     });
     _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
     _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
@@ -3908,16 +3913,27 @@ function _cobStartSync(){
   _cobSyncTimer=setInterval(function(){_cobFetchSupabase();},15000);
 }
 
-function _cobFiltered(){
+var _cobView='pend'; // 'pend' = por cobrar | 'cobr' = recaudado
+// Alcance de la cartera: año + vendedor (base de las tarjetas). No filtra por pagado ni búsqueda.
+function _cobScope(){
   return _cobRawData.filter(function(r){
     if(_cobFilterYear==='2025'&&r.year!==2025)return false;
     if(_cobFilterYear==='2026'&&r.year!==2026)return false;
     if(_cobFilterYear==='otros'&&(r.year===2025||r.year===2026))return false;
     if(_cobFilterVendor!=='all'&&r.vkey!==_cobFilterVendor)return false;
+    return true;
+  });
+}
+// Filas de la tabla: alcance + vista (pendiente/cobrado) + búsqueda.
+function _cobFiltered(){
+  var paid=_cobView==='cobr';
+  return _cobScope().filter(function(r){
+    if(!!r.pagado!==paid)return false;
     if(_cobFilterSearch&&r.nombre.toLowerCase().indexOf(_cobFilterSearch)<0)return false;
     return true;
   });
 }
+function _cobSetView(v){_cobView=v;_cobRender();}
 
 function _cobSetYear(y){_cobFilterYear=y;_cobRender();}
 function _cobSetVendor(v){_cobFilterVendor=v;_cobRender();}
@@ -3926,16 +3942,18 @@ function _cobToggleSort(key){
   if(_cobSortKey===key){_cobSortDir*=-1;}else{_cobSortKey=key;_cobSortDir=1;}
   _cobRender();
 }
-function _cobRemove(id){
+// ponytail: marca pagado en vez de borrar → conserva el registro para Saldo inicial/Recaudado y permite deshacer
+function _cobSetPaid(id,paid){
+  var apply=function(){
+    var r=_cobRawData.find(function(x){return x._id===id;});
+    if(r)r.pagado=paid;
+    _cobRender();_cobSave(_cobLastFname);_cobUpdateHdrInfo();
+  };
   var row=document.querySelector('tr[data-cid="'+id+'"]');
-  if(row){row.classList.add('cob-removing');setTimeout(function(){
-    _cobRawData=_cobRawData.filter(function(r){return r._id!==id;});
-    _cobRender();_cobSave(_cobLastFname);_cobUpdateHdrInfo();
-  },250);}else{
-    _cobRawData=_cobRawData.filter(function(r){return r._id!==id;});
-    _cobRender();_cobSave(_cobLastFname);_cobUpdateHdrInfo();
-  }
+  if(row){row.classList.add('cob-removing');setTimeout(apply,250);}else{apply();}
 }
+function _cobPay(id){_cobSetPaid(id,true);}
+function _cobUnpay(id){_cobSetPaid(id,false);}
 
 function _cobRender(){
   var main=document.getElementById('cob-main');if(!main)return;
@@ -3943,16 +3961,22 @@ function _cobRender(){
     main.innerHTML='<div style="padding:4rem 2rem;text-align:center;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-size:.9rem">No hay datos cargados.<br><span style="font-size:.82em;display:block;margin-top:.4rem">Usa <strong style="color:var(--text)">⚙ Actualizar</strong> para cargar el archivo Excel.</span></div>';
     return;
   }
-  var data=_cobFiltered();
+  var data=_cobFiltered();               // filas de la vista actual (pendientes/cobrados) + búsqueda
   var hoy=new Date();hoy.setHours(0,0,0,0);
-  var total=data.reduce(function(s,r){return s+r.saldo;},0);
-  var vencData=data.filter(function(r){var d=new Date(r.fecha);d.setHours(0,0,0,0);return d<hoy;});
-  var vencSum=vencData.reduce(function(s,r){return s+r.saldo;},0);
+  var sum=function(a){return a.reduce(function(s,r){return s+r.saldo;},0);};
+  var scope=_cobScope();                 // cartera del alcance año+vendedor (sin filtrar por pagado)
+  var pend=scope.filter(function(r){return !r.pagado;});
+  var paid=scope.filter(function(r){return r.pagado;});
+  var saldoInicial=sum(scope), saldoFinal=sum(pend), recaudado=sum(paid);
+  var iniCount=scope.length, pendCount=pend.length, paidCount=paid.length;
+  var pct=saldoInicial>0?Math.round(recaudado/saldoInicial*100):0;
+  var viewTotal=sum(data);
 
-  // Totales por vendedor
+  // Totales por vendedor (según la vista actual)
+  var vData=(_cobView==='cobr')?paid:pend;
   var byV={};
   _COB_VENDORS.forEach(function(v){byV[v.key]={l:v.label,t:0,n:0};});
-  data.forEach(function(r){if(byV[r.vkey]){byV[r.vkey].t+=r.saldo;byV[r.vkey].n++;}});
+  vData.forEach(function(r){if(byV[r.vkey]){byV[r.vkey].t+=r.saldo;byV[r.vkey].n++;}});
 
   // Botones de año
   var _mNames=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -3994,7 +4018,10 @@ function _cobRender(){
       +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
       +'<td><span class="cob-vtag" style="color:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].c:'var(--accent)')+';background:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].bg:'rgba(0,159,227,.12)')+'">'+r.vlbl+'</span></td>'
-      +(canEdit?'<td style="text-align:center"><button onclick="_cobRemove('+r._id+')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--negative)\'" onmouseout="this.style.color=\'var(--muted)\'">✕</button></td>':'')
+      +(canEdit?'<td style="text-align:center">'+(_cobView==='cobr'
+          ?'<button onclick="_cobUnpay('+r._id+')" title="Devolver a pendientes" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.95rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--muted)\'">↩</button>'
+          :'<button onclick="_cobPay('+r._id+')" title="Marcar como pagado" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.95rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--positive)\'" onmouseout="this.style.color=\'var(--muted)\'">✓</button>')
+        +'</td>':'')
       +'</tr>';
   }).join('');
 
@@ -4003,13 +4030,19 @@ function _cobRender(){
       +'<select class="cob-vsel" onchange="_cobSetVendor(this.value)">'+vOpts+'</select>'
     +'</div>'
     +'<div class="cob-hero">'
-      +'<div class="cob-hero-card"><div class="kv">'+_cobFmtCLP(total)+'</div><div class="kl">Total por cobrar · '+data.length+' documentos</div></div>'
-      +'<div class="cob-hero-card" style="border-left-color:var(--negative)"><div class="kv" style="color:var(--negative)">'+_cobFmtCLP(vencSum)+'</div><div class="kl">Vencido · '+vencData.length+' documentos</div></div>'
+      +'<div class="cob-hero-card" style="border-left-color:var(--positive)"><div class="kv" style="color:var(--positive)">'+_cobFmtCLP(saldoFinal)+'</div><div class="kl">Saldo final · '+pendCount+' por cobrar</div></div>'
+      +'<div class="cob-hero-card" style="border-left-color:var(--muted)"><div class="kv" style="color:var(--text)">'+_cobFmtCLP(saldoInicial)+'</div><div class="kl">Saldo inicial · '+iniCount+' documentos cargados</div></div>'
+      +'<div class="cob-hero-card" style="border-left-color:var(--accent)"><div class="kv" style="color:var(--accent)">'+_cobFmtCLP(recaudado)+'</div><div class="kl">Recaudado · '+paidCount+' cobrados · '+pct+'%</div><div class="cob-prog"><div class="cob-prog-fill" style="width:'+pct+'%"></div></div></div>'
     +'</div>'
     +(vChips?'<div class="cob-vendors-row">'+vChips+'</div>':'')
-    +(data.length>0?'<div class="cob-bar"><span>'+data.length+' documentos</span>'
-        +(_cobFilterYear==='2026'?'<span>·</span><span>Corte al '+_cobFmtDate(_cobFechaCorte)+'</span>':'')
-        +'<button class="cob-csv" onclick="_cobExportExcel()">⬇ Exportar Excel</button></div>':'')
+    +'<div class="cob-bar">'
+        +'<div class="cob-tabs">'
+          +'<button class="cob-fbtn'+(_cobView==='pend'?' active':'')+'" onclick="_cobSetView(\'pend\')">Pendientes ('+pendCount+')</button>'
+          +'<button class="cob-fbtn'+(_cobView==='cobr'?' active':'')+'" onclick="_cobSetView(\'cobr\')">Cobrados ('+paidCount+')</button>'
+        +'</div>'
+        +(_cobFilterYear==='2026'&&_cobFechaCorte?'<span class="cob-corte">Corte al '+_cobFmtDate(_cobFechaCorte)+'</span>':'')
+        +(data.length>0?'<button class="cob-csv" onclick="_cobExportExcel()">⬇ Exportar Excel</button>':'')
+    +'</div>'
     +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
         +'<th>RUT</th>'
         +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'nombre\')">Cliente'+(_cobSortKey==='nombre'?(_cobSortDir>0?' ▲':' ▼'):'')+' <input type="text" placeholder="Buscar..." value="'+_ctEsc(_cobFilterSearch)+'" oninput="event.stopPropagation();_cobSetSearch(this.value)" onclick="event.stopPropagation()" style="margin-left:6px;padding:3px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:.75rem;width:120px;outline:none;font-weight:400"></th>'
@@ -4017,10 +4050,10 @@ function _cobRender(){
         +'<th style="text-align:right;cursor:pointer;user-select:none" onclick="_cobToggleSort(\'saldo\')">Saldo'+(_cobSortKey==='saldo'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
         +'<th>Vendedor</th>'
         +(canEdit?'<th style="width:40px"></th>':'')
-        +'</tr></thead><tbody>'+(tRows||'<tr><td colspan="'+(canEdit?6:5)+'" style="text-align:center;padding:2rem;color:var(--muted)">Sin resultados para la búsqueda.</td></tr>')+'</tbody>'
+        +'</tr></thead><tbody>'+(tRows||'<tr><td colspan="'+(canEdit?6:5)+'" style="text-align:center;padding:2rem;color:var(--muted)">'+(_cobView==='cobr'?'Aún no hay clientes cobrados.':(_cobFilterSearch?'Sin resultados para la búsqueda.':'No hay documentos pendientes.'))+'</td></tr>')+'</tbody>'
         +'<tfoot><tr style="border-top:2px solid var(--border);font-weight:700">'
-        +'<td></td><td></td><td style="text-align:right;color:var(--muted);font-size:.78rem">TOTAL</td>'
-        +'<td class="cob-amt" style="font-size:1.05rem">'+_cobFmtCLP(total)+'</td>'
+        +'<td></td><td></td><td style="text-align:right;color:var(--muted);font-size:.78rem">'+(_cobView==='cobr'?'RECAUDADO':'TOTAL')+'</td>'
+        +'<td class="cob-amt" style="font-size:1.05rem">'+_cobFmtCLP(viewTotal)+'</td>'
         +'<td></td>'+(canEdit?'<td></td>':'')
         +'</tr></tfoot></table></div>';
 }
