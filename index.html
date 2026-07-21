@@ -3559,8 +3559,7 @@ function _ctShowDocs(id){
         html+='<button class="ct-di-btn ct-di-btn-dl" onclick="_ctDownloadDoc(\''+dp+'\')">⬇ Descargar</button>';
         if(isA)html+='<button class="ct-di-btn-del" onclick="_ctDeleteDoc(\''+e.id+'\',\''+dp+'\');setTimeout(function(){_ctShowDocs(\''+e.id+'\')},500)" title="Eliminar">×</button>';
       }
-      var isLocal=grupo.grupo==='DOCUMENTACIÓN LOCAL';
-      if(isA||(isViewer&&isLocal)){
+      if(isA||isViewer){
         html+='<label class="ct-di-btn ct-di-btn-up">Subir<input type="file" accept="application/pdf,.xlsx,.xls" hidden onchange="_ctUploadDocType(\''+e.id+'\',\''+_ctEsc(tipo)+'\',this)"></label>';
       }
       html+='</div>';
