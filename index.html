@@ -14,8 +14,8 @@
 <meta name="theme-color" content="#1e2235">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#1e2235;--surface:#252a3e;--surface2:#2c3150;--border:#323756;--accent:#009FE3;--accent2:#009FE3;--accent3:#009FE3;--accent4:#009FE3;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;--row-hover:rgba(0,159,227,.06);--row-even:rgba(255,255,255,.02);}
-[data-theme="light"]{--bg:#f4f6f9;--surface:#ffffff;--surface2:#edf0f5;--border:#d8dde6;--text:#0D181C;--muted:#6b7280;--row-hover:rgba(0,159,227,.06);--row-even:rgba(0,0,0,.02);}
+:root{--bg:#1e2235;--surface:#252a3e;--surface2:#2c3150;--border:#323756;--accent:#009FE3;--accent2:#009FE3;--accent3:#009FE3;--accent4:#009FE3;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;--row-hover:rgba(0,159,227,.06);--row-even:rgba(255,255,255,.02);--vc-alejandra:#009FE3;--vc-marcelo:#5bc0c4;--vc-joel:#7b9ec7;--vc-oscar:#9390c5;--vc-sandra:#6db3a0;--vc-diego:#a8b4c8;}
+[data-theme="light"]{--bg:#f4f6f9;--surface:#ffffff;--surface2:#edf0f5;--border:#d8dde6;--text:#0D181C;--muted:#6b7280;--row-hover:rgba(0,159,227,.06);--row-even:rgba(0,0,0,.02);--vc-alejandra:#0089c9;--vc-marcelo:#1f9499;--vc-joel:#4a76ad;--vc-oscar:#7059c0;--vc-sandra:#1f9268;--vc-diego:#667690;}
 .theme-toggle{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;flex-shrink:0;}
 .theme-toggle:hover{border-color:var(--accent);}
 .theme-toggle svg{width:18px;height:18px;color:var(--accent);transition:transform .3s;}
@@ -518,7 +518,8 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-hero{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.65rem;margin-bottom:.8rem;}
 .cob-hero-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.3rem 1.4rem;border-left:3px solid var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.18);}
 .cob-hero-card .kv{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.04em;color:var(--accent);}
-.cob-hero-card .kl{font-size:.72rem;color:#9ba3b5;margin-top:.3rem;letter-spacing:.04em;font-family:'DM Sans',sans-serif;font-weight:500;}
+.cob-hero-card .kl{font-size:.74rem;color:#c4ccd9;margin-top:.35rem;letter-spacing:.03em;font-family:'DM Sans',sans-serif;font-weight:600;}
+[data-theme="light"] .cob-hero-card .kl{color:#3f4756;}
 .cob-prog{margin-top:.55rem;height:5px;background:rgba(0,0,0,.15);border-radius:3px;overflow:hidden;}
 .cob-prog-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s cubic-bezier(.2,.8,.2,1);}
 .cob-tabs{display:flex;gap:.4rem;margin-right:auto;}
@@ -527,7 +528,8 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-vendors-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem;padding-bottom:.7rem;border-bottom:1px solid var(--border);}
 .cob-vchip{display:flex;align-items:baseline;gap:.4rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.45rem .75rem;transition:border-color .2s;box-shadow:0 1px 4px rgba(0,0,0,.1);}
 .cob-vchip .vc-amt{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.03em;}
-.cob-vchip .vc-name{font-size:.68rem;color:#9ba3b5;letter-spacing:.03em;}
+.cob-vchip .vc-name{font-size:.72rem;color:#c4ccd9;letter-spacing:.02em;font-weight:600;}
+[data-theme="light"] .cob-vchip .vc-name{color:#3f4756;}
 .cob-tbl tbody tr{transition:opacity .25s,transform .25s;}
 .cob-tbl tbody tr.cob-removing{opacity:0;transform:translateX(30px);}
 .cob-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.12);}
@@ -3708,14 +3710,15 @@ var _cobSortKey='fecha';
 var _cobSortDir=1;
 
 var _COB_VENDORS=[
-  {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado',color:'#009FE3',bg:'rgba(0,159,227,.10)'},
-  {key:'marcelo',  label:'Marcelo Herrera',  match:'marcelo herrera',  color:'#5bc0c4',bg:'rgba(91,192,196,.10)'},
-  {key:'joel',     label:'Joel Córdova',     match:'joel cord',        color:'#7b9ec7',bg:'rgba(123,158,199,.10)'},
-  {key:'oscar',    label:'Oscar Bucarey',    match:'oscar bucarey',    color:'#9390c5',bg:'rgba(147,144,197,.10)'},
-  {key:'sandra',   label:'Sandra Ortega',    match:'sandra ortega',    color:'#6db3a0',bg:'rgba(109,179,160,.10)'},
-  {key:'diego',    label:'Diego Rivera',     match:'diego river',      color:'#a8b4c8',bg:'rgba(168,180,200,.10)'}
+  {key:'alejandra',label:'Alejandra Hurtado',match:'alejandra hurtado',color:'#0089c9',bg:'rgba(0,137,201,.12)'},
+  {key:'marcelo',  label:'Marcelo Herrera',  match:'marcelo herrera',  color:'#1f9499',bg:'rgba(31,148,153,.12)'},
+  {key:'joel',     label:'Joel Córdova',     match:'joel cord',        color:'#4a76ad',bg:'rgba(74,118,173,.12)'},
+  {key:'oscar',    label:'Oscar Bucarey',    match:'oscar bucarey',    color:'#7059c0',bg:'rgba(112,89,192,.12)'},
+  {key:'sandra',   label:'Sandra Ortega',    match:'sandra ortega',    color:'#1f9268',bg:'rgba(31,146,104,.12)'},
+  {key:'diego',    label:'Diego Rivera',     match:'diego river',      color:'#667690',bg:'rgba(102,118,144,.12)'}
 ];
-var _cobVendorColor={};_COB_VENDORS.forEach(function(v){_cobVendorColor[v.key]={c:v.color,bg:v.bg};});
+// color por vendedor via CSS vars (--vc-<key>) → cambia por tema: brillante en oscuro, oscuro en claro
+var _cobVendorColor={};_COB_VENDORS.forEach(function(v){_cobVendorColor[v.key]={c:'var(--vc-'+v.key+')',bg:'color-mix(in srgb,var(--vc-'+v.key+') 14%,transparent)'};});
 
 function _cobFb(ok,msg){
   var el=document.getElementById('cob-fb');if(!el)return;
@@ -4001,7 +4004,7 @@ function _cobRender(){
   // Vendor chips
   var vChips=_COB_VENDORS.filter(function(v){return byV[v.key].n>0;}).map(function(v){
     var d=byV[v.key];var vc=_cobVendorColor[v.key];
-    return'<div class="cob-vchip" style="border-color:'+vc.c+'30"><span class="vc-amt" style="color:'+vc.c+'">'+_cobFmtCLP(d.t)+'</span><span class="vc-name">'+d.l+' ('+d.n+')</span></div>';
+    return'<div class="cob-vchip" style="border-color:color-mix(in srgb,'+vc.c+' 32%,var(--border))"><span class="vc-amt" style="color:'+vc.c+'">'+_cobFmtCLP(d.t)+'</span><span class="vc-name">'+d.l+' ('+d.n+')</span></div>';
   }).join('');
 
   // Filas ordenadas
