@@ -11,11 +11,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Grantt">
-<meta name="theme-color" content="#1e2235">
+<meta name="theme-color" content="#16192a">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#1e2235;--surface:#252a3e;--surface2:#2c3150;--border:#323756;--accent:#009FE3;--accent2:#009FE3;--accent3:#009FE3;--accent4:#009FE3;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;--row-hover:rgba(0,159,227,.06);--row-even:rgba(255,255,255,.02);--vc-alejandra:#009FE3;--vc-marcelo:#5bc0c4;--vc-joel:#7b9ec7;--vc-oscar:#9390c5;--vc-sandra:#6db3a0;--vc-diego:#a8b4c8;}
-[data-theme="light"]{--bg:#f4f6f9;--surface:#ffffff;--surface2:#edf0f5;--border:#d8dde6;--text:#0D181C;--muted:#6b7280;--row-hover:rgba(0,159,227,.06);--row-even:rgba(0,0,0,.02);--vc-alejandra:#0089c9;--vc-marcelo:#1f9499;--vc-joel:#4a76ad;--vc-oscar:#7059c0;--vc-sandra:#1f9268;--vc-diego:#667690;}
+:root{--bg:#16192a;--surface:#252a3e;--surface2:#2c3150;--border:#3a416a;--accent:#009FE3;--accent2:#009FE3;--accent3:#009FE3;--accent4:#009FE3;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;--row-hover:rgba(0,159,227,.06);--row-even:rgba(255,255,255,.02);--vc-alejandra:#009FE3;--vc-marcelo:#5bc0c4;--vc-joel:#7b9ec7;--vc-oscar:#9390c5;--vc-sandra:#6db3a0;--vc-diego:#a8b4c8;}
+[data-theme="light"]{--bg:#e5e9f0;--surface:#ffffff;--surface2:#eef1f6;--border:#d0d7e2;--text:#0D181C;--muted:#6b7280;--row-hover:rgba(0,159,227,.06);--row-even:rgba(0,0,0,.02);--vc-alejandra:#0089c9;--vc-marcelo:#1f9499;--vc-joel:#4a76ad;--vc-oscar:#7059c0;--vc-sandra:#1f9268;--vc-diego:#667690;}
 .theme-toggle{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;flex-shrink:0;}
 .theme-toggle:hover{border-color:var(--accent);}
 .theme-toggle svg{width:18px;height:18px;color:var(--accent);transition:transform .3s;}
@@ -63,6 +63,7 @@ header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:fl
 main{padding:2rem 3rem;}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;}
+.kpi-card,.top-cats-card,.table-wrap,.client-section{box-shadow:0 2px 8px rgba(0,0,0,.10);}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kpi-color,var(--accent));}
 .kpi-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;}
 .kpi-value{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.02em;color:var(--text);}
@@ -360,10 +361,11 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-table-wrap{background:var(--surface);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto;}
 #cargoScreen .ct-tbl{width:100%;border-collapse:collapse;min-width:900px;}
 #cargoScreen .ct-tbl th{
-  font-size:12px;font-weight:700;color:#fff;background:#1a2236;
+  font-size:12px;font-weight:700;color:#fff;background:#343b5e;
   text-transform:uppercase;letter-spacing:.06em;
   padding:11px 10px;text-align:left;border-bottom:2px solid var(--accent);white-space:nowrap;
 }
+[data-theme="light"] #cargoScreen .ct-tbl th{background:#1a2236;}
 #cargoScreen .ct-tbl td{
   padding:9px 10px;font-size:13px;color:var(--text);
   border-bottom:1px solid var(--border);vertical-align:top;white-space:nowrap;
@@ -4138,7 +4140,7 @@ function _applyTheme(t){
       :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
   });
   var mc=document.querySelector('meta[name="theme-color"]');
-  if(mc)mc.setAttribute('content',t==='light'?'#f4f6f9':'#1e2235');
+  if(mc)mc.setAttribute('content',t==='light'?'#e5e9f0':'#16192a');
 }
 function _toggleTheme(){
   var t=_getTheme()==='dark'?'light':'dark';
@@ -4611,7 +4613,8 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
 </div>
 <script>
 /* ── PWA INSTALL ─────────────────────────────── */
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
+// ponytail: matar el service worker — cacheaba el HTML embebido y servía datos viejos. Dashboard en vivo = siempre red.
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys){caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});}}
 
 window.addEventListener('appinstalled',function(){
   _pwaPrompt=null;
