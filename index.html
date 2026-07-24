@@ -3533,7 +3533,7 @@ async function _ctHandleUpload(embarqueId,input){
   var tipoEl=document.getElementById('ct-dt-'+embarqueId);
   var tipo=tipoEl?tipoEl.value:_CT_DOC_TIPOS[0];
   input.value='';
-  if(_ctNeedAuth()){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
+  if(!(await _ctEnsureAuth())){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
   var emb=_ctEmbarques.find(function(r){return r.id===embarqueId;});if(!emb)return;
   var uid=([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,function(c){return(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16);});
   var path=embarqueId+'/'+uid+'-'+file.name;
@@ -3554,7 +3554,7 @@ async function _ctHandleUpload(embarqueId,input){
 }
 
 async function _ctDeleteDoc(embarqueId,path){
-  if(_ctNeedAuth()){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
+  if(!(await _ctEnsureAuth())){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
   await fetch(_CT_URL+'/storage/v1/object/'+_CT_BUCKET,{
     method:'DELETE',
     headers:{'apikey':_CT_KEY,'Authorization':'Bearer '+_ctAuthToken,'Content-Type':'application/json'},
@@ -3567,7 +3567,7 @@ async function _ctDeleteDoc(embarqueId,path){
 }
 
 async function _ctDownloadDoc(path){
-  if(_ctNeedAuth()){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
+  if(!(await _ctEnsureAuth())){_ctFeedback(false,'Sesión de almacenamiento expirada. Recarga la página.');return;}
   var resp=await fetch(_CT_URL+'/storage/v1/object/sign/'+_CT_BUCKET+'/'+path,{
     method:'POST',
     headers:{'apikey':_CT_KEY,'Authorization':'Bearer '+_ctAuthToken,'Content-Type':'application/json'},
