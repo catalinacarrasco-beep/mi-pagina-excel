@@ -1706,7 +1706,7 @@ function getCliData(year){
   const src = year===2026 ? CLIENTES26 : CLIENTES25;
   if(currentVendedor==='GENERAL'){
     const seen={};
-    ['ALEJANDRA','MARCELO','JOEL'].forEach(v=>{
+    Object.keys(src||{}).forEach(v=>{
       (src[v]||[]).forEach(c=>{
         if(!seen[c.name]) seen[c.name]={name:c.name,vals:[0,0,0,0,0,0,0,0,0,0,0,0]};
         c.vals.forEach((val,i)=>seen[c.name].vals[i]+=val);
@@ -4370,24 +4370,29 @@ function _parseExcel(arrayBuffer){
 
   // CLIENTES
   function parseCli(sheetName, year){
-    var rows=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:null}), cli={ALEJANDRA:[],MARCELO:[],JOEL:[]};
-    rows.slice(2).forEach(function(row){
-      if(!row) return;
-      if(row[0]&&String(row[0]).trim()==='Alejandra'){
-        var c=row[1]?String(row[1]).trim():'';
-        if(c){var v=Array(12).fill(0);for(var i=0;i<5;i++)v[i]=pv(row[2+i]);cli.ALEJANDRA.push({name:c,vals:v});}
+    // Escanea la fila de encabezados: cada 'Vendedor' inicia una tabla (Vendedor | Nombre Cliente | meses).
+    // Lee N tablas dinámicamente y mapea cada mes por su NOMBRE → robusto a agregar/quitar vendedores o meses.
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:null});
+    var hdr=rows[0]||[];
+    var MES={ENERO:0,FEBRERO:1,MARZO:2,ABRIL:3,MAYO:4,JUNIO:5,JULIO:6,AGOSTO:7,SEPTIEMBRE:8,OCTUBRE:9,NOVIEMBRE:10,DICIEMBRE:11};
+    var tables=[];
+    for(var c=0;c<hdr.length;c++){
+      if(hdr[c]&&String(hdr[c]).trim().toLowerCase()==='vendedor'){
+        var mc=[],k=c+2;
+        while(k<hdr.length){var h=hdr[k]?String(hdr[k]).trim().toUpperCase():'';if(MES.hasOwnProperty(h)){mc.push([k,MES[h]]);k++;}else break;}
+        tables.push([c,c+1,mc]);
       }
-      if(row[9]&&String(row[9]).trim()==='Marcelo'){
-        var c=row[10]?String(row[10]).trim():'';
-        if(c){var v=Array(12).fill(0);for(var i=0;i<5;i++)v[i]=pv(row[11+i]);cli.MARCELO.push({name:c,vals:v});}
-      }
-      if(row[18]&&String(row[18]).trim()==='Joel'){
-        var c=row[19]?String(row[19]).trim():'';
-        if(c){var v=Array(12).fill(0);
-          if(year===2026){v[4]=pv(row[20]);}else{for(var i=0;i<5;i++)v[i]=pv(row[21+i]);}
-          cli.JOEL.push({name:c,vals:v});}
-      }
-    });
+    }
+    var cli={};
+    for(var r=1;r<rows.length;r++){var row=rows[r];if(!row)continue;
+      tables.forEach(function(t){
+        var vend=row[t[0]]?String(row[t[0]]).trim():'',name=row[t[1]]?String(row[t[1]]).trim():'';
+        if(!vend||!name)return;
+        var key=vend.toUpperCase();if(!cli[key])cli[key]=[];
+        var vals=Array(12).fill(0);t[2].forEach(function(m){vals[m[1]]=pv(row[m[0]]);});
+        cli[key].push({name:name,vals:vals});
+      });
+    }
     return cli;
   }
 
