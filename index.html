@@ -891,6 +891,25 @@ footer p{font-size:.75rem;color:var(--muted);}
 @keyframes lsShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 @media(prefers-reduced-motion:reduce){#loginScreen{transition:none}.ls-input.ls-shake{animation:none}}
 @media(max-width:480px){.ls-greeting{font-size:1.9rem;margin-bottom:1.6rem;}.ls-card{padding:2rem 1.5rem 1.5rem;}}
+/* ── LOGIN BULB ANIMATION ──── */
+.ls-bulb-wrap{position:absolute;z-index:0;pointer-events:none;opacity:.35;}
+.ls-bulb-wrap.ls-bulb-r{right:8%;top:15%;width:280px;height:400px;}
+.ls-bulb-wrap.ls-bulb-l{left:6%;bottom:10%;width:180px;height:260px;opacity:.18;transform:rotate(-15deg);}
+.ls-bulb-outline{fill:none;stroke:rgba(0,160,223,.15);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.ls-bulb-base{fill:none;stroke:rgba(0,160,223,.12);stroke-width:1.2;stroke-linecap:round;}
+.ls-filament{fill:none;stroke:#00A0DF;stroke-width:1.8;stroke-linecap:round;stroke-dasharray:120;stroke-dashoffset:120;animation:lsDrawFil 2.5s ease 1s forwards;}
+.ls-filament-glow{fill:none;stroke:#00A0DF;stroke-width:6;stroke-linecap:round;opacity:0;filter:blur(4px);stroke-dasharray:120;stroke-dashoffset:120;animation:lsDrawFil 2.5s ease 1s forwards, lsGlowPulse 3s ease-in-out 3.5s infinite;}
+.ls-bulb-inner-glow{opacity:0;animation:lsFadeGlow 1.5s ease 3s forwards;}
+.ls-bulb-l .ls-filament{animation-delay:2.5s;}
+.ls-bulb-l .ls-filament-glow{animation:lsDrawFil 2.5s ease 2.5s forwards, lsGlowPulse 4s ease-in-out 5s infinite;}
+.ls-bulb-l .ls-bulb-inner-glow{animation-delay:4.5s;}
+@keyframes lsDrawFil{to{stroke-dashoffset:0;}}
+@keyframes lsGlowPulse{0%,100%{opacity:.25;stroke-width:6;}50%{opacity:.5;stroke-width:9;}}
+@keyframes lsFadeGlow{to{opacity:1;}}
+.ls-particles{position:absolute;inset:0;z-index:0;pointer-events:none;}
+@media(max-width:600px){.ls-bulb-wrap.ls-bulb-r{width:160px;height:230px;right:2%;top:8%;}.ls-bulb-wrap.ls-bulb-l{display:none;}}
+@media(prefers-reduced-motion:reduce){.ls-filament,.ls-filament-glow,.ls-bulb-inner-glow{animation:none!important;}}
+/* ── END LOGIN BULB ──── */
 /* polish-start */
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -1025,7 +1044,34 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <line x1="720" y1="0" x2="720" y2="900" stroke="#009FE3" stroke-width="1" opacity="0.025"/>
     <line x1="0" y1="450" x2="1440" y2="450" stroke="#009FE3" stroke-width="1" opacity="0.02"/>
   </svg>
-  
+
+  <!-- Bulb right (main) -->
+  <div class="ls-bulb-wrap ls-bulb-r" aria-hidden="true">
+    <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="lsBulbG" cx="50%" cy="40%" r="45%"><stop offset="0%" stop-color="#00A0DF" stop-opacity=".12"/><stop offset="100%" stop-color="#00A0DF" stop-opacity="0"/></radialGradient></defs>
+      <ellipse class="ls-bulb-inner-glow" cx="60" cy="65" rx="35" ry="40" fill="url(#lsBulbG)"/>
+      <path class="ls-bulb-outline" d="M40,95 C20,80 15,55 25,35 C35,15 50,8 60,8 C70,8 85,15 95,35 C105,55 100,80 80,95"/>
+      <line class="ls-bulb-base" x1="40" y1="95" x2="40" y2="115"/><line class="ls-bulb-base" x1="80" y1="95" x2="80" y2="115"/>
+      <path class="ls-bulb-base" d="M40,105 Q60,112 80,105"/><path class="ls-bulb-base" d="M40,115 Q60,122 80,115"/><path class="ls-bulb-base" d="M42,118 Q60,128 78,118"/>
+      <path class="ls-filament" d="M50,90 L50,65 Q52,50 56,55 Q60,60 60,48 Q60,60 64,55 Q68,50 70,65 L70,90"/>
+      <path class="ls-filament-glow" d="M50,90 L50,65 Q52,50 56,55 Q60,60 60,48 Q60,60 64,55 Q68,50 70,65 L70,90"/>
+    </svg>
+  </div>
+  <!-- Bulb left (smaller) -->
+  <div class="ls-bulb-wrap ls-bulb-l" aria-hidden="true">
+    <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="lsBulbG2" cx="50%" cy="40%" r="45%"><stop offset="0%" stop-color="#00A0DF" stop-opacity=".08"/><stop offset="100%" stop-color="#00A0DF" stop-opacity="0"/></radialGradient></defs>
+      <ellipse class="ls-bulb-inner-glow" cx="60" cy="65" rx="35" ry="40" fill="url(#lsBulbG2)"/>
+      <path class="ls-bulb-outline" d="M40,95 C20,80 15,55 25,35 C35,15 50,8 60,8 C70,8 85,15 95,35 C105,55 100,80 80,95"/>
+      <line class="ls-bulb-base" x1="40" y1="95" x2="40" y2="115"/><line class="ls-bulb-base" x1="80" y1="95" x2="80" y2="115"/>
+      <path class="ls-bulb-base" d="M40,105 Q60,112 80,105"/><path class="ls-bulb-base" d="M40,115 Q60,122 80,115"/><path class="ls-bulb-base" d="M42,118 Q60,128 78,118"/>
+      <path class="ls-filament" d="M50,90 L50,65 Q52,50 56,55 Q60,60 60,48 Q60,60 64,55 Q68,50 70,65 L70,90"/>
+      <path class="ls-filament-glow" d="M50,90 L50,65 Q52,50 56,55 Q60,60 60,48 Q60,60 64,55 Q68,50 70,65 L70,90"/>
+    </svg>
+  </div>
+  <!-- Ambient particles -->
+  <canvas class="ls-particles" id="lsParticles" aria-hidden="true"></canvas>
+
   <div class="ls-card">
     <div class="ls-brand">
       <svg class="ls-logo-mark" viewBox="22 18 143 143" fill="none" aria-hidden="true"><rect x="93.2" y="79.8" width="67.6" height="17.4" fill="#00A0DF"/><path d="M135.7,115c-8.9,14.2-24.6,23.7-42.6,23.7c-27.7,0-50.2-22.5-50.2-50.2s22.5-50.2,50.2-50.2c17.9,0,33.7,9.5,42.6,23.7h19.6C145,37.9,121,20.9,93.2,20.9c-37.3,0-67.6,30.3-67.6,67.6s30.3,67.6,67.6,67.6c27.9,0,51.8-17,62.2-41.1C155.4,115,135.7,115,135.7,115z" fill="#00A0DF"/></svg>
@@ -4659,6 +4705,35 @@ document.addEventListener('visibilitychange',function(){
   </div>
   <div id="pwa-install-tip" style="display:none;color:var(--muted);font-size:.78rem;margin-top:6px"></div>
 </div>
+<script>
+/* ── Login ambient particles ── */
+(function(){
+  var c=document.getElementById('lsParticles');if(!c)return;
+  var ctx=c.getContext('2d'),W,H,ps=[],N=40,t=0,raf;
+  function resize(){var p=c.parentElement;W=c.width=p.offsetWidth;H=c.height=p.offsetHeight;}
+  function mkP(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15-.05,a:Math.random()*.25+.05,ps:Math.random()*.008+.003,po:Math.random()*Math.PI*2};}
+  function init(){resize();ps=[];for(var i=0;i<N;i++)ps.push(mkP());loop();}
+  function loop(){ctx.clearRect(0,0,W,H);t++;
+    for(var i=0;i<ps.length;i++){var p=ps[i];p.x+=p.vx;p.y+=p.vy;
+      if(p.x<-10||p.x>W+10||p.y<-10||p.y>H+10){ps[i]=mkP();}
+      var ca=p.a*(.6+.4*Math.sin(t*p.ps+p.po));
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fillStyle='rgba(0,160,223,'+ca+')';ctx.fill();
+    }
+    for(var i=0;i<ps.length;i++){for(var j=i+1;j<ps.length;j++){
+      var dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){ctx.beginPath();ctx.moveTo(ps[i].x,ps[i].y);ctx.lineTo(ps[j].x,ps[j].y);ctx.strokeStyle='rgba(0,160,223,'+(0.04*(1-d/120))+')';ctx.lineWidth=.5;ctx.stroke();}
+    }}
+    raf=requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize',resize);
+  init();
+  var obs=new MutationObserver(function(){
+    var ls=document.getElementById('loginScreen');
+    if(ls&&ls.style.display==='none'){cancelAnimationFrame(raf);obs.disconnect();}
+  });
+  obs.observe(document.getElementById('loginScreen'),{attributes:true,attributeFilter:['style']});
+})();
+</script>
 </body>
 </html>
 
