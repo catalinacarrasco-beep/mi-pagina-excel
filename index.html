@@ -892,9 +892,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 @media(prefers-reduced-motion:reduce){#loginScreen{transition:none}.ls-input.ls-shake{animation:none}}
 @media(max-width:480px){.ls-greeting{font-size:1.9rem;margin-bottom:1.6rem;}.ls-card{padding:2rem 1.5rem 1.5rem;}}
 /* ── LOGIN BULB ANIMATION ──── */
-.ls-bulb-wrap{position:absolute;z-index:0;pointer-events:none;opacity:.6;}
+.ls-bulb-wrap{position:absolute;z-index:0;pointer-events:none;opacity:.75;}
 .ls-bulb-wrap.ls-bulb-r{right:8%;top:15%;width:280px;height:400px;}
-.ls-bulb-wrap.ls-bulb-l{left:6%;bottom:10%;width:180px;height:260px;opacity:.35;transform:rotate(-15deg);}
+.ls-bulb-wrap.ls-bulb-l{left:6%;bottom:10%;width:180px;height:260px;opacity:.4;transform:rotate(-15deg);}
+.ls-bulb-wrap.ls-bulb-tl{left:12%;top:8%;width:200px;height:290px;opacity:.5;transform:rotate(10deg);}
 .ls-bulb-outline{fill:none;stroke:rgba(0,160,223,.3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .ls-bulb-base{fill:none;stroke:rgba(0,160,223,.25);stroke-width:1.5;stroke-linecap:round;}
 .ls-filament{fill:none;stroke:#00A0DF;stroke-width:1.8;stroke-linecap:round;stroke-dasharray:120;stroke-dashoffset:120;animation:lsDrawFil 2.5s ease 1s forwards;}
@@ -903,11 +904,14 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ls-bulb-l .ls-filament{animation-delay:2.5s;}
 .ls-bulb-l .ls-filament-glow{animation:lsDrawFil 2.5s ease 2.5s forwards, lsGlowPulse 4s ease-in-out 5s infinite;}
 .ls-bulb-l .ls-bulb-inner-glow{animation-delay:4.5s;}
+.ls-bulb-tl .ls-filament{animation-delay:1.8s;}
+.ls-bulb-tl .ls-filament-glow{animation:lsDrawFil 2.5s ease 1.8s forwards, lsGlowPulse 3.5s ease-in-out 4.3s infinite;}
+.ls-bulb-tl .ls-bulb-inner-glow{animation-delay:3.8s;}
 @keyframes lsDrawFil{to{stroke-dashoffset:0;}}
 @keyframes lsGlowPulse{0%,100%{opacity:.25;stroke-width:6;}50%{opacity:.5;stroke-width:9;}}
 @keyframes lsFadeGlow{to{opacity:1;}}
 .ls-particles{position:absolute;inset:0;z-index:0;pointer-events:none;}
-@media(max-width:600px){.ls-bulb-wrap.ls-bulb-r{width:160px;height:230px;right:2%;top:8%;}.ls-bulb-wrap.ls-bulb-l{display:none;}}
+@media(max-width:600px){.ls-bulb-wrap.ls-bulb-r{width:160px;height:230px;right:2%;top:8%;}.ls-bulb-wrap.ls-bulb-l,.ls-bulb-wrap.ls-bulb-tl{display:none;}}
 @media(prefers-reduced-motion:reduce){.ls-filament,.ls-filament-glow,.ls-bulb-inner-glow{animation:none!important;}}
 /* ── END LOGIN BULB ──── */
 /* polish-start */
@@ -1062,6 +1066,18 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
       <defs><radialGradient id="lsBulbG2" cx="50%" cy="40%" r="45%"><stop offset="0%" stop-color="#00A0DF" stop-opacity=".08"/><stop offset="100%" stop-color="#00A0DF" stop-opacity="0"/></radialGradient></defs>
       <ellipse class="ls-bulb-inner-glow" cx="60" cy="65" rx="35" ry="40" fill="url(#lsBulbG2)"/>
+      <path class="ls-bulb-outline" d="M40,95 C20,80 15,55 25,35 C35,15 50,8 60,8 C70,8 85,15 95,35 C105,55 100,80 80,95"/>
+      <line class="ls-bulb-base" x1="40" y1="95" x2="40" y2="115"/><line class="ls-bulb-base" x1="80" y1="95" x2="80" y2="115"/>
+      <path class="ls-bulb-base" d="M40,105 Q60,112 80,105"/><path class="ls-bulb-base" d="M40,115 Q60,122 80,115"/><path class="ls-bulb-base" d="M42,118 Q60,128 78,118"/>
+      <path class="ls-filament" d="M50,90 L50,65 Q52,50 56,55 Q60,60 60,48 Q60,60 64,55 Q68,50 70,65 L70,90"/>
+      <path class="ls-filament-glow" d="M50,90 L50,65 Q52,50 56,55 Q60,60 60,48 Q60,60 64,55 Q68,50 70,65 L70,90"/>
+    </svg>
+  </div>
+  <!-- Bulb top-left (medium) -->
+  <div class="ls-bulb-wrap ls-bulb-tl" aria-hidden="true">
+    <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="lsBulbG3" cx="50%" cy="40%" r="45%"><stop offset="0%" stop-color="#00A0DF" stop-opacity=".10"/><stop offset="100%" stop-color="#00A0DF" stop-opacity="0"/></radialGradient></defs>
+      <ellipse class="ls-bulb-inner-glow" cx="60" cy="65" rx="35" ry="40" fill="url(#lsBulbG3)"/>
       <path class="ls-bulb-outline" d="M40,95 C20,80 15,55 25,35 C35,15 50,8 60,8 C70,8 85,15 95,35 C105,55 100,80 80,95"/>
       <line class="ls-bulb-base" x1="40" y1="95" x2="40" y2="115"/><line class="ls-bulb-base" x1="80" y1="95" x2="80" y2="115"/>
       <path class="ls-bulb-base" d="M40,105 Q60,112 80,105"/><path class="ls-bulb-base" d="M40,115 Q60,122 80,115"/><path class="ls-bulb-base" d="M42,118 Q60,128 78,118"/>
