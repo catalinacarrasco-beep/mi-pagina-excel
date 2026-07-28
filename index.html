@@ -894,8 +894,8 @@ footer p{font-size:.75rem;color:var(--muted);}
 /* ── LOGIN BULB ANIMATION ──── */
 .ls-bulb-wrap{position:absolute;z-index:0;pointer-events:none;opacity:.75;}
 .ls-bulb-wrap.ls-bulb-r{right:8%;top:15%;width:280px;height:400px;}
-.ls-bulb-wrap.ls-bulb-l{left:6%;bottom:10%;width:180px;height:260px;opacity:.4;transform:rotate(-15deg);}
-.ls-bulb-wrap.ls-bulb-tl{left:12%;top:8%;width:200px;height:290px;opacity:.5;transform:rotate(10deg);}
+.ls-bulb-wrap.ls-bulb-l{left:3%;bottom:4%;width:160px;height:230px;opacity:.4;transform:rotate(-20deg);}
+.ls-bulb-wrap.ls-bulb-tl{left:15%;top:3%;width:190px;height:270px;opacity:.5;transform:rotate(12deg);}
 .ls-bulb-outline{fill:none;stroke:rgba(0,160,223,.3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .ls-bulb-base{fill:none;stroke:rgba(0,160,223,.25);stroke-width:1.5;stroke-linecap:round;}
 /* motion-consistency: unified timing — 2s draw, 0.7s stagger, 3s pulse */
@@ -3890,6 +3890,7 @@ function _cobParseFile(data,fname){
   function fi(a,b){return hs.findIndex(function(h){return h.indexOf(a)>=0&&(!b||h.indexOf(b)>=0);});}
   var cDesc=fi('descripci','cuenta'),cRut=fi('rut'),cNom=fi('nombre','auxiliar');
   var cTipo=fi('tipo'),cFecha=fi('vencimiento'),cSaldo=fi('saldo'),cVend=fi('nombre','vendedor');
+  var cDoc=fi('documento');
 
   if([cDesc,cRut,cNom,cTipo,cFecha,cSaldo,cVend].some(function(c){return c<0;})){
     _cobFb(false,'No se encontraron todas las columnas requeridas.');return;
@@ -3919,6 +3920,7 @@ function _cobParseFile(data,fname){
       _id:_cobNextId++,
       rut:(rv[cRut]||'').toString().trim(),
       nombre:(rv[cNom]||'').toString().trim(),
+      doc:cDoc>=0?(rv[cDoc]||'').toString().trim():'',
       fecha:fecha,year:yr,mes:fecha.getMonth(),saldo:saldo,
       vnom:vnom,vkey:vm.key,vlbl:vm.label,pagado:false
     });
@@ -3936,7 +3938,7 @@ function _cobSave(fname){
   var payload={ts:_cobLastTs,fname:_cobLastFname,
     cutoff:_cobFechaCorte?_cobFechaCorte.toISOString():null,
     records:_cobRawData.map(function(r){
-      return{rut:r.rut,nombre:r.nombre,fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
+      return{rut:r.rut,nombre:r.nombre,doc:r.doc||'',fechaISO:r.fecha.toISOString(),year:r.year,saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
     })};
   try{localStorage.setItem('grantt_cob_v3',JSON.stringify(payload));}catch(e){}
   var row={id:'current',ts:_cobLastTs,fname:_cobLastFname,cutoff:payload.cutoff,records:payload.records};
@@ -3950,7 +3952,7 @@ function _cobRestore(){
     var d=JSON.parse(raw);if(!d||!d.records||!d.records.length)return false;
     _cobRawData=d.records.map(function(r){
       var f=new Date(r.fechaISO);
-      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
+      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,doc:r.doc||'',fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
     });
     _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
     _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
@@ -3982,7 +3984,7 @@ function _cobFetchSupabase(){
     if(d.ts&&d.ts===_cobLastTs)return;
     _cobRawData=d.records.map(function(r){
       var f=new Date(r.fechaISO);
-      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
+      return{_id:_cobNextId++,rut:r.rut,nombre:r.nombre,doc:r.doc||'',fecha:f,year:r.year,mes:f.getMonth(),saldo:r.saldo,vnom:r.vnom,vkey:r.vkey,vlbl:r.vlbl,pagado:!!r.pagado};
     });
     _cobFechaCorte=d.cutoff?new Date(d.cutoff):null;
     _cobLastFname=d.fname||'';_cobLastTs=d.ts||0;
@@ -4107,6 +4109,7 @@ function _cobRender(){
     return'<tr data-cid="'+r._id+'">'
       +'<td style="white-space:nowrap">'+r.rut+'</td>'
       +'<td>'+r.nombre+'</td>'
+      +'<td style="white-space:nowrap">'+(r.doc||'')+'</td>'
       +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
       +'<td><span class="cob-vtag" style="color:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].c:'var(--accent)')+';background:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].bg:'rgba(0,159,227,.12)')+'">'+r.vlbl+'</span></td>'
@@ -4138,13 +4141,14 @@ function _cobRender(){
     +'<div class="cob-tbl-wrap"><table class="cob-tbl"><thead><tr>'
         +'<th>RUT</th>'
         +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'nombre\')">Cliente'+(_cobSortKey==='nombre'?(_cobSortDir>0?' ▲':' ▼'):'')+' <input type="text" placeholder="Buscar..." value="'+_ctEsc(_cobFilterSearch)+'" oninput="event.stopPropagation();_cobSetSearch(this.value)" onclick="event.stopPropagation()" style="margin-left:6px;padding:3px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:.75rem;width:120px;outline:none;font-weight:400"></th>'
+        +'<th>Documento</th>'
         +'<th style="cursor:pointer;user-select:none" onclick="_cobToggleSort(\'fecha\')">Vencimiento'+(_cobSortKey==='fecha'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
         +'<th style="text-align:right;cursor:pointer;user-select:none" onclick="_cobToggleSort(\'saldo\')">Saldo'+(_cobSortKey==='saldo'?(_cobSortDir>0?' ▲':' ▼'):'')+'</th>'
         +'<th>Vendedor</th>'
         +(canEdit?'<th style="width:40px"></th>':'')
-        +'</tr></thead><tbody>'+(tRows||'<tr><td colspan="'+(canEdit?6:5)+'" style="text-align:center;padding:2rem;color:var(--muted)">'+(_cobView==='cobr'?'Aún no hay clientes cobrados.':(_cobFilterSearch?'Sin resultados para la búsqueda.':'No hay documentos pendientes.'))+'</td></tr>')+'</tbody>'
+        +'</tr></thead><tbody>'+(tRows||'<tr><td colspan="'+(canEdit?7:6)+'" style="text-align:center;padding:2rem;color:var(--muted)">'+(_cobView==='cobr'?'Aún no hay clientes cobrados.':(_cobFilterSearch?'Sin resultados para la búsqueda.':'No hay documentos pendientes.'))+'</td></tr>')+'</tbody>'
         +'<tfoot><tr style="border-top:2px solid var(--border);font-weight:700">'
-        +'<td></td><td></td><td style="text-align:right;color:var(--muted);font-size:.78rem">'+(_cobView==='cobr'?'RECAUDADO':'TOTAL')+'</td>'
+        +'<td></td><td></td><td></td><td style="text-align:right;color:var(--muted);font-size:.78rem">'+(_cobView==='cobr'?'RECAUDADO':'TOTAL')+'</td>'
         +'<td class="cob-amt" style="font-size:1.05rem">'+_cobFmtCLP(viewTotal)+'</td>'
         +'<td></td>'+(canEdit?'<td></td>':'')
         +'</tr></tfoot></table></div>';
@@ -4198,9 +4202,9 @@ function _cobExportExcel(){
   var sorted=data.slice().sort(function(a,b){return a.fecha-b.fecha;});
   var rows=sorted.map(function(r){
     var sal=Number(r.saldo);
-    return [r.rut, r.nombre, _cobFmtDate(r.fecha), isFinite(sal)?sal:r.saldo, r.vlbl];
+    return [r.rut, r.nombre, r.doc||'', _cobFmtDate(r.fecha), isFinite(sal)?sal:r.saldo, r.vlbl];
   });
-  var bytes=_buildXlsx(['RUT','Cliente','Vencimiento','Saldo','Vendedor'],rows,'Cobranza');
+  var bytes=_buildXlsx(['RUT','Cliente','Documento','Vencimiento','Saldo','Vendedor'],rows,'Cobranza');
   var blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');a.href=url;
