@@ -491,6 +491,9 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-doc-gauge-bg{fill:none;stroke:var(--border);stroke-width:3;}
 .ct-doc-gauge-fill{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset 0.4s;}
 .ct-doc-gauge-text{font-size:12px;font-weight:600;}
+.ct-doc-clip{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);transition:transform .15s ease,opacity .15s ease;}
+.ct-doc-clip:hover{transform:scale(1.15);opacity:.8;}
+.ct-doc-clip svg{width:22px;height:22px;}
 .ct-inv-link{color:var(--accent);text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
 .ct-inv-link:hover{filter:brightness(1.15);}
 .ct-th-filter{padding:1px 12px 1px 4px;font-size:11px;border:none;background:transparent;color:#94a3b8;margin-left:4px;vertical-align:middle;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;opacity:.7;transition:opacity .15s,color .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2394a3b8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;}
@@ -3544,15 +3547,10 @@ function _ctRender(){
       h+='<td class="cell-text">'+(e.eta?'<span class="'+ac+'">'+_ctFmtDate(e.eta)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
       // CERTIFICABLE
       h+='<td class="cell-text">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="cell-empty">—</span>')+'</td>';
-      // DOCS gauge
-      var upCount=0;_CT_DOC_TIPOS.forEach(function(t){if(docs.some(function(d){return d.tipo===t;}))upCount++;});
-      var total=_CT_DOC_TIPOS.length,pct=Math.round(upCount/total*100);
-      var gc=pct===0?'#e8b931':pct<50?'#f9a825':pct<100?'#4caf50':'#2e7d32';
-      var dash=Math.round(upCount/total*100);
-      h+='<td><div class="ct-doc-gauge" onclick="_ctShowDocs(\''+e.id+'\')">';
-      h+='<svg viewBox="0 0 36 36"><circle class="ct-doc-gauge-bg" cx="18" cy="18" r="15.9"/>';
-      h+='<circle class="ct-doc-gauge-fill" cx="18" cy="18" r="15.9" stroke="'+gc+'" stroke-dasharray="'+dash+', 100"/></svg>';
-      h+='<span class="ct-doc-gauge-text" style="color:'+gc+'">'+upCount+'/'+total+'</span></div></td>';
+      // DOCS clip
+      h+='<td><span class="ct-doc-clip" onclick="_ctShowDocs(\''+e.id+'\')" title="Ver documentos">';
+      h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.8l-8.56 8.57a2 2 0 0 1-2.83-2.83l7.86-7.86"/></svg>';
+      h+='</span></td>';
       if(isAdmin)h+='<td class="row-actions"><button class="btn-edit" onclick="_ctStartEdit(\''+e.id+'\')">Editar</button></td>';
     }
     h+='</tr>';
