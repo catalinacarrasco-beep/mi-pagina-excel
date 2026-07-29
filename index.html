@@ -493,7 +493,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-doc-gauge-text{font-size:12px;font-weight:600;}
 .ct-doc-clip{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);transition:transform .15s ease,opacity .15s ease;}
 .ct-doc-clip:hover{transform:scale(1.15);opacity:.8;}
-.ct-doc-clip svg{width:22px;height:22px;}
+.ct-doc-clip svg{width:16px;height:16px;}
 .ct-inv-link{color:var(--accent);text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
 .ct-inv-link:hover{filter:brightness(1.15);}
 .ct-th-filter{padding:1px 12px 1px 4px;font-size:11px;border:none;background:transparent;color:#94a3b8;margin-left:4px;vertical-align:middle;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;opacity:.7;transition:opacity .15s,color .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2394a3b8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;}
@@ -3547,9 +3547,9 @@ function _ctRender(){
       h+='<td class="cell-text">'+(e.eta?'<span class="'+ac+'">'+_ctFmtDate(e.eta)+'</span>':'<span class="cell-empty">—</span>')+'</td>';
       // CERTIFICABLE
       h+='<td class="cell-text">'+(e.certificable==='si'?'Sí':e.certificable==='no'?'No':'<span class="cell-empty">—</span>')+'</td>';
-      // DOCS clip
+      // DOCS icon (doc + up arrow)
       h+='<td><span class="ct-doc-clip" onclick="_ctShowDocs(\''+e.id+'\')" title="Ver documentos">';
-      h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.8l-8.56 8.57a2 2 0 0 1-2.83-2.83l7.86-7.86"/></svg>';
+      h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>';
       h+='</span></td>';
       if(isAdmin)h+='<td class="row-actions"><button class="btn-edit" onclick="_ctStartEdit(\''+e.id+'\')">Editar</button></td>';
     }
