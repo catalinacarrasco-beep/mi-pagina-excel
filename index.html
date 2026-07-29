@@ -494,6 +494,15 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-doc-clip{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);transition:transform .15s ease,opacity .15s ease;}
 .ct-doc-clip:hover{transform:scale(1.15);opacity:.8;}
 .ct-doc-clip svg{width:19px;height:19px;}
+.ct-oc-mag{display:inline-flex;align-items:center;cursor:pointer;color:currentColor;opacity:.55;margin-left:4px;transition:opacity .15s;vertical-align:middle;}
+.ct-oc-mag:hover{opacity:1;}
+.ct-oc-mag svg{width:13px;height:13px;}
+.ct-oc-input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:inherit;border-radius:4px;padding:3px 8px;font-size:12px;width:110px;outline:none;font-family:inherit;}
+.ct-oc-input:focus{border-color:var(--accent);background:rgba(0,160,223,.1);}
+[data-theme="light"] .ct-oc-input{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.15);}
+[data-theme="light"] .ct-oc-input:focus{background:rgba(0,160,223,.08);border-color:var(--accent);}
+.ct-oc-x{background:none;border:none;color:inherit;opacity:.5;font-size:16px;cursor:pointer;padding:0 4px;margin-left:2px;line-height:1;}
+.ct-oc-x:hover{opacity:1;}
 .ct-inv-link{color:var(--accent);text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
 .ct-inv-link:hover{filter:brightness(1.15);}
 .ct-th-filter{padding:1px 12px 1px 4px;font-size:11px;border:none;background:transparent;color:#94a3b8;margin-left:4px;vertical-align:middle;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;opacity:.7;transition:opacity .15s,color .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2394a3b8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;}
@@ -3235,7 +3244,8 @@ var _CT_BUCKET='documentos-embarque';
 var _ctEmbarques=[];
 var _ctEditingId=null;
 var _ctAdding=false;
-var _ctFilters={estado:'',proveedor:'',certificable:''};
+var _ctFilters={estado:'',proveedor:'',certificable:'',oc:''};
+var _ctOcSearchOpen=false;
 var _ctSort={col:'',dir:''};
 var _ctAuthToken=null;  // Supabase JWT for storage ops
 var _ctAuthExp=0;
@@ -3409,6 +3419,7 @@ function _ctGetFiltered(){
   if(_ctFilters.estado)list=list.filter(function(e){return e.estado_embarque===_ctFilters.estado;});
   if(_ctFilters.proveedor)list=list.filter(function(e){return e.proveedor===_ctFilters.proveedor;});
   if(_ctFilters.certificable)list=list.filter(function(e){return e.certificable===_ctFilters.certificable;});
+  if(_ctFilters.oc){var q=_ctFilters.oc.toLowerCase();list=list.filter(function(e){return(e.oc||'').toLowerCase().indexOf(q)>=0;});}
   if(_ctSort.col){
     var dir=_ctSort.dir==='asc'?1:-1;
     list.sort(function(a,b){
@@ -3421,6 +3432,20 @@ function _ctGetFiltered(){
 
 function _ctSetFilter(col,val){
   _ctFilters[col]=val;_ctRender();
+}
+
+function _ctOpenOcSearch(){_ctOcSearchOpen=true;_ctRender();setTimeout(function(){var i=document.getElementById('ct-oc-search');if(i)i.focus();},0);}
+function _ctCloseOcSearch(){_ctOcSearchOpen=false;_ctFilters.oc='';_ctRender();}
+function _ctSetOcFilter(v){
+  _ctFilters.oc=v;
+  var f=_ctGetFiltered();
+  var tb=document.querySelector('#ct-content .ct-tbl tbody');
+  if(!tb){_ctRender();return;}
+  // ponytail: filtrar por CSS sin re-render, así el input no pierde foco
+  var visible={};f.forEach(function(e){visible[e.id]=1;});
+  tb.querySelectorAll('tr[data-id]').forEach(function(tr){
+    tr.style.display=visible[tr.getAttribute('data-id')]?'':'none';
+  });
 }
 
 function _ctToggleSort(col){
@@ -3467,7 +3492,13 @@ function _ctRender(){
   var h='<table class="ct-tbl"><thead><tr>';
   h+='<th>Estado '+fsel('estado',[['en_origen','Origen'],['en_transito','Tránsito'],['arribo','Arribo']])+'</th>';
   h+='<th>Proveedor '+fsel('proveedor',_CT_PROVEEDORES.map(function(p){return[p.abrev,p.abrev];}))+'</th>';
-  h+='<th>OC</th><th>Invoice</th><th>Tipo</th><th>BL/AWB</th>';
+  var ocHead;
+  if(_ctOcSearchOpen||_ctFilters.oc){
+    ocHead='<input id="ct-oc-search" class="ct-oc-input" type="text" placeholder="Buscar OC..." value="'+_ctEscH(_ctFilters.oc)+'" oninput="_ctSetOcFilter(this.value)" onkeydown="if(event.key===\'Escape\')_ctCloseOcSearch();"><button class="ct-oc-x" onclick="_ctCloseOcSearch()" title="Cerrar">×</button>';
+  } else {
+    ocHead='OC <span class="ct-oc-mag" onclick="_ctOpenOcSearch()" title="Buscar OC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>';
+  }
+  h+='<th>'+ocHead+'</th><th>Invoice</th><th>Tipo</th><th>BL/AWB</th>';
   h+='<th class="ct-sortable" onclick="_ctToggleSort(\'eto\')">ETO'+sa('eto')+'</th>';
   h+='<th class="ct-sortable" onclick="_ctToggleSort(\'etd\')">ETD'+sa('etd')+'</th>';
   h+='<th class="ct-sortable" onclick="_ctToggleSort(\'eta\')">ETA'+sa('eta')+'</th>';
@@ -3482,8 +3513,9 @@ function _ctRender(){
 
   filtered.forEach(function(e){
     var editing=isAdmin&&_ctEditingId===e.id;
+    // ponytail: data-id needed for oninput OC search (filters via CSS, no re-render)
     var docs=_ctAllDocs(e);
-    h+='<tr>';
+    h+='<tr data-id="'+e.id+'">';
     // ESTADO — always a dropdown for admin, badge for non-admin
     if(isAdmin){
       h+='<td><select class="ct-estado-sel ct-estado-'+e.estado_embarque+'" onchange="_ctUpdateField(\''+e.id+'\',{estado_embarque:this.value});this.className=\'ct-estado-sel ct-estado-\'+this.value;">';
