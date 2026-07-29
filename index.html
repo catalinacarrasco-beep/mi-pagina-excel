@@ -3336,13 +3336,40 @@ async function _ctUpdateField(id,patch,skipRender){
   var prev=_ctEmbarques.find(function(r){return r.id===id;});
   _ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?Object.assign({},r,patch):r;});
   if(!skipRender)_ctUpdateStats();
-  await _ctEnsureAuth();
-  var resp=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
-    method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
-  });
+  var authed=await _ctEnsureAuth();
+  if(!authed){
+    if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();if(!skipRender)_ctRender();}
+    _ctFeedback(false,'Sesión expirada. Recarga la página.');
+    return;
+  }
+  var resp;
+  try{
+    resp=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
+      method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+    });
+  }catch(err){
+    console.error('cargo update network error',err);
+    if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();if(!skipRender)_ctRender();}
+    _ctFeedback(false,'Sin conexión');
+    return;
+  }
   if(!resp.ok){
-    if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();}
-    _ctFeedback(false,'Error al guardar');
+    var errText='';try{errText=await resp.text();}catch(e){}
+    console.error('cargo update failed',resp.status,errText);
+    // si el token está muerto (401), forzar re-login e intentar 1 vez más
+    if(resp.status===401){
+      _ctAuthToken=null;_ctAuthExp=0;
+      sessionStorage.removeItem('gs_sb_tok');sessionStorage.removeItem('gs_sb_exp');
+      var reauth=await _ctEnsureAuth();
+      if(reauth){
+        var retry=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
+          method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+        });
+        if(retry.ok){_ctFeedback(true);return;}
+      }
+    }
+    if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();if(!skipRender)_ctRender();}
+    _ctFeedback(false,'Error al guardar ('+resp.status+')');
   } else {
     _ctFeedback(true);
   }
