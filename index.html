@@ -3336,6 +3336,9 @@ async function _ctUpdateField(id,patch,skipRender){
   var prev=_ctEmbarques.find(function(r){return r.id===id;});
   _ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?Object.assign({},r,patch):r;});
   if(!skipRender)_ctUpdateStats();
+  // ponytail: DB acepta 'en_bodega'; UI usa 'arribo'. Traducir al escribir.
+  var dbPatch=Object.assign({},patch);
+  if(dbPatch.estado_embarque==='arribo')dbPatch.estado_embarque='en_bodega';
   var authed=await _ctEnsureAuth();
   if(!authed){
     if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();if(!skipRender)_ctRender();}
@@ -3345,7 +3348,7 @@ async function _ctUpdateField(id,patch,skipRender){
   var resp;
   try{
     resp=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
-      method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+      method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(dbPatch)
     });
   }catch(err){
     console.error('cargo update network error',err);
@@ -3363,7 +3366,7 @@ async function _ctUpdateField(id,patch,skipRender){
       var reauth=await _ctEnsureAuth();
       if(reauth){
         var retry=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
-          method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(patch)
+          method:'PATCH',headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),body:JSON.stringify(dbPatch)
         });
         if(retry.ok){_ctFeedback(true);return;}
       }
