@@ -2500,6 +2500,11 @@ function fadeIn(el){
   requestAnimationFrame(()=>{ el.style.opacity='1'; });
 }
 function enterVentas(){
+  if(sessionStorage.getItem('gs_ventas_stale')==='1'){
+    sessionStorage.setItem('gs_screen','ventas');
+    sessionStorage.removeItem('gs_ventas_stale');
+    location.reload();return;
+  }
   sessionStorage.setItem('gs_screen','ventas');
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('ventasScreen'));
@@ -3279,6 +3284,12 @@ function fadeIn(el){
   requestAnimationFrame(()=>{ el.style.opacity='1'; });
 }
 function enterVentas(){
+  // ponytail: si hubo deploy nuevo mientras estaba en otro módulo, recargar acá
+  if(sessionStorage.getItem('gs_ventas_stale')==='1'){
+    sessionStorage.setItem('gs_screen','ventas');
+    sessionStorage.removeItem('gs_ventas_stale');
+    location.reload();return;
+  }
   sessionStorage.setItem('gs_screen','ventas');
   fadeOut(document.getElementById('homeScreen'), ()=>{
     fadeIn(document.getElementById('ventasScreen'));
@@ -4573,12 +4584,20 @@ var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementB
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
 window._pageEtag=null;
+// ponytail: solo Ventas depende del HTML embebido. Otros módulos leen de Supabase
+// en tiempo real, no necesitan reload — solo los interrumpe.
+function _maybeReloadForDeploy(){
+  var scr=sessionStorage.getItem('gs_screen')||'home';
+  if(scr==='ventas'||scr==='home'){location.reload();return;}
+  // Marca stale y espera a que naveguen a Ventas
+  sessionStorage.setItem('gs_ventas_stale','1');
+}
 (function(){
   function check(){
     fetch(location.href,{method:'HEAD',cache:'no-store'})
       .then(function(r){
         var e=r.headers.get('etag')||r.headers.get('last-modified');
-        if(e){if(window._pageEtag&&e!==window._pageEtag&&document.visibilityState!=='hidden'){location.reload();}window._pageEtag=e;}
+        if(e){if(window._pageEtag&&e!==window._pageEtag&&document.visibilityState!=='hidden'){_maybeReloadForDeploy();}window._pageEtag=e;}
       }).catch(function(){});
   }
   setTimeout(function(){check();setInterval(check,5*60*1000);},3000);
