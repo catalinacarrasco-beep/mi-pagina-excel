@@ -517,6 +517,31 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-doc-grupo-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);padding:12px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
 .ct-doc-grupo-title:first-child{padding-top:0;}
 .ct-di-actions{display:flex;gap:6px;align-items:center;}
+/* ── AUDIT SCREEN ─────────────────────── */
+#auditScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;flex-direction:column;z-index:1000;padding-bottom:env(safe-area-inset-bottom);}
+.audit-body{padding:1.5rem;max-width:1400px;margin:0 auto;width:100%;box-sizing:border-box;}
+.audit-title-row{margin-bottom:1rem;}
+.audit-title{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.14em;color:#9b78dc;margin:0;line-height:1;}
+.audit-subtitle{font-size:.85rem;color:var(--muted);margin:.3rem 0 0;}
+.audit-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem;padding:.9rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+.audit-filters select,.audit-filters input{background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.4rem .7rem;font-size:.78rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.audit-filters select:focus,.audit-filters input:focus{border-color:#9b78dc;}
+.audit-filters input{min-width:180px;flex:1;}
+.audit-tbl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:.82rem;}
+.audit-tbl thead{background:var(--surface2);}
+.audit-tbl th{padding:.7rem .8rem;text-align:left;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.audit-tbl td{padding:.6rem .8rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.audit-tbl tbody tr:hover{background:var(--row-hover);}
+.audit-tbl tbody tr:last-child td{border-bottom:none;}
+.audit-ts{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap;font-size:.75rem;}
+.audit-role{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:600;font-size:.72rem;letter-spacing:.02em;}
+.audit-role.cargo-admin{background:rgba(212,154,59,.18);color:#d49a3b;}
+.audit-role.cob-admin{background:rgba(0,160,223,.15);color:var(--accent);}
+.audit-role.viewer{background:rgba(155,120,220,.14);color:#9b78dc;}
+.audit-mod{font-weight:600;color:var(--text);}
+.audit-action{color:var(--muted);}
+.audit-detail{font-family:'DM Sans',sans-serif;font-size:.72rem;color:var(--muted);max-width:340px;line-height:1.4;word-break:break-word;}
+.audit-empty{text-align:center;padding:3rem 1rem;color:var(--muted);}
 /* ── MÓDULO COBRANZAS ─────────────────────── */
 #cobranzasScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;flex-direction:column;z-index:1000;opacity:0;transition:opacity .35s ease;padding-bottom:env(safe-area-inset-bottom);}
 .cob-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
@@ -1188,6 +1213,16 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="hc-title">Cargo Tracking</div>
       <div class="hc-sub">Estado de embarques en tránsito</div>
     </div>
+    <div class="home-card home-card-audit" id="hc-audit" data-mod="audit" style="display:none;border-top:2px solid #9b78dc;" onclick="enterAudit()">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="6" width="26" height="36" rx="3" stroke="#9b78dc" stroke-width="1.5"/>
+        <path d="M14 15h14M14 21h14M14 27h10" stroke="#9b78dc" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="35" cy="34" r="6" stroke="#9b78dc" stroke-width="1.5"/>
+        <path d="m39.5 38.5 3 3" stroke="#9b78dc" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="hc-title" style="color:#9b78dc;">Auditoría</div>
+      <div class="hc-sub">Cambios de otros usuarios</div>
+    </div>
   </div>
 </div>
 
@@ -1357,6 +1392,56 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   <div id="ct-detail-modal" class="ct-modal-bg" onclick="if(event.target===this)_ctCloseDetail()"></div>
   <div id="ct-docs-modal" class="ct-modal-bg" onclick="if(event.target===this)_ctCloseDocs()"></div>
 </div>
+
+<!-- AUDIT SCREEN — sólo admin -->
+<div id="auditScreen" style="display:none;">
+  <div class="mod-header">
+    <button class="mod-back" onclick="volverHomeFromAudit()">← Volver</button>
+    <div class="mod-sep"></div>
+    <div class="mod-title-area"><span class="mod-title-name" style="color:#9b78dc;">Auditoría</span></div>
+    <div class="mod-right">
+      <button id="audit-refresh" onclick="_auditLoad()" style="padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s;">↻ Actualizar</button>
+      <button class="theme-toggle" onclick="_toggleTheme()"></button>
+    </div>
+  </div>
+  <div class="audit-body">
+    <div class="audit-title-row">
+      <h1 class="audit-title">Historial de cambios</h1>
+      <p class="audit-subtitle" id="audit-subtitle">Cargando...</p>
+    </div>
+    <div class="audit-filters">
+      <select id="audit-flt-module" onchange="_auditApplyFilters()">
+        <option value="">Todos los módulos</option>
+        <option value="cargo">Cargo Tracking</option>
+        <option value="muestras">Muestras</option>
+        <option value="cobranza">Cobranza</option>
+        <option value="ventas">Ventas</option>
+        <option value="vendedores">Vendedores</option>
+      </select>
+      <select id="audit-flt-role" onchange="_auditApplyFilters()">
+        <option value="">Todos los usuarios</option>
+        <option value="cargo-admin">cargo-admin (gerenciaGrantt)</option>
+        <option value="cob-admin">cob-admin (cobranzasGrantt)</option>
+        <option value="viewer">viewer (grantt2026)</option>
+      </select>
+      <select id="audit-flt-action" onchange="_auditApplyFilters()">
+        <option value="">Todas las acciones</option>
+        <option value="create">Crear</option>
+        <option value="update">Editar</option>
+        <option value="delete">Eliminar</option>
+        <option value="upload_doc">Subir doc</option>
+        <option value="delete_doc">Borrar doc</option>
+        <option value="mark_paid">Marcar pagado</option>
+        <option value="mark_unpaid">Desmarcar pagado</option>
+        <option value="load_excel">Cargar Excel</option>
+      </select>
+      <input id="audit-flt-search" type="text" placeholder="Buscar en detalle..." oninput="_auditApplyFilters()">
+      <button onclick="_auditClearFilters()" style="padding:.32rem .8rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:6px;font-size:.75rem;cursor:pointer;">Limpiar</button>
+    </div>
+    <div id="audit-content"><div style="text-align:center;padding:2rem;color:var(--muted);">Cargando historial...</div></div>
+  </div>
+</div>
+
 <!-- PRÓXIMAMENTE -->
 <div id="cobranzasScreen">
   <div class="mod-header">
@@ -2622,13 +2707,16 @@ function saveMsEntry(){
   else d.push(entry);
   msDataSave(d);
   fetch(_CT_URL+'/rest/v1/muestras',{method:'POST',headers:Object.assign({},_msH(),{'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(entry)}).catch(function(){});
+  _logAudit('muestras',editId?'update':'create',entry.id,{fac:entry.fac,est:entry.est});
   closeMsModal();renderMuestrasScreen();
 }
 function deleteMsRow(id){
   if(!confirm('\u00bfEliminar este registro?'))return;
+  var borrado=(msDataLoad()||[]).find(function(r){return r.id===id;});
   var d=(msDataLoad()||[]).filter(function(r){return r.id!==id;});
   msDataSave(d);
   fetch(_CT_URL+'/rest/v1/muestras?id=eq.'+id,{method:'DELETE',headers:_msH()}).catch(function(){});
+  _logAudit('muestras','delete',id,borrado?{fac:borrado.fac}:null);
   renderMuestrasScreen();
 }
 // ── /MUESTRAS ADMIN ────────────────────────────────────────────────────────
@@ -3276,6 +3364,18 @@ var _CT_PROVEEDORES=[
 function _ctIsAdmin(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cargo-admin';}
 function _cobCanEdit(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cob-admin';}
 
+// ── AUDIT LOG ─────────────────────────────────────────────────────────────
+// ponytail: fire-and-forget. Skip si es admin (Catalina no se auto-registra).
+// Silencioso si la tabla no existe todavía (RLS/404 no rompen la UI).
+function _logAudit(module,action,target,detail){
+  var role=sessionStorage.getItem('gs_role');
+  if(!role||role==='admin')return;
+  var body={user_role:role,module:module,action:action,target_id:target?String(target):null,detail:detail||null};
+  var hdr=(_ctAuthToken&&Date.now()<_ctAuthExp)?_ctHAuth():{'apikey':_CT_KEY,'Authorization':'Bearer '+_CT_KEY,'Content-Type':'application/json'};
+  hdr=Object.assign({},hdr,{'Prefer':'return=minimal'});
+  fetch(_CT_URL+'/rest/v1/audit_log',{method:'POST',headers:hdr,body:JSON.stringify(body)}).catch(function(){});
+}
+
 function _ctH(extra){
   var h={'apikey':_CT_KEY,'Authorization':'Bearer '+_CT_KEY,'Content-Type':'application/json'};
   if(extra)Object.assign(h,extra);
@@ -3387,6 +3487,8 @@ async function _ctUpdateField(id,patch,skipRender){
     if(prev){_ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?prev:r;});_ctUpdateStats();if(!skipRender)_ctRender();}
     _ctFeedback(false,'Error al guardar ('+resp.status+')');
   } else {
+    var beforeSnap={};Object.keys(patch).forEach(function(k){beforeSnap[k]=prev?prev[k]:null;});
+    _logAudit('cargo','update',id,{changes:patch,before:beforeSnap});
     _ctFeedback(true);
   }
 }
@@ -3634,14 +3736,17 @@ async function _ctAddRow(){
     _ctEmbarques=[row].concat(_ctEmbarques);
     _ctEditingId=row.id;
     var exp=document.getElementById('ct-export');if(exp)exp.style.display='';
+    _logAudit('cargo','create',row.id,null);
     _ctRender();
   }
 }
 
 async function _ctDeleteRow(id){
   if(!confirm('¿Eliminar este embarque permanentemente?'))return;
+  var deleted=_ctEmbarques.find(function(r){return r.id===id;});
   await _ctEnsureAuth();
   await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{method:'DELETE',headers:_ctHAuth()});
+  _logAudit('cargo','delete',id,deleted?{oc:deleted.oc,proveedor:deleted.proveedor}:null);
   _ctEmbarques=_ctEmbarques.filter(function(r){return r.id!==id;});
   if(_ctEditingId===id)_ctEditingId=null;
   var exp=document.getElementById('ct-export');if(exp)exp.style.display=_ctEmbarques.length?'':'none';
@@ -3692,6 +3797,7 @@ async function _ctHandleUpload(embarqueId,input){
   var nuevoDoc={path:path,nombre:file.name,tipo:tipo,subido_at:new Date().toISOString()};
   var documentos=(emb.documentos||[]).concat([nuevoDoc]);
   await _ctUpdateField(embarqueId,{documentos:documentos},true);
+  _logAudit('cargo','upload_doc',embarqueId,{tipo:tipo,nombre:file.name});
   _ctRender();
 }
 
@@ -3703,8 +3809,10 @@ async function _ctDeleteDoc(embarqueId,path){
     body:JSON.stringify({prefixes:[path]})
   });
   var emb=_ctEmbarques.find(function(r){return r.id===embarqueId;});if(!emb)return;
+  var docBorrado=(emb.documentos||[]).find(function(d){return d.path===path;});
   var documentos=(emb.documentos||[]).filter(function(d){return d.path!==path;});
   await _ctUpdateField(embarqueId,{documentos:documentos},true);
+  _logAudit('cargo','delete_doc',embarqueId,docBorrado?{tipo:docBorrado.tipo,nombre:docBorrado.nombre}:{path:path});
   _ctRender();
 }
 
@@ -3990,6 +4098,7 @@ function _cobParseFile(data,fname){
   _cobFb(true,'✓ '+_cobRawData.length+' documentos cargados · '+fname+' · Corte: '+_cobFmtDate(viernes));
   _cobRender();
   _cobSave(fname);
+  _logAudit('cobranza','load_excel',null,{fname:fname,rows:_cobRawData.length});
   _cobUpdateHdrInfo();
 }
 
@@ -4101,6 +4210,7 @@ function _cobSetPaid(id,paid){
   var apply=function(){
     var r=_cobRawData.find(function(x){return x._id===id;});
     if(r)r.pagado=paid;
+    _logAudit('cobranza',paid?'mark_paid':'mark_unpaid',r?r.doc||String(id):String(id),r?{rut:r.rut,nombre:r.nombre,saldo:r.saldo,vlbl:r.vlbl}:null);
     _cobRender();_cobSave(_cobLastFname);_cobUpdateHdrInfo();
   };
   var row=document.querySelector('tr[data-cid="'+id+'"]');
@@ -4295,15 +4405,130 @@ function _toggleTheme(){
 }
 _applyTheme(_getTheme());
 
+// ── AUDIT SCREEN JS ─────────────────────────────────────────────────────────
+var _auditData=[];
+var _auditFilters={module:'',role:'',action:'',search:''};
+
+function enterAudit(){
+  if(sessionStorage.getItem('gs_role')!=='admin'){alert('Sólo admin puede ver la auditoría.');return;}
+  var hs=document.getElementById('homeScreen');var as=document.getElementById('auditScreen');
+  if(hs)hs.style.display='none';
+  if(as){as.style.display='flex';as.style.opacity='1';}
+  sessionStorage.setItem('gs_screen','audit');
+  _auditLoad();
+}
+
+function volverHomeFromAudit(){
+  var hs=document.getElementById('homeScreen');var as=document.getElementById('auditScreen');
+  if(as)as.style.display='none';
+  if(hs)hs.style.display='';
+  sessionStorage.setItem('gs_screen','home');
+}
+
+function _auditLoad(){
+  var el=document.getElementById('audit-content');if(!el)return;
+  var sub=document.getElementById('audit-subtitle');
+  el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted);">Cargando historial...</div>';
+  if(sub)sub.textContent='Cargando...';
+  fetch(_CT_URL+'/rest/v1/audit_log?select=*&order=ts.desc&limit=500',{headers:_ctH()})
+    .then(function(r){
+      if(!r.ok){throw new Error(r.status);}
+      return r.json();
+    })
+    .then(function(rows){
+      _auditData=rows||[];
+      _auditRender();
+    })
+    .catch(function(err){
+      console.error('audit load',err);
+      el.innerHTML='<div class="audit-empty">No se pudo cargar el historial.<br><span style="font-size:.75rem;">Verifica que la tabla <code>audit_log</code> exista en Supabase.</span></div>';
+      if(sub)sub.textContent='Sin datos';
+    });
+}
+
+function _auditApplyFilters(){
+  _auditFilters.module=(document.getElementById('audit-flt-module')||{}).value||'';
+  _auditFilters.role=(document.getElementById('audit-flt-role')||{}).value||'';
+  _auditFilters.action=(document.getElementById('audit-flt-action')||{}).value||'';
+  _auditFilters.search=((document.getElementById('audit-flt-search')||{}).value||'').toLowerCase();
+  _auditRender();
+}
+
+function _auditClearFilters(){
+  ['audit-flt-module','audit-flt-role','audit-flt-action','audit-flt-search'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value='';
+  });
+  _auditFilters={module:'',role:'',action:'',search:''};
+  _auditRender();
+}
+
+function _auditRender(){
+  var el=document.getElementById('audit-content');if(!el)return;
+  var f=_auditFilters;
+  var rows=_auditData.filter(function(r){
+    if(f.module&&r.module!==f.module)return false;
+    if(f.role&&r.user_role!==f.role)return false;
+    if(f.action&&r.action!==f.action)return false;
+    if(f.search){
+      var s=f.search;
+      var hay=((r.target_id||'')+' '+JSON.stringify(r.detail||{})+' '+(r.module||'')+' '+(r.action||'')).toLowerCase();
+      if(hay.indexOf(s)<0)return false;
+    }
+    return true;
+  });
+  var sub=document.getElementById('audit-subtitle');
+  if(sub){
+    if(_auditData.length===0)sub.textContent='Sin cambios registrados — el log se llena cuando otro usuario modifica algo.';
+    else sub.textContent=rows.length+' de '+_auditData.length+' registros'+(rows.length<_auditData.length?' (filtrado)':'');
+  }
+  if(!rows.length){el.innerHTML='<div class="audit-empty">Sin resultados para los filtros aplicados.</div>';return;}
+  var MOD_LBL={cargo:'Cargo',muestras:'Muestras',cobranza:'Cobranza',ventas:'Ventas',vendedores:'Vendedores'};
+  var ACT_LBL={update:'Editar',create:'Crear',delete:'Eliminar',upload_doc:'Subir doc',delete_doc:'Borrar doc',mark_paid:'Pagado',mark_unpaid:'Despagado',load_excel:'Cargar Excel'};
+  var esc=function(s){return(s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+  var h='<table class="audit-tbl"><thead><tr>';
+  h+='<th>Fecha</th><th>Usuario</th><th>Módulo</th><th>Acción</th><th>Referencia</th><th>Detalle</th>';
+  h+='</tr></thead><tbody>';
+  rows.forEach(function(r){
+    var d=new Date(r.ts);
+    var fmt=d.toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+d.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+    var det='';
+    if(r.detail){
+      if(r.detail.changes){
+        det=Object.keys(r.detail.changes).map(function(k){
+          var b=r.detail.before?r.detail.before[k]:null;
+          var a=r.detail.changes[k];
+          var bStr=(b===null||b===undefined||b==='')?'—':(typeof b==='object'?'[obj]':String(b));
+          var aStr=(a===null||a===undefined||a==='')?'—':(typeof a==='object'?'[obj]':String(a));
+          return '<b>'+esc(k)+':</b> '+esc(bStr)+' → '+esc(aStr);
+        }).join('<br>');
+      } else {
+        det=Object.keys(r.detail).map(function(k){return '<b>'+esc(k)+':</b> '+esc(String(r.detail[k]));}).join(' · ');
+      }
+    }
+    h+='<tr>';
+    h+='<td class="audit-ts">'+fmt+'</td>';
+    h+='<td><span class="audit-role '+esc(r.user_role)+'">'+esc(r.user_role)+'</span></td>';
+    h+='<td class="audit-mod">'+esc(MOD_LBL[r.module]||r.module)+'</td>';
+    h+='<td class="audit-action">'+esc(ACT_LBL[r.action]||r.action)+'</td>';
+    h+='<td style="font-family:monospace;font-size:.72rem;color:var(--muted);">'+esc(r.target_id||'—')+'</td>';
+    h+='<td class="audit-detail">'+det+'</td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  el.innerHTML=h;
+}
+
 // ponytail: client-side password — change LS_PWD to update
 const LS_PWD='gerenciaGrantt';
 
 function _applyRoleVisibility(){
   var role=sessionStorage.getItem('gs_role')||'';
-  var hide=role==='viewer'?['ventas','vendedores','cobranza','muestras']:role==='cob-admin'?['ventas','vendedores','muestras']:[];
+  var hide=role==='viewer'?['ventas','vendedores','cobranza','muestras','audit']:role==='cob-admin'?['ventas','vendedores','muestras','audit']:role==='cargo-admin'?['audit']:[];
   document.querySelectorAll('#homeScreen [data-mod]').forEach(function(c){
     c.style.display=hide.indexOf(c.getAttribute('data-mod'))>-1?'none':'';
   });
+  // Audit sólo visible para admin
+  var ac=document.getElementById('hc-audit');if(ac)ac.style.display=role==='admin'?'':'none';
 }
 var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
@@ -4380,6 +4605,11 @@ function checkAndRefresh(btn){
     var vds=document.getElementById('vendedoresScreen');
     if(hs5)hs5.style.display='none';
     if(vds){vds.style.display='flex';vds.style.opacity='1';setTimeout(function(){if(typeof _vdRender==='function')_vdRender();},50);}
+  } else if(scr==='audit'){
+    var hs6=document.getElementById('homeScreen');
+    var au=document.getElementById('auditScreen');
+    if(hs6)hs6.style.display='none';
+    if(au){au.style.display='flex';au.style.opacity='1';setTimeout(function(){if(typeof _auditLoad==='function')_auditLoad();},50);}
   }
 })();
 </script>
