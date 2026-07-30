@@ -517,6 +517,13 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-doc-grupo-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);padding:12px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
 .ct-doc-grupo-title:first-child{padding-top:0;}
 .ct-di-actions{display:flex;gap:6px;align-items:center;}
+/* ── STORAGE ALERT (admin) ─────────────────────── */
+#storage-alert{display:none;align-items:center;gap:10px;background:rgba(212,154,59,.15);border:1px solid rgba(212,154,59,.5);color:#d49a3b;padding:.7rem 1rem;border-radius:8px;margin:1rem 1.5rem 0;font-size:.85rem;font-family:'DM Sans',sans-serif;max-width:1200px;box-sizing:border-box;}
+#storage-alert.critical{background:rgba(192,80,80,.15);border-color:rgba(192,80,80,.5);color:var(--negative);}
+#storage-alert .sa-icon{font-size:1.1rem;flex-shrink:0;}
+#storage-alert .sa-msg{flex:1;line-height:1.5;}
+#storage-alert .sa-close{background:none;border:none;color:inherit;cursor:pointer;opacity:.55;font-size:1.1rem;padding:0 6px;line-height:1;}
+#storage-alert .sa-close:hover{opacity:1;}
 /* ── AUDIT SCREEN ─────────────────────── */
 #auditScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;flex-direction:column;z-index:1000;padding-bottom:env(safe-area-inset-bottom);}
 .audit-body{padding:1.5rem;max-width:1400px;margin:0 auto;width:100%;box-sizing:border-box;}
@@ -1158,6 +1165,11 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   </div>
 </div>
 <div id="homeScreen">
+  <div id="storage-alert" style="display:none;">
+    <span class="sa-icon">⚠️</span>
+    <span class="sa-msg"></span>
+    <button class="sa-close" onclick="this.parentElement.style.display='none'" title="Cerrar">×</button>
+  </div>
   <div class="home-logo">
     <svg viewBox="24 18 422 141" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grantt"><g class="glogo-ink"><path d="M205.1,78.5V98c-9.1-1.1-20.5,3-20.5,17.2v32.3h-17.4V79.8h17.4v11.6C188,82.3,196.6,78.5,205.1,78.5z"/><path d="M279.6,79.8v67.5h-17.4v-8c-4.9,6.1-12.2,9.9-22,9.9c-18,0-32.8-15.5-32.8-35.7S222.2,78,240.2,78c9.9,0,17.2,3.8,22,9.9v-8L279.6,79.8L279.6,79.8z M262.2,113.6c0-11.3-8-19-18.8-19c-10.7,0-18.6,7.7-18.6,19s8,19,18.6,19C254.2,132.7,262.2,125,262.2,113.6z"/><path d="M350.2,105.9v41.5h-17.4v-39.3c0-9.2-5.5-13.9-13.4-13.9c-8.5,0-14.9,5-14.9,16.8v36.5h-17.4V79.8h17.4v7.6c4.1-6.1,11.1-9.5,20.1-9.5C339,78,350.2,88,350.2,105.9z"/><path d="M437.6,97.2V79.8h-15.3V60.9l-17.4,5.3v13.6h-22.6V60.9l-17.4,5.3v13.6h-11.8v17.4h11.8v27.4c0,18.2,8.2,25.4,32.7,22.7v-15.8c-10,0.5-15.3,0.4-15.3-6.9V97.2h22.6v27.4c0,18.2,8.2,25.4,32.7,22.7v-15.8c-10,0.5-15.3,0.4-15.3-6.9V97.2H437.6z"/><path d="M432,128.7c-0.8,0-1.5-0.1-2.2-0.4c-0.7-0.3-1.3-0.7-1.8-1.2s-0.9-1.1-1.2-1.8c-0.3-0.7-0.4-1.4-0.4-2.2c0-0.8,0.1-1.5,0.4-2.2s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2c0.7-0.3,1.4-0.4,2.2-0.4c0.8,0,1.5,0.1,2.2,0.4s1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.3,0.7,0.4,1.4,0.4,2.2c0,0.8-0.1,1.5-0.4,2.2s-0.7,1.3-1.2,1.8s-1.1,0.9-1.8,1.2C433.5,128.6,432.8,128.7,432,128.7z M432,128c0.7,0,1.3-0.1,1.9-0.4s1.1-0.6,1.5-1s0.7-1,1-1.5c0.2-0.6,0.4-1.2,0.4-1.9c0-0.7-0.1-1.3-0.4-1.9c-0.2-0.6-0.6-1.1-1-1.5s-0.9-0.8-1.5-1c-0.6-0.3-1.2-0.4-1.9-0.4c-0.7,0-1.3,0.1-1.9,0.4s-1.1,0.6-1.5,1s-0.7,0.9-1,1.5c-0.2,0.6-0.4,1.2-0.4,1.9c0,0.7,0.1,1.3,0.4,1.9c0.2,0.6,0.6,1.1,1,1.5s0.9,0.8,1.5,1C430.7,127.9,431.3,128,432,128z M434.8,126.2h-0.9l-1.8-2.9h-1.4v2.9h-0.8V120h2.7c0.8,0,1.4,0.1,1.7,0.4c0.3,0.3,0.5,0.7,0.5,1.2c0,0.3,0,0.6-0.1,0.8c-0.1,0.2-0.2,0.4-0.4,0.5c-0.2,0.1-0.4,0.2-0.6,0.3c-0.2,0.1-0.5,0.1-0.8,0.1L434.8,126.2z M431.9,122.7c0.2,0,0.5,0,0.7,0c0.3,0,0.5,0,0.7-0.1s0.4-0.2,0.5-0.3c0.1-0.2,0.2-0.4,0.2-0.7c0-0.2,0-0.4-0.1-0.6c-0.1-0.1-0.2-0.3-0.4-0.3c-0.1-0.1-0.3-0.1-0.5-0.1s-0.4,0-0.6,0h-1.8v2.2L431.9,122.7L431.9,122.7z"/></g><g class="glogo-mark"><rect x="93.2" y="79.8" width="67.6" height="17.4"/><path d="M135.7,115c-8.9,14.2-24.6,23.7-42.6,23.7c-27.7,0-50.2-22.5-50.2-50.2s22.5-50.2,50.2-50.2c17.9,0,33.7,9.5,42.6,23.7h19.6C145,37.9,121,20.9,93.2,20.9c-37.3,0-67.6,30.3-67.6,67.6s30.3,67.6,67.6,67.6c27.9,0,51.8-17,62.2-41.1C155.4,115,135.7,115,135.7,115z"/></g></svg>
   </div>
@@ -4405,6 +4417,32 @@ function _toggleTheme(){
 }
 _applyTheme(_getTheme());
 
+// ── STORAGE ALERT (solo admin) ─────────────────────────────────────────────
+// Chequea uso de DB y Storage bucket via RPC get_storage_usage.
+// Umbrales: 100 MB DB / 500 MB Storage (warning); 400 MB DB / 900 MB Storage (critical).
+async function _checkStorageAlert(){
+  if(sessionStorage.getItem('gs_role')!=='admin')return;
+  var el=document.getElementById('storage-alert');if(!el)return;
+  try{
+    var r=await fetch(_CT_URL+'/rest/v1/rpc/get_storage_usage',{method:'POST',headers:_ctH(),body:'{}'});
+    if(!r.ok)return;
+    var d=await r.json();
+    var dbMB=(d.db_bytes||0)/1048576;
+    var stMB=(d.storage_bytes||0)/1048576;
+    var msgs=[];var critical=false;
+    if(stMB>=500)msgs.push('<b>Storage:</b> '+stMB.toFixed(0)+' MB (>50% del límite Free de 1 GB) — considerá archivar PDFs viejos de embarques cerrados.');
+    if(dbMB>=100)msgs.push('<b>Tablas DB:</b> '+dbMB.toFixed(0)+' MB (>20% del límite Free de 500 MB) — considerá prunar cobranza histórica.');
+    if(stMB>=900||dbMB>=400)critical=true;
+    if(msgs.length){
+      el.querySelector('.sa-msg').innerHTML=msgs.join('<br>');
+      el.className=critical?'critical':'';
+      el.style.display='flex';
+    } else {
+      el.style.display='none';
+    }
+  }catch(e){}
+}
+
 // ── AUDIT SCREEN JS ─────────────────────────────────────────────────────────
 var _auditData=[];
 var _auditFilters={module:'',role:'',action:'',search:''};
@@ -4530,7 +4568,7 @@ function _applyRoleVisibility(){
   // Audit sólo visible para admin
   var ac=document.getElementById('hc-audit');if(ac)ac.style.display=role==='admin'?'':'none';
 }
-var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
+var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();_checkStorageAlert();const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
@@ -4567,6 +4605,7 @@ function checkAndRefresh(btn){
   var a=sessionStorage.getItem('gs_auth');
   if(!a)return;
   _applyRoleVisibility();
+  if(typeof _checkStorageAlert==='function')_checkStorageAlert();
   var ls=document.getElementById('loginScreen');
   if(ls){ls.style.transition='none';ls.style.opacity='0';ls.style.display='none';}
   var scr=sessionStorage.getItem('gs_screen')||'home';
