@@ -5149,6 +5149,8 @@ var _updVendMap={
 };
 
 function _updNorm(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,'').replace(/^0+/,'');}
+// ponytail: normalizar quitando tildes — "código" → "codigo" para que indexOf funcione
+function _updAcc(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();}
 function _updNum(v){
   if(v==null)return 0;
   if(typeof v==='number')return v;
@@ -5189,7 +5191,7 @@ function _updParseVentas(wb){
   for(var r=0;r<Math.min(rows.length,30);r++){
     var row=rows[r];if(!row)continue;
     for(var c=0;c<Math.min(row.length,10);c++){
-      var v=row[c]?String(row[c]).toLowerCase().trim():'';
+      var v=_updAcc(row[c]); // normaliza tildes: "código" → "codigo"
       // Match "código producto", "codigo producto", "cod. producto", "cod producto"
       var hasCode=(v.indexOf('cod')===0);
       var hasProd=v.indexOf('prod')>=0;
@@ -5197,7 +5199,7 @@ function _updParseVentas(wb){
         hdrRow=r;codCol=c;
         // Descripción probablemente en la col siguiente
         for(var d=c+1;d<Math.min(row.length,c+4);d++){
-          var vd=row[d]?String(row[d]).toLowerCase().trim():'';
+          var vd=_updAcc(row[d]);
           if(vd.indexOf('desc')===0||vd.indexOf('prod')>=0){descCol=d;break;}
         }
         if(descCol<0)descCol=c+1;
