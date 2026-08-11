@@ -5038,32 +5038,29 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
 .upd-modal-bg{display:none;position:fixed;inset:0;background:rgba(15,19,32,.55);backdrop-filter:blur(3px);z-index:2100;align-items:center;justify-content:center;padding:1rem;font-family:'DM Sans',sans-serif;}
 .upd-modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;padding:1.6rem 1.5rem 1.3rem;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.32);}
 .upd-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.3rem;}
-.upd-title{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:.5rem;line-height:1.2;}
-.upd-title svg{width:14px;height:14px;flex-shrink:0;}
+.upd-title{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:.5rem;line-height:1.2;}
+.upd-title-dash{width:12px;height:2px;background:var(--accent);flex-shrink:0;border-radius:1px;}
 .upd-subtitle{font-size:.78rem;color:var(--muted);margin-top:.35rem;line-height:1.45;}
 .upd-close-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.35rem;padding:.15rem;line-height:1;transition:color .15s;flex-shrink:0;}
 .upd-close-btn:hover{color:var(--text);}
-.upd-card{border:1px solid var(--border);border-radius:10px;padding:1rem 1.05rem .95rem;margin-bottom:.85rem;background:var(--bg);transition:border-color .15s;}
-.upd-card:hover{border-color:rgba(0,160,223,.35);}
-.upd-card-header{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;margin-bottom:.35rem;flex-wrap:wrap;}
+.upd-card{border:1px solid rgba(0,160,223,.22);border-radius:10px;padding:1rem 1.05rem .95rem;margin-bottom:.85rem;background:var(--bg);transition:border-color .15s;}
+.upd-card:hover{border-color:rgba(0,160,223,.4);}
+.upd-card-header{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;margin-bottom:.3rem;flex-wrap:wrap;}
 .upd-card-title{font-size:.92rem;font-weight:700;color:var(--text);}
-.upd-card-feeds{font-size:.7rem;color:var(--muted);text-align:right;line-height:1.4;}
-.upd-card-feeds b{color:var(--accent);font-weight:600;}
-.upd-card-meta{font-size:.72rem;color:var(--muted);margin-bottom:.6rem;line-height:1.5;}
-.upd-warn{color:var(--negative);font-weight:600;}
-.upd-drop{border:1.5px dashed var(--border);border-radius:8px;padding:.75rem;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin-bottom:.55rem;font-size:.74rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:.45rem;line-height:1.35;}
+.upd-card-feeds{font-size:.74rem;color:var(--muted);text-align:right;line-height:1.4;}
+.upd-card-meta{font-size:.76rem;color:var(--muted);margin-bottom:.6rem;line-height:1.5;}
+.upd-warn{color:var(--negative);font-weight:700;}
+.upd-drop{border:1.5px dashed var(--border);border-radius:8px;padding:.7rem;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin-bottom:.55rem;font-size:.76rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:.4rem;line-height:1.35;}
 .upd-drop:hover{border-color:var(--accent);background:rgba(0,160,223,.04);color:var(--text);}
-.upd-drop code{background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:.7rem;color:var(--text);}
 .upd-drop.upd-loaded{border-color:#2e9e6a;border-style:solid;background:rgba(46,158,106,.07);color:var(--positive);}
-.upd-drop.upd-loaded code{background:rgba(46,158,106,.14);color:var(--positive);}
-.upd-btn-load{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.42rem .95rem;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:.4rem;transition:filter .15s;}
+.upd-btn-load{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:.45rem;transition:filter .15s;}
 .upd-btn-load:hover{filter:brightness(1.1);}
-.upd-btn-load svg{width:14px;height:14px;}
+.upd-btn-load .upd-folder{font-size:.9rem;}
 .upd-footer{display:flex;justify-content:space-between;align-items:center;margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--border);gap:.8rem;flex-wrap:wrap;}
 .upd-status{font-size:.78rem;color:var(--muted);}
 .upd-status.upd-ready{color:#2e9e6a;font-weight:600;}
-.upd-publish-btn{background:#94a3b8;color:#fff;border:none;border-radius:6px;padding:.58rem 1.25rem;font-size:.86rem;font-weight:700;cursor:not-allowed;font-family:inherit;transition:all .18s;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.02em;}
-.upd-publish-btn.upd-active{background:var(--accent);cursor:pointer;box-shadow:0 4px 14px rgba(0,160,223,.32);}
+.upd-publish-btn{background:#a9c9b8;color:#fff;border:none;border-radius:7px;padding:.6rem 1.3rem;font-size:.86rem;font-weight:700;cursor:not-allowed;font-family:inherit;transition:all .18s;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.02em;opacity:.75;}
+.upd-publish-btn.upd-active{background:#2e9e6a;opacity:1;cursor:pointer;box-shadow:0 4px 14px rgba(46,158,106,.32);}
 .upd-publish-btn.upd-active:hover{filter:brightness(1.08);transform:translateY(-1px);}
 </style>
 
@@ -5072,10 +5069,10 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
     <div class="upd-title-row">
       <div>
         <div class="upd-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span class="upd-title-dash"></span>
           Actualizar datos del dashboard
         </div>
-        <div class="upd-subtitle">Subí cada Excel donde corresponde. Los cambios se aplican solo al hacer click en "Publicar para todos".</div>
+        <div class="upd-subtitle">Los meses nuevos se detectan solos desde la fila de fechas del Excel.</div>
       </div>
       <button class="upd-close-btn" onclick="updClose()" title="Cerrar">×</button>
     </div>
@@ -5087,12 +5084,11 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       </div>
       <div class="upd-card-meta" id="upd-meta-stock">Sin publicar aún</div>
       <div class="upd-drop" onclick="document.getElementById('upd-input-stock').click()" id="upd-drop-stock">
-        <span>📎</span> Arrastra <code>Stock disponible.xlsx</code> aquí o usá el botón
+        <span>📎</span> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-stock" accept=".xlsx" style="display:none" onchange="updStage('stock',this)">
       <button class="upd-btn-load" onclick="document.getElementById('upd-input-stock').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        Cargar Excel
+        <span class="upd-folder">📁</span> Cargar Excel
       </button>
     </div>
 
@@ -5103,12 +5099,11 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       </div>
       <div class="upd-card-meta" id="upd-meta-ventas">Sin publicar aún</div>
       <div class="upd-drop" onclick="document.getElementById('upd-input-ventas').click()" id="upd-drop-ventas">
-        <span>📎</span> Arrastra <code>VENTAS POR PRODUCTO.xlsx</code> aquí o usá el botón
+        <span>📎</span> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-ventas" accept=".xlsx" style="display:none" onchange="updStage('ventas',this)">
       <button class="upd-btn-load" onclick="document.getElementById('upd-input-ventas').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        Cargar Excel
+        <span class="upd-folder">📁</span> Cargar Excel
       </button>
     </div>
 
@@ -5119,12 +5114,11 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       </div>
       <div class="upd-card-meta" id="upd-meta-margen">Sin publicar aún</div>
       <div class="upd-drop" onclick="document.getElementById('upd-input-margen').click()" id="upd-drop-margen">
-        <span>📎</span> Arrastra <code>MARGEN DE VENTAS.xlsx</code> aquí o usá el botón
+        <span>📎</span> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-margen" accept=".xlsx" style="display:none" onchange="updStage('margen',this)">
       <button class="upd-btn-load" onclick="document.getElementById('upd-input-margen').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        Cargar Excel
+        <span class="upd-folder">📁</span> Cargar Excel
       </button>
     </div>
 
@@ -5314,20 +5308,20 @@ function updStage(type,input){
 
         var previewMeta='';
         if(type==='stock'){
-          previewMeta='<b style="color:#2e9e6a">✓ '+parsed.count.toLocaleString('es-CL')+' SKUs</b> con stock disponible — pendiente de publicar';
+          previewMeta='Cargado ahora · '+parsed.count.toLocaleString('es-CL')+' SKUs con stock';
         } else if(type==='ventas'){
           var nSkus=Object.keys(parsed.products).length;
-          previewMeta='<b style="color:#2e9e6a">✓ '+nSkus.toLocaleString('es-CL')+' SKUs</b> con montos de <b>'+_updMonthsFull[parsed.monthIdx]+'</b> — pendiente de publicar';
+          previewMeta='Cargado ahora · '+nSkus.toLocaleString('es-CL')+' SKUs · mes detectado: '+_updMonthsFull[parsed.monthIdx];
         } else if(type==='margen'){
           var warn='';
           var unkKeys=Object.keys(parsed.vendorsUnknown);
           if(unkKeys.length){
             var unkTotal=unkKeys.reduce(function(s,k){return s+parsed.vendorsUnknown[k];},0);
-            warn=' · <span class="upd-warn">⚠ '+unkTotal+' filas con vendedores desconocidos ('+unkKeys.slice(0,3).join(',')+(unkKeys.length>3?'...':'')+')</span>';
+            warn=' · <span class="upd-warn">⚠ '+unkTotal+' filas sin vendedor ('+unkKeys.slice(0,3).join(',')+(unkKeys.length>3?'...':'')+')</span>';
           }
-          previewMeta='<b style="color:#2e9e6a">✓ '+parsed.rowCount.toLocaleString('es-CL')+' filas</b> · último mes: <b>'+_updMonthsFull[parsed.monthIdx]+'</b> · '+parsed.vendors.length+' vendedores'+warn;
+          previewMeta='Cargado ahora · '+parsed.rowCount.toLocaleString('es-CL')+' filas · mes detectado: '+_updMonthsFull[parsed.monthIdx]+' · '+parsed.vendors.length+' vendedores'+warn;
         }
-        if(drop)drop.innerHTML='<span>✓</span> <code>'+file.name+'</code> — listo';
+        if(drop){drop.classList.add('upd-loaded');drop.innerHTML='<span>✓</span> <code>'+file.name+'</code> — listo';}
         if(meta)meta.innerHTML=previewMeta;
         _updUpdateFooter();
       } catch(err){
