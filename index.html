@@ -5183,30 +5183,48 @@ function _updParseVentas(wb){
   var sheet=wb.Sheets[wb.SheetNames[0]];
   var rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
   var monthsSet=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  // Buscar fila header: 3 estrategias combinadas hasta las primeras 30 filas
-  var hdrRow=-1;
+
+  // Buscar fila header y dónde está la columna del código EN CUALQUIER col 0-9
+  var hdrRow=-1, codCol=-1, descCol=-1;
   for(var r=0;r<Math.min(rows.length,30);r++){
     var row=rows[r];if(!row)continue;
-    var a=row[0]?String(row[0]).toLowerCase().trim():'';
-    var b=row[1]?String(row[1]).toLowerCase().trim():'';
-    // Estrategia 1: col A tiene "cod" al inicio Y "prod" en algún lado
-    if(a.indexOf('cod')===0&&a.indexOf('prod')>0){hdrRow=r;break;}
-    // Estrategia 2: col A tiene "cod" al inicio Y col B tiene "desc" o "prod"
-    if(a.indexOf('cod')===0&&(b.indexOf('desc')===0||b.indexOf('prod')===0)){hdrRow=r;break;}
-    // Estrategia 3: col A tiene "cod" Y col C (o D) tiene un mes
-    if(a.indexOf('cod')===0){
-      for(var cc=2;cc<Math.min(row.length,6);cc++){
-        var cVal=row[cc]?String(row[cc]).toLowerCase().trim().substring(0,3):'';
-        if(monthsSet.indexOf(cVal)>=0){hdrRow=r;break;}
+    for(var c=0;c<Math.min(row.length,10);c++){
+      var v=row[c]?String(row[c]).toLowerCase().trim():'';
+      // Match "código producto", "codigo producto", "cod. producto", "cod producto"
+      var hasCode=(v.indexOf('cod')===0);
+      var hasProd=v.indexOf('prod')>=0;
+      if(hasCode&&hasProd){
+        hdrRow=r;codCol=c;
+        // Descripción probablemente en la col siguiente
+        for(var d=c+1;d<Math.min(row.length,c+4);d++){
+          var vd=row[d]?String(row[d]).toLowerCase().trim():'';
+          if(vd.indexOf('desc')===0||vd.indexOf('prod')>=0){descCol=d;break;}
+        }
+        if(descCol<0)descCol=c+1;
+        break;
       }
-      if(hdrRow>=0)break;
     }
+    if(hdrRow>=0)break;
   }
-  if(hdrRow<0)return {error:'No se encontró fila de headers (busqué primeras 30 filas)'};
+  if(hdrRow<0){
+    // Debug: mostrar primeras filas para diagnosticar
+    var preview=[];
+    for(var pr=0;pr<Math.min(rows.length,10);pr++){
+      if(rows[pr]){
+        var cells=rows[pr].slice(0,5).map(function(v){
+          if(v==null)return '·';
+          var s=String(v).replace(/\s+/g,' ').substring(0,18);
+          return s||'·';
+        });
+        preview.push('F'+(pr+1)+': '+cells.join(' | '));
+      }
+    }
+    return {error:'No encontré fila con "cod...prod" en primeras 30 filas. Vista previa del archivo:<br><code style="display:block;margin-top:.4rem;font-size:.62rem;background:var(--surface2);padding:.4rem;border-radius:4px;white-space:pre-wrap;line-height:1.5;color:var(--text)">'+preview.join('\n')+'</code>'};
+  }
   var hdr=rows[hdrRow];
-  // Encontrar cols de meses. Los meses aparecen 2 veces: primero unidades, luego montos.
-  var occurrences={}; // mIdx → [colIdx list en orden de aparición]
-  for(var c=0;c<hdr.length;c++){
+  // Encontrar cols de meses después de codCol. Los meses aparecen 2 veces: unidades, luego montos.
+  var occurrences={};
+  for(var c=codCol+1;c<hdr.length;c++){
     var h=hdr[c]?String(hdr[c]).toLowerCase().trim().substring(0,3):'';
     var mIdx=monthsSet.indexOf(h);
     if(mIdx>=0){
@@ -5214,14 +5232,12 @@ function _updParseVentas(wb){
       occurrences[mIdx].push(c);
     }
   }
-  // Tomar la SEGUNDA ocurrencia de cada mes = sección de montos $
-  var moneyCols=[]; // {col, mIdx}
+  var moneyCols=[];
   Object.keys(occurrences).forEach(function(mIdx){
     var arr=occurrences[mIdx];
     if(arr.length>=2)moneyCols.push({col:arr[1],mIdx:parseInt(mIdx)});
   });
-  if(moneyCols.length===0)return {error:'No se encontraron columnas de montos (segunda ocurrencia de meses)'};
-  // Último mes = current
+  if(moneyCols.length===0)return {error:'No encontré segunda ocurrencia de meses (sección $ Montos)'};
   moneyCols.sort(function(a,b){return a.mIdx-b.mIdx;});
   var last=moneyCols[moneyCols.length-1];
   var currMonthIdx=last.mIdx;var currCol=last.col;
@@ -5229,10 +5245,9 @@ function _updParseVentas(wb){
   var products={};var count=0;
   for(var r=hdrRow+1;r<rows.length;r++){
     var row=rows[r];if(!row)continue;
-    var cod=row[0]?String(row[0]).trim():'';
-    var desc=row[1]?String(row[1]).trim():'';
+    var cod=row[codCol]?String(row[codCol]).trim():'';
+    var desc=row[descCol]?String(row[descCol]).trim():'';
     if(!cod||cod.length<2)continue;
-    // Saltar totales
     if(cod.toLowerCase().indexOf('total')===0)continue;
     var monto=_updNum(row[currCol]);
     products[_updNorm(cod)]={cod:cod,desc:desc,monto:monto};
