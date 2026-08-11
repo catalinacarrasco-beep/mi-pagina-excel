@@ -5053,6 +5053,7 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
 .upd-drop{border:1.5px dashed var(--border);border-radius:8px;padding:.7rem;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin-bottom:.55rem;font-size:.76rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:.4rem;line-height:1.35;}
 .upd-drop:hover{border-color:var(--accent);background:rgba(0,160,223,.04);color:var(--text);}
 .upd-drop.upd-loaded{border-color:#2e9e6a;border-style:solid;background:rgba(46,158,106,.07);color:var(--positive);}
+.upd-drop.upd-dragover{border-color:var(--accent);border-style:solid;background:rgba(0,160,223,.12);color:var(--accent);transform:scale(1.01);}
 .upd-btn-load{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:.45rem;transition:filter .15s;}
 .upd-btn-load:hover{filter:brightness(1.1);}
 .upd-btn-load .upd-folder{font-size:.9rem;}
@@ -5083,7 +5084,7 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
         <div class="upd-card-feeds">alimenta <b>STOCK</b> del dashboard</div>
       </div>
       <div class="upd-card-meta" id="upd-meta-stock">Sin publicar aún</div>
-      <div class="upd-drop" onclick="document.getElementById('upd-input-stock').click()" id="upd-drop-stock">
+      <div class="upd-drop" onclick="document.getElementById('upd-input-stock').click()" ondragover="_updDragOver('stock',event)" ondragleave="_updDragLeave('stock',event)" ondrop="_updHandleDrop('stock',event)" id="upd-drop-stock">
         <span>📎</span> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-stock" accept=".xlsx" style="display:none" onchange="updStage('stock',this)">
@@ -5098,7 +5099,7 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
         <div class="upd-card-feeds">alimenta pestaña <b>GENERAL 2026</b></div>
       </div>
       <div class="upd-card-meta" id="upd-meta-ventas">Sin publicar aún</div>
-      <div class="upd-drop" onclick="document.getElementById('upd-input-ventas').click()" id="upd-drop-ventas">
+      <div class="upd-drop" onclick="document.getElementById('upd-input-ventas').click()" ondragover="_updDragOver('ventas',event)" ondragleave="_updDragLeave('ventas',event)" ondrop="_updHandleDrop('ventas',event)" id="upd-drop-ventas">
         <span>📎</span> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-ventas" accept=".xlsx" style="display:none" onchange="updStage('ventas',this)">
@@ -5113,7 +5114,7 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
         <div class="upd-card-feeds">alimenta <b>SUBDISTRIBUCIÓN</b>, <b>CANALES</b> y <b>EXTRAS</b></div>
       </div>
       <div class="upd-card-meta" id="upd-meta-margen">Sin publicar aún</div>
-      <div class="upd-drop" onclick="document.getElementById('upd-input-margen').click()" id="upd-drop-margen">
+      <div class="upd-drop" onclick="document.getElementById('upd-input-margen').click()" ondragover="_updDragOver('margen',event)" ondragleave="_updDragLeave('margen',event)" ondrop="_updHandleDrop('margen',event)" id="upd-drop-margen">
         <span>📎</span> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-margen" accept=".xlsx" style="display:none" onchange="updStage('margen',this)">
@@ -5181,18 +5182,29 @@ function _updParseStock(wb){
 function _updParseVentas(wb){
   var sheet=wb.Sheets[wb.SheetNames[0]];
   var rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
-  // Buscar fila header (col A empieza con "Cod" y contiene "prod")
+  var monthsSet=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  // Buscar fila header: 3 estrategias combinadas hasta las primeras 30 filas
   var hdrRow=-1;
-  for(var r=0;r<Math.min(rows.length,15);r++){
-    if(rows[r]&&rows[r][0]){
-      var v=String(rows[r][0]).toLowerCase();
-      if(v.indexOf('cod')===0&&v.indexOf('prod')>0){hdrRow=r;break;}
+  for(var r=0;r<Math.min(rows.length,30);r++){
+    var row=rows[r];if(!row)continue;
+    var a=row[0]?String(row[0]).toLowerCase().trim():'';
+    var b=row[1]?String(row[1]).toLowerCase().trim():'';
+    // Estrategia 1: col A tiene "cod" al inicio Y "prod" en algún lado
+    if(a.indexOf('cod')===0&&a.indexOf('prod')>0){hdrRow=r;break;}
+    // Estrategia 2: col A tiene "cod" al inicio Y col B tiene "desc" o "prod"
+    if(a.indexOf('cod')===0&&(b.indexOf('desc')===0||b.indexOf('prod')===0)){hdrRow=r;break;}
+    // Estrategia 3: col A tiene "cod" Y col C (o D) tiene un mes
+    if(a.indexOf('cod')===0){
+      for(var cc=2;cc<Math.min(row.length,6);cc++){
+        var cVal=row[cc]?String(row[cc]).toLowerCase().trim().substring(0,3):'';
+        if(monthsSet.indexOf(cVal)>=0){hdrRow=r;break;}
+      }
+      if(hdrRow>=0)break;
     }
   }
-  if(hdrRow<0)return {error:'No se encontró fila de headers en el Excel'};
+  if(hdrRow<0)return {error:'No se encontró fila de headers (busqué primeras 30 filas)'};
   var hdr=rows[hdrRow];
   // Encontrar cols de meses. Los meses aparecen 2 veces: primero unidades, luego montos.
-  var monthsSet=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   var occurrences={}; // mIdx → [colIdx list en orden de aparición]
   for(var c=0;c<hdr.length;c++){
     var h=hdr[c]?String(hdr[c]).toLowerCase().trim().substring(0,3):'';
@@ -5282,10 +5294,39 @@ function _updParseMargen(wb){
 function updStage(type,input){
   var file=input.files&&input.files[0];if(!file)return;
   input.value='';
+  _updProcessFile(type,file);
+}
+
+// Drag-and-drop
+function _updDragOver(type,ev){
+  ev.preventDefault();ev.stopPropagation();
+  var drop=document.getElementById('upd-drop-'+type);
+  if(drop)drop.classList.add('upd-dragover');
+}
+function _updDragLeave(type,ev){
+  ev.preventDefault();
+  var drop=document.getElementById('upd-drop-'+type);
+  if(drop)drop.classList.remove('upd-dragover');
+}
+function _updHandleDrop(type,ev){
+  ev.preventDefault();ev.stopPropagation();
+  var drop=document.getElementById('upd-drop-'+type);
+  if(drop)drop.classList.remove('upd-dragover');
+  var files=ev.dataTransfer&&ev.dataTransfer.files;
+  if(!files||!files.length)return;
+  var file=files[0];
+  if(!file.name.toLowerCase().endsWith('.xlsx')){
+    alert('Solo se aceptan archivos .xlsx');
+    return;
+  }
+  _updProcessFile(type,file);
+}
+
+function _updProcessFile(type,file){
   _updStaged[type]={file:file,parsed:null};
   var drop=document.getElementById('upd-drop-'+type);
   var meta=document.getElementById('upd-meta-'+type);
-  if(drop){drop.classList.add('upd-loaded');drop.innerHTML='<span>⟳</span> Procesando <code>'+file.name+'</code>…';}
+  if(drop){drop.classList.remove('upd-loaded');drop.innerHTML='<span>⟳</span> Procesando <code>'+file.name+'</code>…';}
   if(meta)meta.innerHTML='<span style="color:var(--muted)">Parseando archivo...</span>';
 
   _loadSheetJS(function(){
