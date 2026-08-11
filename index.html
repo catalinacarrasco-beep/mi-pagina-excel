@@ -5405,18 +5405,225 @@ function _updUpdateFooter(){
   }
 }
 
-function updPublish(){
+// ── Merge helpers ───────────────────────────────────────────────────────
+function _updGetGlobal(name){
+  try{return window[name]!==undefined?window[name]:eval(name);}catch(e){return null;}
+}
+function _updDeepCopy(o){return JSON.parse(JSON.stringify(o||{}));}
+function _updEnsure12(arr){
+  var v=Array(12).fill(0);
+  if(Array.isArray(arr))for(var i=0;i<12&&i<arr.length;i++)v[i]=arr[i]||0;
+  return v;
+}
+// Setea vals[monthIdx] para un cod en un {cat:[{cod,desc,vals}]}. Retorna true si encontró.
+function _updSetInGroup(group,codNorm,monthIdx,newVal){
+  if(!group)return false;
+  var found=false;
+  Object.keys(group).forEach(function(cat){
+    (group[cat]||[]).forEach(function(item){
+      if(_updNorm(item.cod)===codNorm){
+        item.vals=_updEnsure12(item.vals);
+        item.vals[monthIdx]=newVal;
+        found=true;
+      }
+    });
+  });
+  return found;
+}
+// Resetea el mes en TODO un grupo (para que SKUs no incluidos queden en 0 en el mes actual)
+function _updZeroMonth(group,monthIdx){
+  if(!group)return;
+  Object.keys(group).forEach(function(cat){
+    (group[cat]||[]).forEach(function(item){
+      item.vals=_updEnsure12(item.vals);
+      item.vals[monthIdx]=0;
+    });
+  });
+}
+// Recomputa {ALEJANDRA:{v26:{cat:[12]},v25:{cat:[12]}},...} desde vend26+vend25
+function _updRebuildResumen(vend26,vend25,gen26,gen25){
+  var ALL_CATS=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
+  var out={};
+  ['ALEJANDRA','MARCELO','JOEL'].forEach(function(v){
+    out[v]={v26:{},v25:{}};
+    ALL_CATS.forEach(function(cat){
+      var t26=Array(12).fill(0);((vend26[v]||{})[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t26[i]+=x;});});
+      out[v].v26[cat]=t26;
+      var t25=Array(12).fill(0);((vend25[v]||{})[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t25[i]+=x;});});
+      out[v].v25[cat]=t25;
+    });
+  });
+  out.GENERAL={v26:{},v25:{}};
+  ALL_CATS.forEach(function(cat){
+    var t26=Array(12).fill(0);(gen26[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t26[i]+=x;});});
+    out.GENERAL.v26[cat]=t26;
+    var t25=Array(12).fill(0);(gen25[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t25[i]+=x;});});
+    out.GENERAL.v25[cat]=t25;
+  });
+  return out;
+}
+function _updRebuildResumenGroup(current26,current25){
+  var ALL_CATS=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
+  var out={};
+  Object.keys(current26).forEach(function(k){
+    out[k]={v26:{},v25:{}};
+    ALL_CATS.forEach(function(cat){
+      var t26=Array(12).fill(0);((current26[k]||{})[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t26[i]+=x;});});
+      out[k].v26[cat]=t26;
+      var t25=Array(12).fill(0);(((current25||{})[k]||{})[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t25[i]+=x;});});
+      out[k].v25[cat]=t25;
+    });
+  });
+  return out;
+}
+
+// ── Publicar (Fase C) ──────────────────────────────────────────────────
+async function updPublish(){
   var ready=Object.keys(_updStaged).filter(function(k){var s=_updStaged[k];return s&&s.parsed&&!s.parsed.error;});
   if(ready.length===0)return;
-  // Fase C: aquí conectaremos el merge + push a GitHub. Por ahora, resumen para verificar.
-  var lines=ready.map(function(k){
-    var p=_updStaged[k].parsed;
-    if(k==='stock')return '• Stock → '+p.count+' SKUs';
-    if(k==='ventas')return '• Ventas → '+Object.keys(p.products).length+' SKUs · mes: '+_updMonthsFull[p.monthIdx];
-    if(k==='margen')return '• Margen → '+p.rowCount+' filas · mes: '+_updMonthsFull[p.monthIdx]+' · vendedores: '+p.vendors.join(', ');
-    return '';
-  });
-  alert('Fase B completa (parsers funcionando).\n\nResumen:\n'+lines.join('\n')+'\n\nFase C (merge + push a GitHub) pendiente. Nada se ha publicado todavía.');
+
+  // Detectar mes a actualizar (usar el más avanzado entre Ventas y Margen; si solo hay Stock, no importa mes)
+  var monthIdx=-1;
+  if(_updStaged.ventas&&_updStaged.ventas.parsed)monthIdx=Math.max(monthIdx,_updStaged.ventas.parsed.monthIdx);
+  if(_updStaged.margen&&_updStaged.margen.parsed)monthIdx=Math.max(monthIdx,_updStaged.margen.parsed.monthIdx);
+  var monthName=monthIdx>=0?_updMonthsFull[monthIdx]:'ninguno';
+
+  if(!confirm('Publicar cambios al dashboard?\n\n'+
+    '• Se actualiza SOLO el mes de '+monthName+'.\n'+
+    '• 2025 completo y 2026 hasta '+(monthIdx>0?_updMonthsFull[monthIdx-1]:'julio')+' quedan intactos.\n'+
+    '• CLIENTES (26 y 25) queda congelado.\n\n'+
+    'Nada se puede deshacer una vez publicado. ¿Confirmás?'))return;
+
+  var btn=document.getElementById('upd-publish');
+  var status=document.getElementById('upd-status');
+  var origBtn=btn.innerHTML;
+  btn.innerHTML='⟳ Preparando merge...';
+  btn.disabled=true;btn.classList.remove('upd-active');
+  status.innerHTML='Merge en progreso...';status.className='upd-status';
+
+  try{
+    // ── 1. Leer constantes actuales ──
+    var curStock=_updGetGlobal('STOCK')||{};
+    var curGen26=_updGetGlobal('DETAIL_GEN26')||{};
+    var curGen25=_updGetGlobal('DETAIL_GEN25')||{};
+    var curVend26=_updGetGlobal('DETAIL_2026')||{ALEJANDRA:{},MARCELO:{},JOEL:{}};
+    var curVend25=_updGetGlobal('DETAIL_2025')||{ALEJANDRA:{},MARCELO:{},JOEL:{}};
+    var curCanales26=_updGetGlobal('CANALES_DETAIL26')||{};
+    var curCanales25=_updGetGlobal('CANALES_DETAIL25')||{};
+    var curExtras26=_updGetGlobal('EXTRAS_DETAIL26')||{};
+    var curCli26=_updGetGlobal('CLIENTES26')||{};
+    var curCli25=_updGetGlobal('CLIENTES25')||{};
+
+    // ── 2. Copiar (frozen) y modificar (mes actual) ──
+    var newGen26=_updDeepCopy(curGen26);
+    var newVend26=_updDeepCopy(curVend26);
+    var newCanales26=_updDeepCopy(curCanales26);
+    var newExtras26=_updDeepCopy(curExtras26);
+    var newStock=curStock;
+
+    var skipped=[];
+
+    // STOCK: reemplazo total
+    if(_updStaged.stock&&_updStaged.stock.parsed){
+      newStock=_updStaged.stock.parsed.stock;
+    }
+
+    // VENTAS → gen26 (solo mes actual)
+    if(_updStaged.ventas&&_updStaged.ventas.parsed){
+      var vp=_updStaged.ventas.parsed;
+      var mi=vp.monthIdx;
+      // Resetear mes actual en todo gen26
+      _updZeroMonth(newGen26,mi);
+      // Aplicar montos del archivo
+      Object.keys(vp.products).forEach(function(codN){
+        var p=vp.products[codN];
+        var ok=_updSetInGroup(newGen26,codN,mi,p.monto);
+        if(!ok)skipped.push('Ventas: '+p.cod+' (SKU no existe en dashboard actual)');
+      });
+    }
+
+    // MARGEN → vend26, canales26, extras26 (solo mes actual)
+    if(_updStaged.margen&&_updStaged.margen.parsed){
+      var mp=_updStaged.margen.parsed;
+      var mi=mp.monthIdx;
+      var SUB=['ALEJANDRA','MARCELO','JOEL'];
+      var CAN=['SODIMAC','IMPERIAL','CONSTRUMART','MERCADO LIBRE'];
+      var EXT=['OSCAR','DIEGO','SANDRA'];
+      // Resetear mes actual
+      SUB.forEach(function(v){_updZeroMonth(newVend26[v],mi);});
+      CAN.forEach(function(v){_updZeroMonth(newCanales26[v],mi);});
+      EXT.forEach(function(v){_updZeroMonth(newExtras26[v],mi);});
+      // Aplicar valores
+      Object.keys(mp.byVendor).forEach(function(vName){
+        var target;
+        if(SUB.indexOf(vName)>=0)target=newVend26[vName];
+        else if(CAN.indexOf(vName)>=0)target=newCanales26[vName];
+        else if(EXT.indexOf(vName)>=0)target=newExtras26[vName];
+        if(!target){skipped.push('Margen: vendedor '+vName+' sin destino en dashboard');return;}
+        Object.keys(mp.byVendor[vName]).forEach(function(codN){
+          var p=mp.byVendor[vName][codN];
+          var ok=_updSetInGroup(target,codN,mi,p.montoByMonth[mi]);
+          if(!ok)skipped.push('Margen: '+p.cod+' ('+vName+') no existe en dashboard');
+        });
+      });
+    }
+
+    if(skipped.length){console.warn('SKUs skipped en merge:',skipped);}
+
+    // ── 3. Recalcular RESUMEN, RESUMEN_CANALES, RESUMEN_EXTRAS ──
+    btn.innerHTML='⟳ Recalculando totales...';
+    var newResumen=_updRebuildResumen(newVend26,curVend25,newGen26,curGen25);
+    var newResumenCanales=_updRebuildResumenGroup(newCanales26,curCanales25);
+    var newResumenExtras=_updRebuildResumenGroup(newExtras26,{});
+
+    // ── 4. Armar payload y pushear ──
+    btn.innerHTML='⟳ Publicando a GitHub...';
+    status.innerHTML='Subiendo datos al servidor...';
+
+    var now=new Date();
+    var dd=String(now.getDate()).padStart(2,'0');
+    var mm=String(now.getMonth()+1).padStart(2,'0');
+    var dateStr=dd+'-'+mm+'-'+now.getFullYear();
+
+    var payload={
+      data:{
+        gen26:newGen26,
+        gen25:curGen25,
+        vend26:newVend26,
+        vend25:curVend25,
+        resumen:newResumen,
+        stock:newStock,
+        cli26:curCli26,      // congelado
+        cli25:curCli25,      // congelado
+        canales26:newCanales26,
+        canales25:curCanales25,
+        resumenCanales:newResumenCanales,
+        extras26:newExtras26,
+        resumenExtras:newResumenExtras
+      },
+      dateStr:dateStr
+    };
+
+    var resp=await fetch('/api/push-data',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    var j=await resp.json();
+    if(!j.ok)throw new Error(j.error||'error desconocido');
+
+    btn.innerHTML='✓ Publicado';
+    btn.style.background='#2e9e6a';
+    status.innerHTML='<b style="color:#2e9e6a">✓ Datos publicados</b> · '+j.dateStr+' · recargando en 35 segundos...';
+
+    setTimeout(function(){location.reload();},35000);
+
+  } catch(err){
+    console.error('Publish error:',err);
+    btn.innerHTML=origBtn;
+    btn.disabled=false;btn.classList.add('upd-active');
+    status.innerHTML='<span class="upd-warn">Error al publicar: '+err.message+'</span>';
+  }
 }
 </script>
 <!-- ═════════ /NUEVO MODAL ═════════ -->
