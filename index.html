@@ -21,7 +21,8 @@
 .theme-toggle svg{width:18px;height:18px;color:var(--accent);transition:transform .3s;}
 .theme-toggle:hover svg{transform:rotate(30deg);}
 .mod-header{display:flex;align-items:center;gap:1rem;padding:.8rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
-.mod-logo{display:flex;align-items:center;gap:.2rem;text-decoration:none;}
+.mod-logo{display:flex;align-items:center;gap:.2rem;text-decoration:none;cursor:pointer;transition:opacity .15s;}
+.mod-logo:hover{opacity:.7;}
 .mod-logo svg{height:26px;width:auto;flex-shrink:0;display:block;}
 .glogo-mark *{fill:#00A0DF;}
 .glogo-ink *{fill:#fff;}
@@ -5720,6 +5721,25 @@ function lsTogglePwd(){
   });
   obs.observe(document.getElementById('loginScreen'),{attributes:true,attributeFilter:['style']});
 })();
+</script>
+
+<script>
+// ── Logo Grantt clickeable → vuelve al home desde cualquier módulo ──
+function _backToHome(){
+  ['muestrasScreen','vendedoresScreen','cargoScreen','auditScreen','cobranzasScreen','ventasScreen','proximamente'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.style.display='none';
+  });
+  var hs=document.getElementById('homeScreen');
+  if(hs){hs.style.display='';hs.style.opacity='1';}
+  sessionStorage.setItem('gs_screen','home');
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.mod-logo').forEach(function(logo){
+    logo.setAttribute('title','Volver al inicio');
+    logo.onclick=function(e){e.preventDefault();_backToHome();};
+  });
+});
 </script>
 </body>
 </html>
