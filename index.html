@@ -5139,32 +5139,209 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
 </div>
 
 <script>
-// ══ NUEVO MODAL — Fase A: solo staging visual (parsers en Fase B, push en Fase C) ══
+// ══ NUEVO MODAL — Fase B: parsers reales de los 3 archivos + preview ══
 var _updStaged={stock:null,ventas:null,margen:null};
 var _updLabels={stock:'Stock disponible.xlsx',ventas:'VENTAS POR PRODUCTO.xlsx',margen:'MARGEN DE VENTAS.xlsx'};
+var _updMonthsFull=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// Mapeo códigos vendedor → nombre (según instrucciones de Catalina)
+var _updVendMap={
+  1:'ALEJANDRA', 52:'ALEJANDRA',
+  7:'MARCELO', 53:'MARCELO',
+  3:'JOEL', 54:'JOEL',
+  2:'OSCAR', 5:'DIEGO', 6:'SANDRA',
+  19:'CONSTRUMART', 21:'IMPERIAL', 23:'SODIMAC', 25:'MERCADO LIBRE'
+};
+
+function _updNorm(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,'').replace(/^0+/,'');}
+function _updNum(v){
+  if(v==null)return 0;
+  if(typeof v==='number')return v;
+  var s=String(v).trim().replace(/[\s$]/g,'').replace(/\./g,'').replace(/,/g,'.');
+  var n=parseFloat(s);return isNaN(n)?0:n;
+}
 
 function _openUpdModal(){var m=document.getElementById('updModalBg');if(m)m.style.display='flex';}
 function updClose(){var m=document.getElementById('updModalBg');if(m)m.style.display='none';}
 
+// ── Parsers ──────────────────────────────────────────────────────────────
+function _updParseStock(wb){
+  // Toma la primera hoja (nombre varía por fecha, ej "IW20260811C24C")
+  var sheet=wb.Sheets[wb.SheetNames[0]];
+  var rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
+  var stock={};var count=0;
+  rows.forEach(function(row){
+    if(!row||row.length<14)return;
+    var codRaw=row[6]; // col G
+    var qtyRaw=row[13]; // col N
+    if(codRaw==null||String(codRaw).trim()==='')return;
+    var cod=String(codRaw).trim();
+    var codLo=cod.toLowerCase();
+    if(codLo==='cod. producto'||codLo==='codigo producto'||codLo.indexOf('total ')===0||codLo.indexOf('consolidado')===0)return;
+    var qty=Math.round(_updNum(qtyRaw));
+    stock[_updNorm(cod)]=qty;count++;
+  });
+  return {stock:stock,count:count};
+}
+
+function _updParseVentas(wb){
+  var sheet=wb.Sheets[wb.SheetNames[0]];
+  var rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
+  // Buscar fila header (col A empieza con "Cod" y contiene "prod")
+  var hdrRow=-1;
+  for(var r=0;r<Math.min(rows.length,15);r++){
+    if(rows[r]&&rows[r][0]){
+      var v=String(rows[r][0]).toLowerCase();
+      if(v.indexOf('cod')===0&&v.indexOf('prod')>0){hdrRow=r;break;}
+    }
+  }
+  if(hdrRow<0)return {error:'No se encontró fila de headers en el Excel'};
+  var hdr=rows[hdrRow];
+  // Encontrar cols de meses. Los meses aparecen 2 veces: primero unidades, luego montos.
+  var monthsSet=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var occurrences={}; // mIdx → [colIdx list en orden de aparición]
+  for(var c=0;c<hdr.length;c++){
+    var h=hdr[c]?String(hdr[c]).toLowerCase().trim().substring(0,3):'';
+    var mIdx=monthsSet.indexOf(h);
+    if(mIdx>=0){
+      if(!occurrences[mIdx])occurrences[mIdx]=[];
+      occurrences[mIdx].push(c);
+    }
+  }
+  // Tomar la SEGUNDA ocurrencia de cada mes = sección de montos $
+  var moneyCols=[]; // {col, mIdx}
+  Object.keys(occurrences).forEach(function(mIdx){
+    var arr=occurrences[mIdx];
+    if(arr.length>=2)moneyCols.push({col:arr[1],mIdx:parseInt(mIdx)});
+  });
+  if(moneyCols.length===0)return {error:'No se encontraron columnas de montos (segunda ocurrencia de meses)'};
+  // Último mes = current
+  moneyCols.sort(function(a,b){return a.mIdx-b.mIdx;});
+  var last=moneyCols[moneyCols.length-1];
+  var currMonthIdx=last.mIdx;var currCol=last.col;
+  // Extraer productos
+  var products={};var count=0;
+  for(var r=hdrRow+1;r<rows.length;r++){
+    var row=rows[r];if(!row)continue;
+    var cod=row[0]?String(row[0]).trim():'';
+    var desc=row[1]?String(row[1]).trim():'';
+    if(!cod||cod.length<2)continue;
+    // Saltar totales
+    if(cod.toLowerCase().indexOf('total')===0)continue;
+    var monto=_updNum(row[currCol]);
+    products[_updNorm(cod)]={cod:cod,desc:desc,monto:monto};
+    count++;
+  }
+  return {products:products,monthIdx:currMonthIdx,count:count};
+}
+
+function _updParseMargen(wb){
+  var sheet=wb.Sheets[wb.SheetNames[0]];
+  var rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
+  // Headers en fila 0. Data desde fila 1.
+  // Cols: C(2)=Fecha, D(3)=Cliente, E(4)=Cod, F(5)=Monto, Q(16)=VendorCode
+  var byVendor={}; // {vendorName: {codNorm: {cod, montoByMonth[12]}}}
+  var months={};var rowCount=0;var vendorsFound={};var vendorsUnknown={};
+  for(var r=1;r<rows.length;r++){
+    var row=rows[r];if(!row)continue;
+    var fechaRaw=row[2];
+    var cod=row[4]?String(row[4]).trim():'';
+    var monto=_updNum(row[5]);
+    var vCode=row[16];
+    if(!cod||vCode==null||vCode==='')continue;
+    // Parsear fecha (formato dd/mm/yyyy o Excel serial)
+    var monthIdx=-1;
+    if(typeof fechaRaw==='string'){
+      var parts=fechaRaw.split('/');
+      if(parts.length===3){var mm=parseInt(parts[1]);if(mm>=1&&mm<=12)monthIdx=mm-1;}
+    } else if(typeof fechaRaw==='number'){
+      var d=XLSX.SSF.parse_date_code(fechaRaw);
+      if(d)monthIdx=d.m-1;
+    }
+    if(monthIdx<0||monthIdx>11)continue;
+    months[monthIdx]=true;
+    var vCodeInt=parseInt(vCode);
+    var vName=_updVendMap[vCodeInt];
+    if(!vName){vendorsUnknown[vCodeInt]=(vendorsUnknown[vCodeInt]||0)+1;continue;}
+    vendorsFound[vName]=true;
+    if(!byVendor[vName])byVendor[vName]={};
+    var codN=_updNorm(cod);
+    if(!byVendor[vName][codN]){
+      byVendor[vName][codN]={cod:cod,montoByMonth:Array(12).fill(0)};
+    }
+    byVendor[vName][codN].montoByMonth[monthIdx]+=monto;
+    rowCount++;
+  }
+  var monthList=Object.keys(months).map(function(m){return parseInt(m);}).sort(function(a,b){return a-b;});
+  var currMonthIdx=monthList.length?monthList[monthList.length-1]:-1;
+  return {
+    byVendor:byVendor,
+    months:monthList,
+    monthIdx:currMonthIdx,
+    rowCount:rowCount,
+    vendors:Object.keys(vendorsFound),
+    vendorsUnknown:vendorsUnknown
+  };
+}
+
+// ── Staging ──────────────────────────────────────────────────────────────
 function updStage(type,input){
   var file=input.files&&input.files[0];if(!file)return;
   input.value='';
-  _updStaged[type]=file;
+  _updStaged[type]={file:file,parsed:null};
   var drop=document.getElementById('upd-drop-'+type);
-  if(drop){
-    drop.classList.add('upd-loaded');
-    drop.innerHTML='<span>✓</span> <code>'+file.name+'</code> — listo para publicar';
-  }
   var meta=document.getElementById('upd-meta-'+type);
-  if(meta){
-    var sizeKB=(file.size/1024).toFixed(0);
-    meta.innerHTML='<b style="color:#2e9e6a">✓ Archivo cargado</b> · '+sizeKB+' KB · pendiente de publicar';
-  }
-  _updUpdateFooter();
+  if(drop){drop.classList.add('upd-loaded');drop.innerHTML='<span>⟳</span> Procesando <code>'+file.name+'</code>…';}
+  if(meta)meta.innerHTML='<span style="color:var(--muted)">Parseando archivo...</span>';
+
+  _loadSheetJS(function(){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+        var parsed;
+        if(type==='stock')parsed=_updParseStock(wb);
+        else if(type==='ventas')parsed=_updParseVentas(wb);
+        else if(type==='margen')parsed=_updParseMargen(wb);
+
+        _updStaged[type].parsed=parsed;
+
+        if(parsed.error){
+          if(drop)drop.innerHTML='<span>❌</span> Error al procesar';
+          if(meta)meta.innerHTML='<span class="upd-warn">'+parsed.error+'</span>';
+          return;
+        }
+
+        var previewMeta='';
+        if(type==='stock'){
+          previewMeta='<b style="color:#2e9e6a">✓ '+parsed.count.toLocaleString('es-CL')+' SKUs</b> con stock disponible — pendiente de publicar';
+        } else if(type==='ventas'){
+          var nSkus=Object.keys(parsed.products).length;
+          previewMeta='<b style="color:#2e9e6a">✓ '+nSkus.toLocaleString('es-CL')+' SKUs</b> con montos de <b>'+_updMonthsFull[parsed.monthIdx]+'</b> — pendiente de publicar';
+        } else if(type==='margen'){
+          var warn='';
+          var unkKeys=Object.keys(parsed.vendorsUnknown);
+          if(unkKeys.length){
+            var unkTotal=unkKeys.reduce(function(s,k){return s+parsed.vendorsUnknown[k];},0);
+            warn=' · <span class="upd-warn">⚠ '+unkTotal+' filas con vendedores desconocidos ('+unkKeys.slice(0,3).join(',')+(unkKeys.length>3?'...':'')+')</span>';
+          }
+          previewMeta='<b style="color:#2e9e6a">✓ '+parsed.rowCount.toLocaleString('es-CL')+' filas</b> · último mes: <b>'+_updMonthsFull[parsed.monthIdx]+'</b> · '+parsed.vendors.length+' vendedores'+warn;
+        }
+        if(drop)drop.innerHTML='<span>✓</span> <code>'+file.name+'</code> — listo';
+        if(meta)meta.innerHTML=previewMeta;
+        _updUpdateFooter();
+      } catch(err){
+        console.error('Parse error',err);
+        if(drop)drop.innerHTML='<span>❌</span> Error: '+err.message;
+        if(meta)meta.innerHTML='<span class="upd-warn">Error al procesar el archivo</span>';
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  });
 }
 
 function _updUpdateFooter(){
-  var count=Object.values(_updStaged).filter(function(f){return f;}).length;
+  var count=Object.values(_updStaged).filter(function(f){return f&&f.parsed&&!f.parsed.error;}).length;
   var status=document.getElementById('upd-status');
   var btn=document.getElementById('upd-publish');
   if(count===0){
@@ -5177,9 +5354,17 @@ function _updUpdateFooter(){
 }
 
 function updPublish(){
-  var count=Object.values(_updStaged).filter(function(f){return f;}).length;
-  if(count===0)return;
-  alert('Fase A completa (UI). Publicación pendiente de Fase B (parsers) + Fase C (push).\n\n'+count+' archivo(s) staged:\n'+Object.keys(_updStaged).filter(function(k){return _updStaged[k];}).map(function(k){return '• '+_updLabels[k]+' → '+_updStaged[k].name;}).join('\n'));
+  var ready=Object.keys(_updStaged).filter(function(k){var s=_updStaged[k];return s&&s.parsed&&!s.parsed.error;});
+  if(ready.length===0)return;
+  // Fase C: aquí conectaremos el merge + push a GitHub. Por ahora, resumen para verificar.
+  var lines=ready.map(function(k){
+    var p=_updStaged[k].parsed;
+    if(k==='stock')return '• Stock → '+p.count+' SKUs';
+    if(k==='ventas')return '• Ventas → '+Object.keys(p.products).length+' SKUs · mes: '+_updMonthsFull[p.monthIdx];
+    if(k==='margen')return '• Margen → '+p.rowCount+' filas · mes: '+_updMonthsFull[p.monthIdx]+' · vendedores: '+p.vendors.join(', ');
+    return '';
+  });
+  alert('Fase B completa (parsers funcionando).\n\nResumen:\n'+lines.join('\n')+'\n\nFase C (merge + push a GitHub) pendiente. Nada se ha publicado todavía.');
 }
 </script>
 <!-- ═════════ /NUEVO MODAL ═════════ -->
