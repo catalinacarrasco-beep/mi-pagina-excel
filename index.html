@@ -35,7 +35,18 @@
 .mod-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;letter-spacing:.06em;padding:0;transition:color .15s;}
 .mod-back:hover{color:var(--accent);}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+/* ── Impeccable: global tabular nums para columnas numéricas ── */
+.kpi-value,.top-cat-val,.top-cat-pct,td.cell-pos,td.cell-neg,td.cell-zero,.ct-tbl td,.cob-tbl td,.audit-ts,.upd-card-meta{font-variant-numeric:tabular-nums;}
+/* ── Impeccable: focus visible accesible en todos los interactivos ── */
+:where(button,[role="button"],a,input,select,textarea,.tab,.subtab,.month-btn,.home-card,.ls-input,.ls-btn,.upd-btn-load,.upd-publish-btn,.upd-drop,.mod-back,.theme-toggle):focus-visible{outline:2px solid var(--accent);outline-offset:2px;box-shadow:0 0 0 4px rgba(0,160,223,.18);border-radius:6px;}
+/* ── Impeccable: reduced motion respectado globalmente ── */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
+}
+/* ── Impeccable: press feedback en elementos tappable ── */
+.tab:active,.subtab:active,.month-btn:active,.upd-btn-load:active,.ls-btn:active,button:active:not(:disabled){transform:scale(.97);}
+.home-card:active,.cat-row:active,.kpi-card:active{transform:translateY(1px);}
 header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:var(--surface);}
 .header-left h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);letter-spacing:.04em;line-height:1;color:#fff;}
 .header-left h1 span{color:var(--accent);}
@@ -63,11 +74,14 @@ header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:fl
 .subtab[data-v="MERCADO LIBRE"].active{color:var(--accent);border-bottom-color:var(--accent);}
 main{padding:2rem 3rem;}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
-.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;}
-.kpi-card,.top-cats-card,.table-wrap,.client-section{box-shadow:0 2px 14px rgba(0,160,223,.06),0 1px 3px rgba(0,0,0,.15);}
+/* Impeccable: single elevation lane (border defined edges), no ghost card */
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;transition:border-color .18s ease,transform .1s ease;}
+.kpi-card:hover{border-color:rgba(0,160,223,.35);}
+.top-cats-card,.table-wrap,.client-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--accent));}
 .kpi-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;}
-.kpi-value{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.02em;color:var(--text);}
+/* Impeccable: dashboard KPIs use DM Sans bold (Bebas → deportivo tell). Bebas se reserva para títulos de módulo. */
+.kpi-value{font-family:'DM Sans',sans-serif;font-weight:700;font-size:2rem;letter-spacing:-.02em;color:var(--text);line-height:1.1;font-variant-numeric:tabular-nums;}
 .kpi-sub{font-size:.75rem;color:var(--muted);margin-top:.25rem;}
 .kpi-delta{font-size:.8rem;font-weight:600;margin-top:.3rem;}
 .kpi-delta.pos{color:var(--positive);}.kpi-delta.neg{color:var(--negative);}
@@ -118,8 +132,9 @@ main{padding:2rem 3rem;}
 .btn-refresh .ri{display:inline-block;transition:transform .45s ease-out;}
 @keyframes spin-once{to{transform:rotate(360deg)}}
 table{width:100%;border-collapse:collapse;}
-thead th{padding:.7rem 1rem;text-align:right;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;}
-.table-wrap thead th,.client-table thead th{color:var(--text);font-weight:700;background:rgba(0,159,227,.10);border-bottom:2px solid var(--accent);}
+/* Impeccable: table header tracking normalizado (.08em → .04em, era eyebrow-tight) */
+thead th{padding:.7rem 1rem;text-align:right;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;font-weight:600;color:var(--muted);background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;}
+.table-wrap thead th,.client-table thead th{color:var(--text);font-weight:700;background:rgba(0,160,223,.10);border-bottom:2px solid var(--accent);}
 .table-wrap tfoot td{background:var(--row-total);border-top:2px solid rgba(0,160,223,.20);font-weight:700;}
 .table-wrap tfoot td.cell-pos{color:var(--positive);}
 .table-wrap tfoot td.cell-neg{color:var(--negative);}
@@ -304,14 +319,11 @@ footer p{font-size:.75rem;color:var(--muted);}
   transform:translateY(-4px);
   box-shadow:0 8px 32px rgba(0,0,0,.35);
 }
-#homeScreen .home-card.ventas{border-top:2px solid var(--accent);}
-#homeScreen .home-card.cobranza{border-top:2px solid var(--accent);}
-#homeScreen .home-card.muestras{border-top:2px solid #2db47a;}
-#homeScreen .home-card.cargo{border-top:2px solid #d49a3b;}
-#homeScreen .home-card.ventas:hover{border-color:rgba(0,159,227,.4);}
-#homeScreen .home-card.cobranza:hover{border-color:rgba(0,159,227,.3);}
-#homeScreen .home-card.muestras:hover{border-color:rgba(45,180,122,.4);}
-#homeScreen .home-card.cargo:hover{border-color:rgba(212,154,59,.4);}
+/* Impeccable: color de categoría vive en el ícono/título, no en un top-stripe (banned pattern) */
+#homeScreen .home-card.ventas:hover{border-color:rgba(0,160,223,.5);}
+#homeScreen .home-card.cobranza:hover{border-color:rgba(0,160,223,.4);}
+#homeScreen .home-card.muestras:hover{border-color:rgba(45,180,122,.5);}
+#homeScreen .home-card.cargo:hover{border-color:rgba(212,154,59,.5);}
 #homeScreen .home-card svg{width:58px;height:58px;}
 #homeScreen .hc-title{
   font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;
@@ -346,7 +358,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-topbar .ct-back:hover{background:var(--surface2);color:var(--text);}
 #cargoScreen .ct-brand{display:flex;align-items:center;gap:10px;}
 #cargoScreen .ct-wordmark{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--text);}
-#cargoScreen .ct-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:4px;background:rgba(0,159,227,.12);color:var(--accent);}
+#cargoScreen .ct-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:4px;background:rgba(0,160,223,.12);color:var(--accent);}
 #cargoScreen .ct-body{padding:28px 24px 32px;}
 #cargoScreen .ct-title-row{display:flex;align-items:center;gap:12px;padding-bottom:24px;border-bottom:1px solid var(--border);}
 #cargoScreen .ct-title{
@@ -407,7 +419,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .ct-tbl td input[inputmode="numeric"]{
   width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);box-sizing:border-box;
 }
-#cargoScreen .ct-tbl td input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,159,227,.12);}
+#cargoScreen .ct-tbl td input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,160,223,.12);}
 #cargoScreen .ct-tbl td input[type="date"]{min-width:130px;}
 #cargoScreen .ct-tbl td input[inputmode="numeric"]{min-width:70px;width:75px;}
 #cargoScreen .ct-toggle-group{display:flex;gap:3px;}
@@ -427,7 +439,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 #cargoScreen .btn-edit{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
 #cargoScreen .btn-edit:hover{border-color:var(--accent);color:var(--accent);}
 #cargoScreen .btn-done{background:none;border:1px solid var(--accent);border-radius:4px;color:var(--accent);cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;font-weight:600;}
-#cargoScreen .btn-done:hover{background:rgba(0,159,227,.08);}
+#cargoScreen .btn-done:hover{background:rgba(0,160,223,.08);}
 #cargoScreen .row-delete{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;font-size:12px;padding:4px 10px;font-family:inherit;}
 #cargoScreen .row-delete:hover{border-color:#dc2626;color:#dc2626;background:rgba(220,38,38,.08);}
 #cargoScreen .cell-text{font-size:13px;color:var(--text);}
@@ -560,7 +572,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-upload-lbl:hover{border-color:var(--accent);color:var(--accent);}
 .cob-body{padding:1.5rem;max-width:1400px;margin:0 auto;width:100%;box-sizing:border-box;}
 .cob-upload-zone{border:1.5px dashed var(--border);border-radius:10px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:1.5rem;}
-.cob-upload-zone:hover,.cob-upload-zone.drag-over{border-color:var(--accent);background:rgba(0,159,227,.08);}
+.cob-upload-zone:hover,.cob-upload-zone.drag-over{border-color:var(--accent);background:rgba(0,160,223,.08);}
 .cob-upload-zone.drag-over{transform:scale(1.01);transition:transform .1s;}
 .cob-upload-zone .cob-up-icon{font-size:2rem;margin-bottom:.6rem;opacity:.6;}
 .cob-upload-zone p{font-size:.82rem;color:var(--muted);margin:.25rem 0;}
@@ -588,16 +600,16 @@ footer p{font-size:.75rem;color:var(--muted);}
 .cob-tbl tbody tr.cob-removing{opacity:0;transform:translateX(30px);}
 .cob-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.12);}
 .cob-tbl{width:100%;border-collapse:collapse;font-size:.81rem;}
-.cob-tbl thead th{background:rgba(0,159,227,.10);padding:.72rem .9rem;text-align:left;font-weight:700;font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--accent);white-space:nowrap;}
+.cob-tbl thead th{background:rgba(0,160,223,.10);padding:.72rem .9rem;text-align:left;font-weight:700;font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--accent);white-space:nowrap;}
 .cob-tbl thead th input{text-transform:none;letter-spacing:normal;font-weight:400;}
 .cob-tbl tbody td{padding:.5rem .9rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
 .cob-tbl tbody tr:nth-child(even){background:var(--row-even);}
 .cob-tbl tbody tr:last-child td{border-bottom:none;}
-.cob-tbl tbody tr:hover{background:rgba(0,159,227,.06);}
+.cob-tbl tbody tr:hover{background:rgba(0,160,223,.06);}
 .cob-amt{font-weight:600;text-align:right;font-variant-numeric:tabular-nums;}
 .cob-amt.venc{color:var(--negative);}
 .cob-dt.venc{color:var(--negative);}
-.cob-vtag{display:inline-block;padding:.12rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600;letter-spacing:.04em;background:rgba(0,159,227,.12);color:var(--accent);}
+.cob-vtag{display:inline-block;padding:.12rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600;letter-spacing:.04em;background:rgba(0,160,223,.12);color:var(--accent);}
 .cob-info{padding:.65rem .9rem;border-radius:6px;font-size:.8rem;margin-bottom:.9rem;}
 .cob-info.ok{background:rgba(46,158,106,.1);color:var(--positive);}
 .cob-info.err{background:rgba(192,80,80,.1);color:var(--negative);}
@@ -661,7 +673,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #muestrasScreen .ms-admin-btn:hover{
   border-color:var(--accent);color:var(--accent);
-  background:rgba(0,159,227,.06);
+  background:rgba(0,160,223,.06);
 }
 #muestrasScreen .ms-body{padding:1.5rem 2rem 3rem;}
 #muestrasScreen .ms-kpis{
@@ -741,13 +753,13 @@ footer p{font-size:.75rem;color:var(--muted);}
 #muestrasScreen .ms-section-hdr{
   padding:.85rem 1.2rem;font-size:.88rem;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
-  background:rgba(0,159,227,.10);border-bottom:2px solid var(--accent);
+  background:rgba(0,160,223,.10);border-bottom:2px solid var(--accent);
   font-family:'DM Sans',sans-serif;
   display:flex;align-items:center;justify-content:space-between;
 }
 #muestrasScreen .ms-tbl{width:100%;border-collapse:collapse;min-width:700px;}
 #muestrasScreen .ms-tbl th{
-  background:rgba(0,159,227,.10);
+  background:rgba(0,160,223,.10);
   font-size:.82rem;font-weight:700;color:var(--text);
   text-transform:uppercase;letter-spacing:.08em;
   padding:.75rem 1rem;text-align:left;border-bottom:2px solid var(--accent);
@@ -759,11 +771,11 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #muestrasScreen .ms-tbl tr:last-child td{border-bottom:none;}
 #muestrasScreen .ms-tbl tr:nth-child(even) td{background:var(--row-even);}
-#muestrasScreen .ms-tbl tr:hover td{background:rgba(0,159,227,.06);}
+#muestrasScreen .ms-tbl tr:hover td{background:rgba(0,160,223,.06);}
 .ms-pill{display:inline-block;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.03em;}
 .ms-pill-proc{background:rgba(210,160,60,.12);color:#d4a03c;}
 .ms-pill-cerr{background:rgba(46,158,106,.12);color:#2e9e6a;}
-.ms-bar-wrap{height:6px;border-radius:3px;background:rgba(0,159,227,.08);min-width:60px;}
+.ms-bar-wrap{height:6px;border-radius:3px;background:rgba(0,160,223,.08);min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;}
 .ms-obs{font-size:.8rem;color:var(--muted);line-height:1.5;}
 .ms-obs-cell{max-width:260px;font-size:.82rem;color:var(--muted);line-height:1.4;
@@ -773,7 +785,7 @@ footer p{font-size:.75rem;color:var(--muted);}
   background:var(--surface2);border-radius:4px;padding:.4rem .6rem;
   box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:10;}
 .ms-row-edit,.ms-row-del{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s,color .12s;color:var(--muted);}
-.ms-row-edit:hover{background:rgba(0,159,227,.1);color:var(--accent);}
+.ms-row-edit:hover{background:rgba(0,160,223,.1);color:var(--accent);}
 .ms-row-del:hover{background:rgba(192,80,80,.1);color:var(--negative);}
 /* ── MÓDULO VENDEDORES ───────────────────── */
 #vendedoresScreen{
@@ -811,7 +823,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .vd-tbl tr:nth-child(even) td{background:var(--row-even);}
 .vd-tbl tr:last-child td{border-bottom:none;}
 .vd-pill{display:inline-block;font-size:.58rem;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.03em;}
-.vd-pill-credit{background:rgba(0,159,227,.12);color:#009FE3;}
+.vd-pill-credit{background:rgba(0,160,223,.12);color:#00A0DF;}
 .vd-pill-cash{background:rgba(46,158,106,.12);color:#2e9e6a;}
 .vd-pill-transfer{background:rgba(210,160,60,.12);color:#d4a03c;}
 .vd-tabs{display:flex;gap:.35rem;margin-bottom:.8rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
@@ -824,7 +836,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .vd-profile-role{font-size:.68rem;color:var(--muted);font-family:'DM Sans',sans-serif;}
 .vd-fichas{display:grid;grid-template-columns:1fr;gap:.5rem;}
 .vd-ficha{display:flex;align-items:center;gap:.7rem;padding:.75rem 1rem;background:#252a3e;border:1px solid rgba(255,255,255,.05);border-radius:10px;cursor:pointer;transition:all .15s;}
-.vd-ficha:hover{border-color:var(--accent);background:rgba(0,159,227,.04);}
+.vd-ficha:hover{border-color:var(--accent);background:rgba(0,160,223,.04);}
 .vd-ficha:active{transform:scale(.98);}
 .vd-ficha-icon{font-size:1.3rem;}
 .vd-ficha-info{flex:1;}
@@ -871,7 +883,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 }
 #loginScreen::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,159,227,.055) 0%, transparent 68%);
+  background:radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,160,223,.055) 0%, transparent 68%);
   pointer-events:none;
 }
 .ls-rings{position:absolute;inset:0;pointer-events:none;}
@@ -879,7 +891,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ls-card{
   background:var(--surface);
   border-radius:12px;
-  border:1px solid rgba(0,159,227,.22);
+  border:1px solid rgba(0,160,223,.22);
   padding:2.5rem 2.5rem 2rem;
   width:min(400px,calc(100vw - 2.5rem));
   display:flex;flex-direction:column;align-items:center;
@@ -1022,7 +1034,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 .ms-estado.tramite{background:rgba(210,160,60,.15);color:#d4a03c;}
 .ms-estado.pendiente{background:rgba(123,132,153,.15);color:#9ba3b5;}
 .ms-action-btn{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s;color:var(--muted);}
-.ms-action-btn:hover{background:rgba(0,159,227,.1);color:var(--accent);}
+.ms-action-btn:hover{background:rgba(0,160,223,.1);color:var(--accent);}
 .ms-dias{font-weight:600;color:var(--text);}
 .ms-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;}
 .ms-modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
@@ -1059,8 +1071,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 .stk-bdg{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:10px;}
 .stk-bdg-c{background:rgba(192,80,80,.18);color:#c05050;}
 .stk-bdg-w{background:rgba(192,130,24,.18);color:#c07a18;}
-.stk-btn{font-size:.65rem;font-weight:700;color:var(--accent);background:rgba(0,159,227,.1);border:1px solid rgba(0,159,227,.25);border-radius:4px;padding:4px 10px;cursor:pointer;white-space:nowrap;letter-spacing:.02em;}
-.stk-btn:hover{background:rgba(0,159,227,.2);}
+.stk-btn{font-size:.65rem;font-weight:700;color:var(--accent);background:rgba(0,160,223,.1);border:1px solid rgba(0,160,223,.25);border-radius:4px;padding:4px 10px;cursor:pointer;white-space:nowrap;letter-spacing:.02em;}
+.stk-btn:hover{background:rgba(0,160,223,.2);}
 #stkView{padding:0;}
 .stk-hdr{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:6px 6px 0 0;flex-wrap:wrap;}
 .stk-back{font-size:.7rem;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;}
@@ -1097,12 +1109,12 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 <div id="loginScreen">
   <!-- Anillos concentricos: evoca data, radar, precision -->
   <svg class="ls-rings" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <circle cx="720" cy="450" r="200" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.13"/>
-    <circle cx="720" cy="450" r="370" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.10"/>
-    <circle cx="720" cy="450" r="540" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.08"/>
-    <circle cx="720" cy="450" r="710" fill="none" stroke="#009FE3" stroke-width="1" opacity="0.06"/>
-    <line x1="720" y1="0" x2="720" y2="900" stroke="#009FE3" stroke-width="1" opacity="0.025"/>
-    <line x1="0" y1="450" x2="1440" y2="450" stroke="#009FE3" stroke-width="1" opacity="0.02"/>
+    <circle cx="720" cy="450" r="200" fill="none" stroke="#00A0DF" stroke-width="1" opacity="0.13"/>
+    <circle cx="720" cy="450" r="370" fill="none" stroke="#00A0DF" stroke-width="1" opacity="0.10"/>
+    <circle cx="720" cy="450" r="540" fill="none" stroke="#00A0DF" stroke-width="1" opacity="0.08"/>
+    <circle cx="720" cy="450" r="710" fill="none" stroke="#00A0DF" stroke-width="1" opacity="0.06"/>
+    <line x1="720" y1="0" x2="720" y2="900" stroke="#00A0DF" stroke-width="1" opacity="0.025"/>
+    <line x1="0" y1="450" x2="1440" y2="450" stroke="#00A0DF" stroke-width="1" opacity="0.02"/>
   </svg>
 
   <!-- Bulb right (main) -->
@@ -1415,7 +1427,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <div class="mod-sep"></div>
     <div class="mod-title-area"><span class="mod-title-name" style="color:#9b78dc;">Auditoría</span></div>
     <div class="mod-right">
-      <button id="audit-refresh" onclick="_auditLoad()" style="padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s;">↻ Actualizar</button>
+      <button id="audit-refresh" onclick="_auditLoad()" style="padding:.32rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;background:transparent;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.35rem;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>Actualizar</button>
       <button class="theme-toggle" onclick="_toggleTheme()"></button>
     </div>
   </div>
@@ -1477,7 +1489,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </div>
 <div id="proximamente">
   <div style="position:absolute;top:1.2rem;left:1.5rem;">
-    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
+    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#00A0DF'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
   </div>
   <div class="prox-icon">🔒</div>
   <h2>PRÓXIMAMENTE</h2>
@@ -1493,8 +1505,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
   <div class="mod-right">
     <div class="year-badge">2026 vs 2025</div>
     <span id="updateDate" class="mod-date">Datos al 12-08-2026</span>
-    <button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;transition:color .15s" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button>
-    <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:.2rem;line-height:1;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" title="Configuración">⚙</button>
+    <button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:.2rem .4rem;letter-spacing:.04em;transition:color .15s;display:inline-flex;align-items:center;gap:.35rem;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" aria-label="Verificar actualización"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>Actualizar</button>
+    <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--muted);padding:.35rem;line-height:0;transition:color .15s,border-color .15s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'" title="Configuración / Actualizar datos" aria-label="Actualizar datos"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     <button class="theme-toggle" onclick="_toggleTheme()"></button>
   </div>
 </div>
@@ -1645,7 +1657,7 @@ const MESES_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov'
 const CATS_VENDOR=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 const CATS_GENERAL=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 function getCats(){return currentVendedor==='GENERAL'?CATS_GENERAL:CATS_VENDOR;}
-const COLORS={ALEJANDRA:'#009FE3',MARCELO:'#009FE3',JOEL:'#009FE3',GENERAL:'#009FE3',OSCAR:'#009FE3',DIEGO:'#009FE3',SANDRA:'#009FE3'};
+const COLORS={ALEJANDRA:'#00A0DF',MARCELO:'#00A0DF',JOEL:'#00A0DF',GENERAL:'#00A0DF',OSCAR:'#00A0DF',DIEGO:'#00A0DF',SANDRA:'#00A0DF'};
 const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'General',OSCAR:'Oscar',DIEGO:'Diego',SANDRA:'Sandra'};
 
 let currentVendedor='GENERAL', currentView='valores';
@@ -2657,7 +2669,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
   tb.innerHTML=rows.map(function(r){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
-    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#009FE3;"></div></div><div style="font-size:.8rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.8rem;color:#d4a03c;">En tr\u00e1mite</div>';
+    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#00A0DF;"></div></div><div style="font-size:.8rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.8rem;color:#d4a03c;">En tr\u00e1mite</div>';
     var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
     var adminTd=admin?('<td><button class="ms-row-edit" data-id="'+r.id+'" data-tipo="'+tipo+'" onclick="openMsModal(this.dataset.id,this.dataset.tipo)">&#9998;</button>'+'<button class="ms-row-del" data-id="'+r.id+'" onclick="deleteMsRow(this.dataset.id)">&#10005;</button></td>'):'';
     return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.78rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td class="ms-obs-cell" title="'+r.obs.replace(/"/g,'&quot;')+'">'+r.obs+'</td>'+adminTd+'</tr>';
@@ -2747,7 +2759,7 @@ var _vdVendorKey=null;
 var _vdDetailTab='clientes';
 
 var _VD_GROUPS=[
-  {key:'alejandra',name:'Alejandra Hurtado',team:['Sandra Ortega','Diego Rivera'],color:'#009FE3'},
+  {key:'alejandra',name:'Alejandra Hurtado',team:['Sandra Ortega','Diego Rivera'],color:'#00A0DF'},
   {key:'marcelo',name:'Marcelo Herrera',team:['Oscar Bucarey'],color:'#5bc0c4'},
   {key:'joel',name:'Joel Córdova',team:[],color:'#7b9ec7'}
 ];
@@ -3001,7 +3013,7 @@ function volverHomeFromMuestras(){
 </div>
 <div id="proximamente">
   <div style="position:absolute;top:1.2rem;left:1.5rem;">
-    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
+    <button onclick="volverHome()" style="font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.06em;display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#00A0DF'" onmouseout="this.style.color='var(--muted)'">← Volver</button>
   </div>
   <div class="prox-icon">🔒</div>
   <h2>PRÓXIMAMENTE</h2>
@@ -3017,8 +3029,8 @@ function volverHomeFromMuestras(){
   <div class="mod-right">
     <div class="year-badge">2026 vs 2025</div>
     <span id="updateDate" class="mod-date">Datos al 12-08-2026</span>
-    <button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:.04em;transition:color .15s" onmouseover="this.style.color='#009FE3'" onmouseout="this.style.color='var(--muted)'">↻ Actualizar</button>
-    <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:.2rem;line-height:1;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" title="Configuración">⚙</button>
+    <button onclick="checkAndRefresh(this)" style="font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:.2rem .4rem;letter-spacing:.04em;transition:color .15s;display:inline-flex;align-items:center;gap:.35rem;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'" aria-label="Verificar actualización"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>Actualizar</button>
+    <button id="_cfgGear" onclick="_openCfgModal()" style="display:none;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--muted);padding:.35rem;line-height:0;transition:color .15s,border-color .15s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'" title="Configuración / Actualizar datos" aria-label="Actualizar datos"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     <button class="theme-toggle" onclick="_toggleTheme()"></button>
   </div>
 </div>
@@ -4308,7 +4320,7 @@ function _cobRender(){
       +'<td style="white-space:nowrap">'+(r.doc||'')+'</td>'
       +'<td class="cob-dt'+(isV?' venc':'')+'" style="white-space:nowrap">'+_cobFmtDate(r.fecha)+'</td>'
       +'<td class="cob-amt'+(isV?' venc':'')+'">'+_cobFmtCLP(r.saldo)+'</td>'
-      +'<td><span class="cob-vtag" style="color:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].c:'var(--accent)')+';background:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].bg:'rgba(0,159,227,.12)')+'">'+r.vlbl+'</span></td>'
+      +'<td><span class="cob-vtag" style="color:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].c:'var(--accent)')+';background:'+(_cobVendorColor[r.vkey]?_cobVendorColor[r.vkey].bg:'rgba(0,160,223,.12)')+'">'+r.vlbl+'</span></td>'
       +(canEdit?'<td style="text-align:center">'+(_cobView==='cobr'
           ?'<button onclick="_cobUnpay('+r._id+')" title="Devolver a pendientes" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.95rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--muted)\'">↩</button>'
           :'<button onclick="_cobPay('+r._id+')" title="Marcar como pagado" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.95rem;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color=\'var(--positive)\'" onmouseout="this.style.color=\'var(--muted)\'">✓</button>')
@@ -5086,11 +5098,11 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       </div>
       <div class="upd-card-meta" id="upd-meta-stock">Sin publicar aún</div>
       <div class="upd-drop" onclick="document.getElementById('upd-input-stock').click()" ondragover="_updDragOver('stock',event)" ondragleave="_updDragLeave('stock',event)" ondrop="_updHandleDrop('stock',event)" id="upd-drop-stock">
-        <span>📎</span> Arrastra el .xlsx aquí o usa el botón
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.8l-8.56 8.57a2 2 0 0 1-2.83-2.83l7.86-7.86"/></svg> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-stock" accept=".xlsx" style="display:none" onchange="updStage('stock',this)">
       <button class="upd-btn-load" onclick="document.getElementById('upd-input-stock').click()">
-        <span class="upd-folder">📁</span> Cargar Excel
+        <svg class="upd-folder" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Cargar Excel
       </button>
     </div>
 
@@ -5101,11 +5113,11 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       </div>
       <div class="upd-card-meta" id="upd-meta-ventas">Sin publicar aún</div>
       <div class="upd-drop" onclick="document.getElementById('upd-input-ventas').click()" ondragover="_updDragOver('ventas',event)" ondragleave="_updDragLeave('ventas',event)" ondrop="_updHandleDrop('ventas',event)" id="upd-drop-ventas">
-        <span>📎</span> Arrastra el .xlsx aquí o usa el botón
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.8l-8.56 8.57a2 2 0 0 1-2.83-2.83l7.86-7.86"/></svg> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-ventas" accept=".xlsx" style="display:none" onchange="updStage('ventas',this)">
       <button class="upd-btn-load" onclick="document.getElementById('upd-input-ventas').click()">
-        <span class="upd-folder">📁</span> Cargar Excel
+        <svg class="upd-folder" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Cargar Excel
       </button>
     </div>
 
@@ -5116,11 +5128,11 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       </div>
       <div class="upd-card-meta" id="upd-meta-margen">Sin publicar aún</div>
       <div class="upd-drop" onclick="document.getElementById('upd-input-margen').click()" ondragover="_updDragOver('margen',event)" ondragleave="_updDragLeave('margen',event)" ondrop="_updHandleDrop('margen',event)" id="upd-drop-margen">
-        <span>📎</span> Arrastra el .xlsx aquí o usa el botón
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.8l-8.56 8.57a2 2 0 0 1-2.83-2.83l7.86-7.86"/></svg> Arrastra el .xlsx aquí o usa el botón
       </div>
       <input type="file" id="upd-input-margen" accept=".xlsx" style="display:none" onchange="updStage('margen',this)">
       <button class="upd-btn-load" onclick="document.getElementById('upd-input-margen').click()">
-        <span class="upd-folder">📁</span> Cargar Excel
+        <svg class="upd-folder" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Cargar Excel
       </button>
     </div>
 
