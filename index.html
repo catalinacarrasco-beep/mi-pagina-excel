@@ -20,10 +20,12 @@
 .theme-toggle:hover{border-color:var(--accent);}
 .theme-toggle svg{width:18px;height:18px;color:var(--accent);transition:transform .3s;}
 .theme-toggle:hover svg{transform:rotate(30deg);}
-.mod-header{display:flex;align-items:center;gap:1rem;padding:.8rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
-.mod-logo{display:flex;align-items:center;gap:.2rem;text-decoration:none;cursor:pointer;transition:opacity .15s;}
-.mod-logo:hover{opacity:.7;}
-.mod-logo svg{height:26px;width:auto;flex-shrink:0;display:block;}
+/* Impeccable: module header más aire, backdrop-filter opcional, logo con touch target */
+.mod-header{display:flex;align-items:center;gap:1rem;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.mod-logo{display:flex;align-items:center;gap:.25rem;text-decoration:none;cursor:pointer;transition:opacity .15s ease,transform .1s ease;padding:.3rem;border-radius:6px;}
+.mod-logo:hover{opacity:.75;}
+.mod-logo:active{transform:scale(.97);}
+.mod-logo svg{height:28px;width:auto;flex-shrink:0;display:block;}
 .glogo-mark *{fill:#00A0DF;}
 .glogo-ink *{fill:#fff;}
 [data-theme="light"] .glogo-ink *{fill:#0D181C;}
@@ -32,8 +34,9 @@
 .mod-title-name{font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:700;color:var(--text);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;}
 .mod-right{display:flex;align-items:center;gap:.6rem;margin-left:auto;flex-shrink:0;}
 .mod-date{font-size:.7rem;color:var(--muted);letter-spacing:.03em;white-space:nowrap;}
-.mod-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;letter-spacing:.06em;padding:0;transition:color .15s;}
-.mod-back:hover{color:var(--accent);}
+/* Impeccable: mod-back con hit target adecuado y borde sutil en hover */
+.mod-back{background:none;border:1px solid transparent;border-radius:6px;color:var(--muted);cursor:pointer;font-size:.78rem;font-family:'DM Sans',sans-serif;letter-spacing:.05em;padding:.35rem .7rem;transition:color .15s ease,border-color .15s ease,background .15s ease;display:inline-flex;align-items:center;gap:.3rem;font-weight:500;min-height:32px;}
+.mod-back:hover{color:var(--accent);border-color:rgba(0,160,223,.3);background:rgba(0,160,223,.04);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 /* ── Impeccable: global tabular nums para columnas numéricas ── */
@@ -101,7 +104,10 @@ main{padding:2rem 3rem;}
 .top-cats-list{display:flex;flex-direction:column;gap:.6rem;}
 .top-cat-row{display:flex;align-items:center;gap:1rem;}
 .top-cat-rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:24px;flex-shrink:0;text-align:center;}
-.top-cat-rank.first{color:var(--accent3);}.top-cat-rank.second{color:#aaa;}.top-cat-rank.third{color:#cd7f32;}
+/* Impeccable: ranking colors — gold/silver/bronze off-brand, uso escala de intensidad accent */
+.top-cat-rank.first{color:var(--accent);font-weight:700;}
+.top-cat-rank.second{color:var(--text);}
+.top-cat-rank.third{color:var(--muted);}
 .top-cat-info{flex:1;}
 .top-cat-name{font-size:.9rem;font-weight:600;color:var(--text);letter-spacing:.01em;}
 .top-cat-bar-track{height:6px;background:var(--surface2);border-radius:3px;margin-top:.3rem;overflow:hidden;}
@@ -154,7 +160,9 @@ thead th{padding:.7rem 1rem;text-align:right;font-size:.72rem;text-transform:upp
 .table-wrap tfoot td.cell-neg{color:var(--negative);}
 thead th:first-child{text-align:left;}
 tr.cat-row{border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
-tr.cat-row:hover{background:var(--row-hover);}
+/* Impeccable: cat-row hover con transition suave (sin side-stripe) */
+tr.cat-row td{transition:background-color .15s ease;}
+tr.cat-row:hover td{background:var(--row-hover);}
 /* Impeccable: cat-row más aire vertical + tabular-nums para columnas numéricas alineadas */
 tr.cat-row td{padding:.85rem 1rem;font-size:.85rem;font-weight:600;color:var(--text);text-align:right;font-variant-numeric:tabular-nums;}
 tr.cat-row td:first-child{text-align:left;}
@@ -424,7 +432,15 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-muted{color:#9ca3af;}
 .ct-qty-tag{font-size:9px;font-weight:700;letter-spacing:.05em;color:#9ca3af;margin-right:4px;}
 .ct-doc-link{color:#0891b2;cursor:default;font-size:12px;}
-.ct-loading{text-align:center;padding:3rem;color:#6b7280;font-size:14px;}
+/* Impeccable: loading — skeleton shimmer en vez de spinner de texto plano */
+.ct-loading{text-align:center;padding:3rem;color:var(--muted);font-size:.85rem;letter-spacing:.02em;font-weight:500;position:relative;}
+.ct-loading::before{content:'';display:block;height:2px;width:60px;margin:0 auto 1rem;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:sk-shimmer 1.4s ease-in-out infinite;border-radius:2px;}
+@keyframes sk-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes sk-pulse{0%,100%{opacity:.6}50%{opacity:.95}}
+/* Impeccable: skeleton bars reutilizables — se pueden usar en tablas y KPIs */
+.skeleton-bar{background:linear-gradient(90deg,var(--surface2) 0%,var(--border) 50%,var(--surface2) 100%);background-size:200% 100%;animation:sk-shimmer 1.4s ease-in-out infinite;border-radius:4px;height:12px;}
+.skeleton-bar.tall{height:20px;}
+.skeleton-bar.short{width:60%;}
 .ct-empty{text-align:center;padding:3rem;color:#6b7280;font-size:14px;}
 @media(max-width:768px){
   #cargoScreen .ct-body{padding:16px;}
@@ -536,9 +552,10 @@ footer p{font-size:.75rem;color:var(--muted);}
 .ct-oc-x:hover{opacity:1;}
 .ct-inv-link{color:var(--accent);text-decoration:underline;cursor:pointer;background:none;border:none;font-size:13px;font-family:inherit;padding:0;}
 .ct-inv-link:hover{filter:brightness(1.15);}
-.ct-th-filter{padding:1px 12px 1px 4px;font-size:11px;border:none;background:transparent;color:#94a3b8;margin-left:4px;vertical-align:middle;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;opacity:.7;transition:opacity .15s,color .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2394a3b8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;}
-.ct-th-filter:hover,.ct-th-filter:focus{opacity:1;}
-.ct-th-filter.ct-filter-active{opacity:1;color:#38bdf8;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2338bdf8'/%3E%3C/svg%3E");}
+/* Impeccable: filter selects — usa tokens, hit target 24px, chevron con currentColor */
+.ct-th-filter{padding:2px 16px 2px 6px;font-size:.72rem;border:1px solid transparent;background:transparent;color:var(--muted);margin-left:4px;vertical-align:middle;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;opacity:.75;transition:opacity .15s ease,color .15s ease,border-color .15s ease,background .15s ease;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;background-size:8px 5px;border-radius:4px;font-family:inherit;letter-spacing:.02em;}
+.ct-th-filter:hover,.ct-th-filter:focus-visible{opacity:1;color:var(--accent);border-color:rgba(0,160,223,.3);background-color:rgba(0,160,223,.05);}
+.ct-th-filter.ct-filter-active{opacity:1;color:var(--accent);border-color:rgba(0,160,223,.35);background-color:rgba(0,160,223,.08);}
 .ct-sortable{cursor:pointer;user-select:none;}
 .ct-sortable:hover{color:var(--accent);}
 .ct-estado-sel{padding:3px 6px;font-size:11px;font-weight:600;border-radius:4px;border:none;cursor:pointer;appearance:auto;transition:background .15s,color .15s;}
@@ -1199,7 +1216,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </div>
 <div id="homeScreen">
   <div id="storage-alert" style="display:none;">
-    <span class="sa-icon">⚠️</span>
+    <svg class="sa-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     <span class="sa-msg"></span>
     <button class="sa-close" onclick="this.parentElement.style.display='none'" title="Cerrar">×</button>
   </div>
