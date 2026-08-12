@@ -48,18 +48,24 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tab:active,.subtab:active,.month-btn:active,.upd-btn-load:active,.ls-btn:active,button:active:not(:disabled){transform:scale(.97);}
 .home-card:active,.cat-row:active,.kpi-card:active{transform:translateY(1px);}
 header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:var(--surface);}
-.header-left h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);letter-spacing:.04em;line-height:1;color:#fff;}
+/* Impeccable: display heading — cap más chico (era 4.5rem = 72px, cerca del ceiling), text-wrap balance */
+.header-left h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,4.5vw,3.8rem);letter-spacing:.03em;line-height:1;color:var(--text);text-wrap:balance;}
 .header-left h1 span{color:var(--accent);}
-.header-left p{color:var(--muted);font-size:.85rem;margin-top:.4rem;}
+.header-left p{color:var(--muted);font-size:.85rem;margin-top:.5rem;line-height:1.5;}
 .year-badge{background:var(--accent);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.1em;padding:.4rem 1.2rem;border-radius:4px;}
 .tabs{display:flex;padding:1.5rem 3rem 0;border-bottom:1px solid var(--border);}
-.tab{padding:.75rem 2rem;cursor:pointer;font-size:.9rem;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.05em;text-transform:uppercase;}
+/* Impeccable: tabs — active indicator animado, hit target 44px, sin jitter de peso */
+.tab{padding:.85rem 1.8rem;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:color .18s ease,border-color .22s ease,transform .1s ease;letter-spacing:.05em;text-transform:uppercase;position:relative;min-height:44px;display:inline-flex;align-items:center;}
 .tab:hover{color:var(--text);}
+.tab:hover:not(.active){color:var(--text);}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:focus-visible{border-radius:4px 4px 0 0;}
 .tab[data-v="SUBDIST"].active{color:var(--accent);border-bottom-color:var(--accent);}
 .tab[data-v="GENERAL"].active{color:var(--accent);border-bottom-color:var(--accent);}
 .subtabs{display:flex;padding:.6rem 3rem 0;background:var(--surface);border-bottom:1px solid var(--border);gap:.25rem;}
-.subtab{padding:.5rem 1.5rem;cursor:pointer;font-size:.8rem;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.05em;text-transform:uppercase;border-radius:4px 4px 0 0;}
+/* Impeccable: subtab con touch target adecuado + weight consistent */
+.subtab{padding:.65rem 1.4rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:color .18s ease,border-color .22s ease,background .18s ease;letter-spacing:.05em;text-transform:uppercase;border-radius:6px 6px 0 0;min-height:38px;display:inline-flex;align-items:center;}
+.subtab:hover:not(.active){color:var(--text);background:rgba(0,160,223,.04);}
 .subtab:hover{color:var(--text);}
 .subtab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--surface2);}
 .subtab[data-v="ALEJANDRA"].active{color:var(--vc-alejandra);border-bottom-color:var(--vc-alejandra);}
@@ -73,60 +79,68 @@ header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:fl
 .subtab[data-v="CONSTRUMART"].active{color:var(--accent);border-bottom-color:var(--accent);}
 .subtab[data-v="MERCADO LIBRE"].active{color:var(--accent);border-bottom-color:var(--accent);}
 main{padding:2rem 3rem;}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
+/* Impeccable: KPI grid con más aire entre cards */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;margin-bottom:2rem;}
 /* Impeccable: single elevation lane (border defined edges), no ghost card */
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;transition:border-color .18s ease,transform .1s ease;}
 .kpi-card:hover{border-color:rgba(0,160,223,.35);}
 .top-cats-card,.table-wrap,.client-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--accent));}
-.kpi-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;}
+/* Impeccable: KPI label — más contraste jerárquico */
+.kpi-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--muted);margin-bottom:.6rem;}
 /* Impeccable: dashboard KPIs use DM Sans bold (Bebas → deportivo tell). Bebas se reserva para títulos de módulo. */
 .kpi-value{font-family:'DM Sans',sans-serif;font-weight:700;font-size:2rem;letter-spacing:-.02em;color:var(--text);line-height:1.1;font-variant-numeric:tabular-nums;}
 .kpi-sub{font-size:.75rem;color:var(--muted);margin-top:.25rem;}
 .kpi-delta{font-size:.8rem;font-weight:600;margin-top:.3rem;}
 .kpi-delta.pos{color:var(--positive);}.kpi-delta.neg{color:var(--negative);}
 .top-cats-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:2rem;}
-.top-cats-header{margin-bottom:1.2rem;}
-.top-cats-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;}
-.top-cats-subtitle{font-size:.75rem;color:var(--muted);}
+.top-cats-header{margin-bottom:1.3rem;}
+/* Impeccable: section title — Bebas se ve mejor a 1.4rem con letter-spacing más aire */
+.top-cats-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;color:var(--text);line-height:1;}
+.top-cats-subtitle{font-size:.78rem;color:var(--muted);margin-top:.35rem;line-height:1.5;}
 .top-cats-list{display:flex;flex-direction:column;gap:.6rem;}
 .top-cat-row{display:flex;align-items:center;gap:1rem;}
 .top-cat-rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:24px;flex-shrink:0;text-align:center;}
 .top-cat-rank.first{color:var(--accent3);}.top-cat-rank.second{color:#aaa;}.top-cat-rank.third{color:#cd7f32;}
 .top-cat-info{flex:1;}
-.top-cat-name{font-size:.85rem;font-weight:600;color:var(--text);}
+.top-cat-name{font-size:.9rem;font-weight:600;color:var(--text);letter-spacing:.01em;}
 .top-cat-bar-track{height:6px;background:var(--surface2);border-radius:3px;margin-top:.3rem;overflow:hidden;}
 .top-cat-bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);}
-.top-cat-val{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;text-align:right;min-width:110px;}
-.top-cat-pct{font-size:.72rem;color:var(--muted);text-align:right;min-width:50px;}
-.top-cat-growth{font-size:.70rem;font-weight:700;white-space:nowrap;text-align:right;min-width:62px;padding:2px 5px;border-radius:4px;letter-spacing:.01em;}
-.top-cat-growth.pos{color:var(--positive);background:rgba(46,158,106,.13);}
-.top-cat-growth.neg{color:var(--negative);background:rgba(192,80,80,.13);}
-.top-cat-growth.flat{color:var(--muted);font-weight:400;}
+/* Impeccable: KPI numbers alineados con tabular-nums, growth como chip con más aire */
+.top-cat-val{font-size:.9rem;font-weight:600;color:var(--text);white-space:nowrap;text-align:right;min-width:110px;font-variant-numeric:tabular-nums;}
+.top-cat-pct{font-size:.75rem;color:var(--muted);text-align:right;min-width:52px;font-variant-numeric:tabular-nums;}
+.top-cat-growth{font-size:.72rem;font-weight:700;white-space:nowrap;text-align:right;min-width:70px;padding:3px 8px;border-radius:12px;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:inline-block;}
+.top-cat-growth.pos{color:var(--positive);background:rgba(46,158,106,.14);}
+.top-cat-growth.neg{color:var(--negative);background:rgba(192,80,80,.14);}
+.top-cat-growth.flat{color:var(--muted);font-weight:500;background:transparent;}
 .controls{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
 .controls label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-right:.25rem;}
-.month-btn{padding:.35rem .65rem;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
-.month-btn:hover{border-color:#444;color:var(--text);}
-.month-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
-.btn-all{padding:.35rem .85rem;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;}
-.btn-all:hover{border-color:#555;}
+/* Impeccable: month buttons — segmented control, active con weight consistent (evita jitter) */
+.month-btn{padding:.4rem .8rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;font-weight:500;cursor:pointer;transition:color .15s ease,background .15s ease,border-color .15s ease;font-family:'DM Sans',sans-serif;font-variant-numeric:tabular-nums;min-height:32px;}
+.month-btn:hover{border-color:rgba(0,160,223,.4);color:var(--text);}
+.month-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-all{padding:.4rem .95rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;transition:all .15s ease;min-height:32px;}
+.btn-all:hover{border-color:rgba(0,160,223,.4);}
 .btn-all.active-all{background:var(--surface);border-color:var(--accent);color:var(--accent);}
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:2rem;}
 .table-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.5rem;}
 .table-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;}
 .cat-search{display:none;align-items:center;gap:.3rem;margin-left:auto;padding-right:.25rem;}
 .cat-search.visible{display:flex;}
-.cat-search-icon{background:none;border:none;color:#555;cursor:pointer;font-size:.8rem;padding:.15rem .3rem;line-height:1;transition:color .15s;}
+/* Impeccable: cat-search — usa muted var en vez de hardcoded #555, contraste OK */
+.cat-search-icon{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:.25rem .35rem;line-height:1;transition:color .15s ease;border-radius:4px;}
 .cat-search-icon:hover{color:var(--accent);}
 .cat-search-icon.active{color:var(--accent);}
-.cat-search input{width:0;opacity:0;background:transparent;border:none;border-bottom:1px solid transparent;padding:.1rem .2rem;color:var(--text);font-size:.75rem;font-family:'DM Sans',sans-serif;outline:none;transition:width .25s ease,opacity .25s ease,border-color .25s ease;white-space:nowrap;}
-.cat-search input.open{width:140px;opacity:1;border-bottom-color:#444;}
+.cat-search input{width:0;opacity:0;background:transparent;border:none;border-bottom:1px solid transparent;padding:.15rem .25rem;color:var(--text);font-size:.78rem;font-family:'DM Sans',sans-serif;outline:none;transition:width .25s ease,opacity .25s ease,border-color .25s ease;white-space:nowrap;}
+.cat-search input.open{width:160px;opacity:1;border-bottom-color:var(--border);}
 .cat-search input.open:focus{border-bottom-color:var(--accent);}
-.cat-search input::placeholder{color:#555;font-style:italic;}
-.cat-search-count{font-size:.68rem;color:#555;white-space:nowrap;min-width:40px;}
+.cat-search input::placeholder{color:var(--muted);font-style:normal;}
+.cat-search-count{font-size:.7rem;color:var(--muted);white-space:nowrap;min-width:40px;font-variant-numeric:tabular-nums;}
 .view-toggle{display:flex;gap:.5rem;}
-.vt-btn{padding:.3rem .8rem;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.vt-btn.active{background:var(--surface2);color:var(--text);border-color:#444;}
+/* Impeccable: view toggle button — segmented pair (Categorías/Clientes) */
+.vt-btn{padding:.42rem 1rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .15s ease,background .15s ease,border-color .15s ease;min-height:32px;}
+.vt-btn:hover:not(.active){color:var(--text);border-color:rgba(0,160,223,.35);}
+.vt-btn.active{background:var(--surface2);color:var(--text);border-color:var(--accent);}
 .btn-refresh{padding:.35rem .8rem;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;cursor:pointer;margin-left:auto;display:flex;align-items:center;gap:.35rem;transition:color .15s,border-color .15s;}
 .btn-refresh:hover{color:var(--accent);border-color:var(--accent);}
 .btn-refresh .ri{display:inline-block;transition:transform .45s ease-out;}
@@ -141,22 +155,26 @@ thead th{padding:.7rem 1rem;text-align:right;font-size:.72rem;text-transform:upp
 thead th:first-child{text-align:left;}
 tr.cat-row{border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
 tr.cat-row:hover{background:var(--row-hover);}
-tr.cat-row td{padding:.75rem 1rem;font-size:.85rem;font-weight:600;color:var(--text);text-align:right;}
+/* Impeccable: cat-row más aire vertical + tabular-nums para columnas numéricas alineadas */
+tr.cat-row td{padding:.85rem 1rem;font-size:.85rem;font-weight:600;color:var(--text);text-align:right;font-variant-numeric:tabular-nums;}
 tr.cat-row td:first-child{text-align:left;}
 tr.cat-row td.cell-pos{color:var(--positive);}
 tr.cat-row td.cell-neg{color:var(--negative);}
 tr.cat-row td.cell-zero{color:var(--muted);}
 tr.cat-row:nth-child(even) td{background:var(--row-even);}
-.expand-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);font-size:.65rem;transition:transform .2s;flex-shrink:0;color:var(--muted);}
+/* Impeccable: expand icon con touch target más generoso y hover feedback */
+.expand-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;background:var(--surface2);border:1px solid var(--border);font-size:.7rem;transition:transform .2s ease,border-color .15s ease,background .15s ease;flex-shrink:0;color:var(--muted);}
+.cat-row:hover .expand-icon{border-color:rgba(0,160,223,.4);color:var(--accent);}
 tr.cat-row.expanded .expand-icon{transform:rotate(90deg);color:var(--accent);}
 tr.prod-row{display:none;border-bottom:1px solid var(--border);}
 tr.prod-row.visible{display:table-row;}
-tr.prod-row td{padding:.5rem 1rem .5rem 2.5rem;font-size:.78rem;color:var(--muted);text-align:right;background:var(--surface2);}
+tr.prod-row td{padding:.6rem 1rem .6rem 2.5rem;font-size:.78rem;color:var(--muted);text-align:right;background:var(--surface2);font-variant-numeric:tabular-nums;}
 tr.prod-row td:first-child{text-align:left;}
 tr.prod-row td.cell-pos{color:var(--positive);}
 tr.prod-row td.cell-neg{color:var(--negative);}
 tr.prod-row td.cell-zero{color:var(--muted);}
-.prod-code{font-family:monospace;font-size:.68rem;color:var(--text);margin-right:.4rem;background:var(--border);padding:.1rem .3rem;border-radius:2px;}
+/* Impeccable: prod code chip — más aire, mono-font consistente */
+.prod-code{font-family:ui-monospace,'SF Mono',Consolas,monospace;font-size:.7rem;color:var(--muted);margin-right:.5rem;background:var(--surface2);border:1px solid var(--border);padding:.15rem .4rem;border-radius:3px;letter-spacing:.02em;font-weight:500;}
 .prod-desc{color:var(--text);}
 
 .prod-tooltip{position:fixed;display:none;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.4rem .75rem;z-index:1000;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.6);}
