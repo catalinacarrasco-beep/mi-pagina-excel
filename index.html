@@ -14,8 +14,8 @@
 <meta name="theme-color" content="#16192a">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f1320;--surface:#1a2030;--surface2:#222a3c;--border:#2e3856;--accent:#00A0DF;--accent2:#00A0DF;--accent3:#00A0DF;--accent4:#00A0DF;--text:#e8eaf0;--muted:#7b8499;--positive:#2e9e6a;--negative:#c05050;--row-hover:rgba(0,160,223,.06);--row-even:rgba(0,160,223,.025);--row-total:rgba(0,160,223,.06);--vc-alejandra:#00A0DF;--vc-marcelo:#00C9A7;--vc-joel:#7B68EE;--vc-oscar:#D49A3B;--vc-sandra:#E85D75;--vc-diego:#8B9DC3;}
-[data-theme="light"]{--bg:#edf1f7;--surface:#ffffff;--surface2:#f2f6fb;--border:#c5d0de;--text:#0D181C;--muted:#6b7280;--row-hover:rgba(0,160,223,.05);--row-even:rgba(0,160,223,.02);--row-total:rgba(0,160,223,.05);--vc-alejandra:#0080B8;--vc-marcelo:#009E82;--vc-joel:#5A45D6;--vc-oscar:#B47D22;--vc-sandra:#C8354F;--vc-diego:#5E7499;}
+:root{--bg:#0f1320;--surface:#1a2030;--surface2:#222a3c;--border:#2e3856;--accent:#00A0DF;--accent2:#00A0DF;--accent3:#00A0DF;--accent4:#00A0DF;--accent-soft:rgba(0,160,223,.10);--accent-hover:rgba(0,160,223,.16);--text:#e8eaf0;--text-strong:#f5f7fb;--muted:#7b8499;--muted-soft:#5c6478;--positive:#3fb682;--positive-soft:rgba(63,182,130,.13);--negative:#d05b5b;--negative-soft:rgba(208,91,91,.13);--warning:#e0a24a;--warning-soft:rgba(224,162,74,.13);--row-hover:rgba(0,160,223,.05);--row-even:rgba(0,160,223,.02);--row-total:rgba(0,160,223,.06);--shadow-sm:0 1px 2px rgba(0,0,0,.16),0 1px 1px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.22);--vc-alejandra:#00A0DF;--vc-marcelo:#00C9A7;--vc-joel:#7B68EE;--vc-oscar:#D49A3B;--vc-sandra:#E85D75;--vc-diego:#8B9DC3;}
+[data-theme="light"]{--bg:#edf1f7;--surface:#ffffff;--surface2:#f2f6fb;--border:#c5d0de;--text:#0D181C;--text-strong:#000814;--muted:#6b7280;--muted-soft:#9aa3ae;--positive:#1f8e56;--positive-soft:rgba(31,142,86,.10);--negative:#b8434b;--negative-soft:rgba(184,67,75,.10);--warning:#b8811a;--warning-soft:rgba(184,129,26,.10);--accent-soft:rgba(0,160,223,.09);--accent-hover:rgba(0,160,223,.14);--row-hover:rgba(0,160,223,.05);--row-even:rgba(0,160,223,.02);--row-total:rgba(0,160,223,.05);--shadow-sm:0 1px 2px rgba(15,23,42,.06),0 1px 1px rgba(15,23,42,.03);--shadow-md:0 4px 12px rgba(15,23,42,.10);--vc-alejandra:#0080B8;--vc-marcelo:#009E82;--vc-joel:#5A45D6;--vc-oscar:#B47D22;--vc-sandra:#C8354F;--vc-diego:#5E7499;}
 .theme-toggle{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;flex-shrink:0;}
 .theme-toggle:hover{border-color:var(--accent);}
 .theme-toggle svg{width:18px;height:18px;color:var(--accent);transition:transform .3s;}
@@ -441,7 +441,51 @@ footer p{font-size:.75rem;color:var(--muted);}
 .skeleton-bar{background:linear-gradient(90deg,var(--surface2) 0%,var(--border) 50%,var(--surface2) 100%);background-size:200% 100%;animation:sk-shimmer 1.4s ease-in-out infinite;border-radius:4px;height:12px;}
 .skeleton-bar.tall{height:20px;}
 .skeleton-bar.short{width:60%;}
-.ct-empty{text-align:center;padding:3rem;color:#6b7280;font-size:14px;}
+.ct-empty{text-align:center;padding:3rem;color:var(--muted);font-size:.9rem;}
+/* ══ Impeccable: microinteracciones + entrance animations ══ */
+@keyframes ie-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes ie-rise-sm{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes ie-bar-grow{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1)}}
+@keyframes ie-spin{to{transform:rotate(360deg)}}
+@keyframes ie-glow{0%,100%{box-shadow:0 0 0 0 rgba(0,160,223,0)}50%{box-shadow:0 0 0 4px rgba(0,160,223,.14)}}
+/* KPI cards: entrance stagger cuando el módulo entra */
+#ventasScreen .kpi-card{animation:ie-rise .5s cubic-bezier(.16,1,.3,1) both;}
+#ventasScreen .kpi-card:nth-child(1){animation-delay:.02s}
+#ventasScreen .kpi-card:nth-child(2){animation-delay:.08s}
+#ventasScreen .kpi-card:nth-child(3){animation-delay:.14s}
+#ventasScreen .kpi-card:nth-child(4){animation-delay:.20s}
+#ventasScreen .kpi-card:hover{border-color:rgba(0,160,223,.35);transform:translateY(-1px);transition:border-color .18s ease,transform .18s ease;}
+/* Top-cats: título y rows con entrance */
+#ventasScreen .top-cats-card{animation:ie-rise .55s cubic-bezier(.16,1,.3,1) both;animation-delay:.24s;}
+#ventasScreen .top-cat-row{animation:ie-rise-sm .4s cubic-bezier(.16,1,.3,1) both;}
+#ventasScreen .top-cat-row:nth-child(1){animation-delay:.30s}
+#ventasScreen .top-cat-row:nth-child(2){animation-delay:.34s}
+#ventasScreen .top-cat-row:nth-child(3){animation-delay:.38s}
+#ventasScreen .top-cat-row:nth-child(4){animation-delay:.42s}
+#ventasScreen .top-cat-row:nth-child(5){animation-delay:.46s}
+/* Progress bar: crece desde 0 con easing suave */
+#ventasScreen .top-cat-bar-fill{transform-origin:left center;animation:ie-bar-grow .8s cubic-bezier(.16,1,.3,1) both;animation-delay:.42s;will-change:transform;}
+/* Row expand icon: rotación suave */
+tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+/* Refresh & gear microinteractions */
+.btn-refresh:hover svg,#audit-refresh:hover svg{animation:ie-spin .8s cubic-bezier(.4,0,.2,1);}
+#_cfgGear:hover svg{transform:rotate(30deg);transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+#_cfgGear svg{transition:transform .3s ease;}
+/* KPI value hover: subtle color shift */
+.kpi-card:hover .kpi-value{color:var(--text-strong);transition:color .18s ease;}
+/* Growth badge micro-glow al aparecer con delta significativo */
+.top-cat-growth.pos,.top-cat-growth.neg{transition:transform .12s ease,filter .12s ease;}
+.top-cat-growth:hover{transform:translateY(-1px);filter:brightness(1.08);}
+/* Section titles animate in */
+.header-left h1,.top-cats-title{animation:ie-rise .5s cubic-bezier(.16,1,.3,1) both;}
+/* Sub-tabs con indicador que sigue el active — smoother */
+.subtab.active{position:relative;}
+.subtab.active::after{content:'';position:absolute;left:1rem;right:1rem;bottom:-2px;height:2px;background:currentColor;border-radius:1px;animation:ie-rise-sm .28s cubic-bezier(.16,1,.3,1) both;}
+/* Reduced motion — desactivar todo lo animado */
+@media (prefers-reduced-motion:reduce){
+  #ventasScreen .kpi-card,#ventasScreen .top-cats-card,#ventasScreen .top-cat-row,#ventasScreen .top-cat-bar-fill,.header-left h1,.top-cats-title,.subtab.active::after{animation:none!important;}
+  .btn-refresh:hover svg,#audit-refresh:hover svg{animation:none!important;}
+}
 @media(max-width:768px){
   #cargoScreen .ct-body{padding:16px;}
   #cargoScreen .ct-title{font-size:28px!important;}
