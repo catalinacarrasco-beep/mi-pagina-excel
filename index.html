@@ -102,6 +102,25 @@ main{padding:2rem 3rem;}
 .kpi-sub{font-size:.75rem;color:var(--muted);margin-top:.25rem;}
 .kpi-delta{font-size:.8rem;font-weight:600;margin-top:.3rem;}
 .kpi-delta.pos{color:var(--positive);}.kpi-delta.neg{color:var(--negative);}
+/* Impeccable: KPI value variants — inyecta color según lo que carga el dato */
+.kpi-value.pos{color:var(--positive);}
+.kpi-value.neg{color:var(--negative);}
+.kpi-value.accent{color:var(--accent);}
+.kpi-value.muted{color:var(--muted);}
+.kpi-sub.pos{color:var(--positive);font-weight:600;}
+.kpi-sub.neg{color:var(--negative);font-weight:600;}
+/* Card tinted top-border sutil según variant (menor a 4px, no side-stripe) */
+.kpi-card-pos::before{background:linear-gradient(90deg,transparent,var(--positive),transparent);opacity:.5;height:1px;}
+.kpi-card-neg::before{background:linear-gradient(90deg,transparent,var(--negative),transparent);opacity:.5;height:1px;}
+.kpi-card-accent::before{background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.6;height:1px;}
+/* Impeccable: rank leading dot con intensidad decreciente por posición (ranked palette) */
+.top-cat-row{position:relative;padding-left:.5rem;}
+.top-cat-row::before{content:'';position:absolute;left:-.15rem;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--accent);}
+.top-cat-row:nth-child(1)::before{background:var(--accent);box-shadow:0 0 8px rgba(0,160,223,.6);width:8px;height:8px;left:-.35rem;}
+.top-cat-row:nth-child(2)::before{background:var(--accent);opacity:.75;}
+.top-cat-row:nth-child(3)::before{background:var(--accent);opacity:.55;}
+.top-cat-row:nth-child(4)::before{background:var(--muted);opacity:.6;}
+.top-cat-row:nth-child(5)::before{background:var(--muted);opacity:.4;}
 /* Impeccable: top-cats padding más generoso y radius consistente con otras cards */
 .top-cats-card{padding:1.75rem 1.75rem 1.5rem;margin-bottom:2.5rem;}
 .top-cats-header{margin-bottom:1.3rem;}
@@ -1795,16 +1814,17 @@ function renderKPIs(){
   getCats().forEach(c=>{const v=sumMonths(d.v26[c]);if(v>bval){bval=v;bcat=c;}});
   const label1=months.length===1?MESES[months[0]]+' 2026':periodStr()+' 2026';
   const label2=months.length===1?MESES[months[0]]+' 2025':periodStr()+' 2025';
+  var varKlass=pct===null?'':pct>=0?'pos':'neg';
+  var subKlass=diff===0?'':diff>0?'pos':'neg';
   document.getElementById('kpis').innerHTML=[
-    {l:label1,v:fmt(per26),s:'Período seleccionado',delta:null},
-    {l:label2,v:fmt(per25),s:'Mismo período año anterior',delta:null},
-    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':pct===null?'S/D':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),delta:null},
-    {l:'Top Categoría',v:bval>0?(bcat||'-'):'-',s:bval>0?fmt(bval):'Sin ventas',delta:null},
-  ].map(k=>`<div class="kpi-card" style="--kpi-color:${color}">
+    {l:label1,v:fmt(per26),s:'Período seleccionado',vk:'',sk:''},
+    {l:label2,v:fmt(per25),s:'Mismo período año anterior',vk:'muted',sk:''},
+    {l:'Variación vs 2025',v:(per26===0&&per25===0)?'–':pct===null?'S/D':(pct>0?'+':'')+pct.toFixed(1)+'%',s:fmtS(diff),vk:varKlass,sk:subKlass},
+    {l:'Top Categoría',v:bval>0?(bcat||'-'):'-',s:bval>0?fmt(bval):'Sin ventas',vk:'accent',sk:''},
+  ].map(k=>`<div class="kpi-card ${k.vk?'kpi-card-'+k.vk:''}" style="--kpi-color:${color}">
     <div class="kpi-label">${k.l}</div>
-    <div class="kpi-value">${k.v}</div>
-    <div class="kpi-sub">${k.s}</div>
-    ${k.delta!==null?`<div class="kpi-delta ${k.delta>=0?'pos':'neg'}">${k.delta>=0?'▲':'▼'} ${Math.abs(pct).toFixed(1)}% vs año anterior</div>`:''}
+    <div class="kpi-value ${k.vk}">${k.v}</div>
+    <div class="kpi-sub ${k.sk}">${k.s}</div>
   </div>`).join('');}
 
 function renderTopCats(){
