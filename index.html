@@ -14,8 +14,12 @@
 <meta name="theme-color" content="#16192a">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f1320;--surface:#1a2030;--surface2:#222a3c;--border:#2e3856;--accent:#00A0DF;--accent2:#00A0DF;--accent3:#00A0DF;--accent4:#00A0DF;--accent-soft:rgba(0,160,223,.10);--accent-hover:rgba(0,160,223,.16);--text:#e8eaf0;--text-strong:#f5f7fb;--muted:#7b8499;--muted-soft:#5c6478;--positive:#3fb682;--positive-soft:rgba(63,182,130,.13);--negative:#d05b5b;--negative-soft:rgba(208,91,91,.13);--warning:#e0a24a;--warning-soft:rgba(224,162,74,.13);--row-hover:rgba(0,160,223,.05);--row-even:rgba(0,160,223,.02);--row-total:rgba(0,160,223,.06);--shadow-sm:0 1px 2px rgba(0,0,0,.16),0 1px 1px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.22);--vc-alejandra:#00A0DF;--vc-marcelo:#00C9A7;--vc-joel:#7B68EE;--vc-oscar:#D49A3B;--vc-sandra:#E85D75;--vc-diego:#8B9DC3;}
-[data-theme="light"]{--bg:#edf1f7;--surface:#ffffff;--surface2:#f2f6fb;--border:#c5d0de;--text:#0D181C;--text-strong:#000814;--muted:#6b7280;--muted-soft:#9aa3ae;--positive:#1f8e56;--positive-soft:rgba(31,142,86,.10);--negative:#b8434b;--negative-soft:rgba(184,67,75,.10);--warning:#b8811a;--warning-soft:rgba(184,129,26,.10);--accent-soft:rgba(0,160,223,.09);--accent-hover:rgba(0,160,223,.14);--row-hover:rgba(0,160,223,.05);--row-even:rgba(0,160,223,.02);--row-total:rgba(0,160,223,.05);--shadow-sm:0 1px 2px rgba(15,23,42,.06),0 1px 1px rgba(15,23,42,.03);--shadow-md:0 4px 12px rgba(15,23,42,.10);--vc-alejandra:#0080B8;--vc-marcelo:#009E82;--vc-joel:#5A45D6;--vc-oscar:#B47D22;--vc-sandra:#C8354F;--vc-diego:#5E7499;}
+/* Impeccable: rampa de contraste verificada con WCAG (dark) */
+/* bg L=0.003 · surface L=0.016 (Δ 0.013, era 0.008) · border L=0.068 (Δ 0.052, era 0.026) */
+/* text↔bg 17.66:1 · muted↔surface 5.38:1 (era 4.33 = FAIL) · accent↔bg 6.63:1 */
+:root{--bg:#080b16;--surface:#1a2238;--surface2:#28324f;--surface3:#323e60;--border:#3d4870;--border-strong:#4e5a85;--accent:#00A0DF;--accent2:#00A0DF;--accent3:#00A0DF;--accent4:#00A0DF;--accent-soft:rgba(0,160,223,.10);--accent-hover:rgba(0,160,223,.18);--text:#f0f3f9;--text-strong:#ffffff;--muted:#8d97ac;--muted-soft:#6c7591;--positive:#3fb682;--positive-soft:rgba(63,182,130,.14);--negative:#d05b5b;--negative-soft:rgba(208,91,91,.14);--warning:#e0a24a;--warning-soft:rgba(224,162,74,.13);--row-hover:rgba(0,160,223,.06);--row-even:rgba(255,255,255,.015);--row-total:rgba(0,160,223,.08);--card-top-light:rgba(255,255,255,.06);--shadow-sm:0 1px 2px rgba(0,0,0,.30),0 1px 1px rgba(0,0,0,.18);--shadow-md:0 6px 16px rgba(0,0,0,.36),0 2px 4px rgba(0,0,0,.20);--shadow-lg:0 12px 32px rgba(0,0,0,.40);--vc-alejandra:#00A0DF;--vc-marcelo:#00C9A7;--vc-joel:#7B68EE;--vc-oscar:#D49A3B;--vc-sandra:#E85D75;--vc-diego:#8B9DC3;}
+/* Impeccable: light theme — bg más gris para que surface (white) despegue (Δ 0.164, era 0.124) */
+[data-theme="light"]{--bg:#e7ecf5;--surface:#ffffff;--surface2:#f4f7fb;--surface3:#eff2f8;--border:#c0cadb;--border-strong:#a3afc4;--text:#0D181C;--text-strong:#000814;--muted:#5a6371;--muted-soft:#9aa3ae;--positive:#1f8e56;--positive-soft:rgba(31,142,86,.10);--negative:#b8434b;--negative-soft:rgba(184,67,75,.10);--warning:#b8811a;--warning-soft:rgba(184,129,26,.10);--accent-soft:rgba(0,160,223,.09);--accent-hover:rgba(0,160,223,.14);--row-hover:rgba(0,160,223,.05);--row-even:rgba(0,0,0,.02);--row-total:rgba(0,160,223,.05);--card-top-light:transparent;--shadow-sm:0 1px 2px rgba(15,23,42,.06),0 1px 1px rgba(15,23,42,.03);--shadow-md:0 6px 16px rgba(15,23,42,.10),0 2px 4px rgba(15,23,42,.05);--shadow-lg:0 12px 32px rgba(15,23,42,.14);--vc-alejandra:#0080B8;--vc-marcelo:#009E82;--vc-joel:#5A45D6;--vc-oscar:#B47D22;--vc-sandra:#C8354F;--vc-diego:#5E7499;}
 .theme-toggle{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;flex-shrink:0;}
 .theme-toggle:hover{border-color:var(--accent);}
 .theme-toggle svg{width:18px;height:18px;color:var(--accent);transition:transform .3s;}
@@ -84,19 +88,22 @@ header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--border);display:fl
 main{padding:2rem 3rem;}
 /* Impeccable: KPI grid con más aire entre cards */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;margin-bottom:2rem;}
-/* Impeccable: single elevation lane (border defined edges), no ghost card */
-.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;transition:border-color .18s ease,transform .1s ease;}
-.kpi-card:hover{border-color:rgba(0,160,223,.35);}
-.top-cats-card,.table-wrap,.client-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+/* Impeccable: cards con elevación real (shadow-sm) + top-light hint (dark UI depth rule) */
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.5rem 1.25rem;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color .18s ease,transform .1s ease,box-shadow .18s ease;}
+.kpi-card::before{content:'';position:absolute;inset:0 0 auto 0;height:1px;background:var(--card-top-light);pointer-events:none;}
+.kpi-card:hover{border-color:var(--border-strong);box-shadow:var(--shadow-md);}
+.top-cats-card,.table-wrap,.client-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
+.top-cats-card::before,.table-wrap::before,.client-section::before{content:'';position:absolute;inset:0 0 auto 0;height:1px;background:var(--card-top-light);pointer-events:none;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--accent));}
 /* Impeccable: KPI label — más contraste jerárquico */
 .kpi-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--muted);margin-bottom:.6rem;}
-/* Impeccable: dashboard KPIs use DM Sans bold (Bebas → deportivo tell). Bebas se reserva para títulos de módulo. */
-.kpi-value{font-family:'DM Sans',sans-serif;font-weight:700;font-size:2rem;letter-spacing:-.02em;color:var(--text);line-height:1.1;font-variant-numeric:tabular-nums;}
+/* Impeccable: KPI value con más peso visual (2rem→2.4rem) + text-strong para máximo contraste */
+.kpi-value{font-family:'DM Sans',sans-serif;font-weight:700;font-size:2.4rem;letter-spacing:-.03em;color:var(--text-strong);line-height:1.05;font-variant-numeric:tabular-nums;}
 .kpi-sub{font-size:.75rem;color:var(--muted);margin-top:.25rem;}
 .kpi-delta{font-size:.8rem;font-weight:600;margin-top:.3rem;}
 .kpi-delta.pos{color:var(--positive);}.kpi-delta.neg{color:var(--negative);}
-.top-cats-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:2rem;}
+/* Impeccable: top-cats padding más generoso y radius consistente con otras cards */
+.top-cats-card{padding:1.75rem 1.75rem 1.5rem;margin-bottom:2.5rem;}
 .top-cats-header{margin-bottom:1.3rem;}
 /* Impeccable: section title — Bebas se ve mejor a 1.4rem con letter-spacing más aire */
 .top-cats-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;color:var(--text);line-height:1;}
