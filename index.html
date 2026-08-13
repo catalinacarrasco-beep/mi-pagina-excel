@@ -110,15 +110,18 @@ main{padding:2rem 3rem;}
 .top-cats-subtitle{font-size:.78rem;color:var(--muted);margin-top:.35rem;line-height:1.5;}
 .top-cats-list{display:flex;flex-direction:column;gap:.6rem;}
 .top-cat-row{display:flex;align-items:center;gap:1rem;}
-.top-cat-rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:24px;flex-shrink:0;text-align:center;}
+/* Impeccable: rank number con más peso visual + accent en first */
+.top-cat-rank{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--muted-soft);width:26px;flex-shrink:0;text-align:center;line-height:1;letter-spacing:.02em;}
 /* Impeccable: ranking colors — gold/silver/bronze off-brand, uso escala de intensidad accent */
 .top-cat-rank.first{color:var(--accent);font-weight:700;}
 .top-cat-rank.second{color:var(--text);}
 .top-cat-rank.third{color:var(--muted);}
 .top-cat-info{flex:1;}
 .top-cat-name{font-size:.9rem;font-weight:600;color:var(--text);letter-spacing:.01em;}
-.top-cat-bar-track{height:6px;background:var(--surface2);border-radius:3px;margin-top:.3rem;overflow:hidden;}
-.top-cat-bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+/* Impeccable: bar track más definido + fill con highlight sutil de brillo arriba */
+.top-cat-bar-track{height:8px;background:var(--surface3,var(--surface2));border-radius:4px;margin-top:.35rem;overflow:hidden;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,.2);}
+.top-cat-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;box-shadow:0 0 8px -1px rgba(0,160,223,.3);}
+.top-cat-bar-fill::before{content:'';position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);border-radius:inherit;pointer-events:none;}
 /* Impeccable: KPI numbers alineados con tabular-nums, growth como chip con más aire */
 .top-cat-val{font-size:.9rem;font-weight:600;color:var(--text);white-space:nowrap;text-align:right;min-width:110px;font-variant-numeric:tabular-nums;}
 .top-cat-pct{font-size:.75rem;color:var(--muted);text-align:right;min-width:52px;font-variant-numeric:tabular-nums;}
@@ -194,7 +197,7 @@ tr.prod-row td.cell-zero{color:var(--muted);}
 
 .prod-tooltip{position:fixed;display:none;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.4rem .75rem;z-index:1000;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.6);}
 .pt-stock-label{font-size:.72rem;color:var(--muted);display:inline;}
-.pt-stock-val{font-size:.82rem;font-weight:600;color:#fff;display:inline;margin-left:.3rem;}
+.pt-stock-val{font-size:.82rem;font-weight:700;color:var(--text-strong);display:inline;margin-left:.3rem;}
 .pt-stock-val.zero{color:var(--negative);}
 .pt-na{font-size:.72rem;color:var(--muted);}
 
@@ -238,7 +241,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .pt-code{font-family:monospace;font-size:.72rem;color:var(--accent);margin-bottom:.3rem;}
 .pt-desc{font-size:.78rem;color:var(--text);margin-bottom:.6rem;line-height:1.3;}
 .pt-stock-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-.pt-stock-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.04em;color:#fff;}
+.pt-stock-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.04em;color:var(--text-strong);}
 .pt-stock-val.zero{color:var(--negative);}
 .pt-na{font-size:.75rem;color:var(--muted);font-style:italic;}
 
@@ -279,7 +282,7 @@ footer p{font-size:.75rem;color:var(--muted);}
 .pt-code{font-family:monospace;font-size:.72rem;color:var(--accent);margin-bottom:.3rem;}
 .pt-desc{font-size:.78rem;color:var(--text);margin-bottom:.6rem;line-height:1.3;}
 .pt-stock-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-.pt-stock-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.04em;color:#fff;}
+.pt-stock-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.04em;color:var(--text-strong);}
 .pt-stock-val.zero{color:var(--negative);}
 .pt-na{font-size:.75rem;color:var(--muted);font-style:italic;}
 
