@@ -2634,7 +2634,7 @@ function enterVentas(){
   if(sessionStorage.getItem('gs_ventas_stale')==='1'){
     sessionStorage.setItem('gs_screen','ventas');
     sessionStorage.removeItem('gs_ventas_stale');
-    location.reload();return;
+    _silentReload();return;
   }
   sessionStorage.setItem('gs_screen','ventas');
   fadeOut(document.getElementById('homeScreen'), ()=>{
@@ -3419,7 +3419,7 @@ function enterVentas(){
   if(sessionStorage.getItem('gs_ventas_stale')==='1'){
     sessionStorage.setItem('gs_screen','ventas');
     sessionStorage.removeItem('gs_ventas_stale');
-    location.reload();return;
+    _silentReload();return;
   }
   sessionStorage.setItem('gs_screen','ventas');
   fadeOut(document.getElementById('homeScreen'), ()=>{
@@ -4717,18 +4717,38 @@ var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementB
 window._pageEtag=null;
 // ponytail: solo Ventas depende del HTML embebido. Otros módulos leen de Supabase
 // en tiempo real, no necesitan reload — solo los interrumpe.
+// Silent-reload: guarda scroll y espera a que el tab esté oculto para reload,
+// asi el usuario nunca ve el flash.
+function _saveScrollForReload(){
+  try{sessionStorage.setItem('gs_scrollY',String(window.scrollY||0));}catch(e){}
+}
+function _silentReload(){
+  _saveScrollForReload();
+  // Fade rápido antes del hard reload — evita flash blanco brutal
+  document.documentElement.style.transition='opacity .18s';
+  document.documentElement.style.opacity='0';
+  setTimeout(function(){location.reload();},180);
+}
+var _pendingSilentReload=false;
 function _maybeReloadForDeploy(){
   var scr=sessionStorage.getItem('gs_screen')||'home';
-  if(scr==='ventas'||scr==='home'){location.reload();return;}
-  // Marca stale y espera a que naveguen a Ventas
+  // Home tiene poco estado — reload directo
+  if(scr==='home'){_silentReload();return;}
+  // En cualquier módulo: espera a que el usuario mire para otro lado
+  if(_pendingSilentReload)return;
+  _pendingSilentReload=true;
   sessionStorage.setItem('gs_ventas_stale','1');
+  var trigger=function(){if(document.visibilityState==='hidden')_silentReload();};
+  document.addEventListener('visibilitychange',trigger);
+  // Fallback: si el usuario nunca ausenta la vista, reload tras 30min
+  setTimeout(function(){if(_pendingSilentReload)_silentReload();},30*60*1000);
 }
 (function(){
   function check(){
     fetch(location.href,{method:'HEAD',cache:'no-store'})
       .then(function(r){
         var e=r.headers.get('etag')||r.headers.get('last-modified');
-        if(e){if(window._pageEtag&&e!==window._pageEtag&&document.visibilityState!=='hidden'){_maybeReloadForDeploy();}window._pageEtag=e;}
+        if(e){if(window._pageEtag&&e!==window._pageEtag){_maybeReloadForDeploy();}window._pageEtag=e;}
       }).catch(function(){});
   }
   setTimeout(function(){check();setInterval(check,5*60*1000);},3000);
@@ -4739,7 +4759,7 @@ function checkAndRefresh(btn){
   fetch(location.href,{method:'HEAD',cache:'no-store'})
     .then(function(r){
       var e=r.headers.get('etag')||r.headers.get('last-modified');
-      if(e&&window._pageEtag&&e!==window._pageEtag){location.reload();}
+      if(e&&window._pageEtag&&e!==window._pageEtag){_silentReload();}
       else{
         if(e)window._pageEtag=e;
         btn.textContent='✓ Al día';
@@ -4800,6 +4820,9 @@ function checkAndRefresh(btn){
     if(hs6)hs6.style.display='none';
     if(au){au.style.display='flex';au.style.opacity='1';setTimeout(function(){if(typeof _auditLoad==='function')_auditLoad();},50);}
   }
+  // Restaurar scroll tras silent reload
+  var sy=sessionStorage.getItem('gs_scrollY');
+  if(sy){sessionStorage.removeItem('gs_scrollY');setTimeout(function(){window.scrollTo(0,+sy);},120);}
 })();
 </script>
 </div>
@@ -5104,9 +5127,10 @@ function _pushData(parsed){
   .then(function(j){
     if(j.ok){
       _cfgSetStep(4, 100, 'Completado');
-      _cfgShowDone('✓ Actualizado · '+j.dateStr+' — recargando...', true);
+      _cfgShowDone('✓ Actualizado · '+j.dateStr, true);
       _xlsxStatus('✓ Actualizado '+j.dateStr, '#1fa060');
-      setTimeout(function(){ location.reload(); }, 35000);
+      // Espera 35s para que Vercel termine el deploy, luego silent reload
+      setTimeout(_silentReload, 35000);
     } else {
       _cfgShowDone('Error: '+(j.error||'desconocido'), false);
       _xlsxStatus('Error: '+(j.error||'desconocido'), '#c05050');
@@ -5743,9 +5767,9 @@ async function updPublish(){
 
     btn.innerHTML='✓ Publicado';
     btn.style.background='#2e9e6a';
-    status.innerHTML='<b style="color:#2e9e6a">✓ Datos publicados</b> · '+j.dateStr+' · recargando en 35 segundos...';
+    status.innerHTML='<b style="color:#2e9e6a">✓ Datos publicados</b> · '+j.dateStr;
 
-    setTimeout(function(){location.reload();},35000);
+    setTimeout(_silentReload,35000);
 
   } catch(err){
     console.error('Publish error:',err);
