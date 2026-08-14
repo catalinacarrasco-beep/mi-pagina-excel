@@ -1001,7 +1001,7 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 .ls-rings{position:absolute;inset:0;pointer-events:none;}
 
 .ls-card{
-  background:var(--surface);
+  background:#ffffff;
   border-radius:12px;
   border:1px solid rgba(0,160,223,.22);
   padding:2.5rem 2.5rem 2rem;
@@ -1012,37 +1012,31 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 }
 .ls-brand{
   display:flex;flex-direction:column;align-items:center;
-  gap:.15rem;margin-bottom:1.5rem;
+  gap:.15rem;margin-bottom:1.2rem;
 }
-.ls-brand-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:2.8rem;letter-spacing:.08em;line-height:1;
-  color:#e8eaf0;
-}
-.ls-brand-name span{color:inherit;}
-.ls-brand-tag{
-  font-size:.62rem;color:var(--muted);
-  letter-spacing:.18em;text-transform:uppercase;
-}
+.ls-logo-full{width:180px;height:auto;display:block;}
+.ls-logo-full path{fill:#0D181C;transition:fill .2s;}
+.ls-logo-full g:last-child rect,
+.ls-logo-full g:last-child path{fill:#00A0DF !important;}
 .ls-label{
-  font-size:.65rem;letter-spacing:.22em;color:var(--muted);
-  text-transform:uppercase;font-weight:500;margin-bottom:.9rem;
+  font-size:.78rem;letter-spacing:.22em;color:#5a6371;
+  text-transform:uppercase;font-weight:600;margin-bottom:.9rem;
 }
 .ls-divider{
-  width:28px;height:1px;background:var(--border);margin-bottom:1.5rem;
+  width:28px;height:1px;background:#c0cadb;margin-bottom:1.5rem;
 }
 .ls-form{width:100%;display:flex;flex-direction:column;gap:.7rem;}
 .ls-input{
   width:100%;padding:.78rem 1rem;
-  border:1px solid var(--border);border-radius:6px;
-  background:var(--surface2);
+  border:1px solid #c0cadb;border-radius:6px;
+  background:#f6f8fb;
   font-size:.9rem;font-family:'DM Sans',sans-serif;
-  color:var(--text);outline:none;
-  transition:border-color .15s,background .15s;
+  color:#0D181C;outline:none;
+  transition:border-color .15s,background .15s,box-shadow .15s;
   letter-spacing:.08em;
 }
-.ls-input::placeholder{color:#8a9ab0;}
-.ls-input:focus{border-color:var(--accent);background:#1e2540;}
+.ls-input::placeholder{color:#94a3b8;}
+.ls-input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(0,160,223,.12);}
 .ls-input.ls-shake{animation:lsShake .35s ease;}
 .ls-btn{
   width:100%;padding:.78rem;
@@ -1056,12 +1050,12 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 .ls-btn:hover{background:#2a94c0;}
 .ls-btn:active{transform:scale(.98);}
 .ls-card-footer{
-  font-size:.56rem;color:#3d4a5c;
+  font-size:.56rem;color:#8d97ac;
   letter-spacing:.12em;text-transform:uppercase;margin-top:1.5rem;
 }
 @keyframes lsShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 @media(prefers-reduced-motion:reduce){#loginScreen{transition:none}.ls-input.ls-shake{animation:none}}
-@media(max-width:480px){.ls-greeting{font-size:1.9rem;margin-bottom:1.6rem;}.ls-card{padding:2rem 1.5rem 1.5rem;}}
+@media(max-width:480px){.ls-greeting{font-size:1.9rem;margin-bottom:1.6rem;}.ls-card{padding:2rem 1.5rem 1.5rem;}.ls-logo-full{width:150px;}}
 /* ── LOGIN BULB ANIMATION ──── */
 .ls-bulb-wrap{position:absolute;z-index:0;pointer-events:none;opacity:.75;}
 .ls-bulb-wrap.ls-bulb-r{right:8%;top:15%;width:280px;height:400px;}
@@ -1084,10 +1078,10 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 @keyframes lsFadeGlow{to{opacity:1;}}
 .ls-particles{position:absolute;inset:0;z-index:0;pointer-events:none;}
 /* ── LOGIN FORM UX ──── */
-.ls-field-label{display:block;font-size:.68rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:.35rem;text-align:left;width:100%;}
+.ls-field-label{display:block;font-size:.68rem;letter-spacing:.18em;color:#5a6371;text-transform:uppercase;font-weight:500;margin-bottom:.35rem;text-align:left;width:100%;}
 .ls-pwd-wrap{position:relative;width:100%;}
 .ls-pwd-wrap .ls-input{padding-right:2.8rem;}
-.ls-pwd-toggle{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;display:flex;align-items:center;justify-content:center;transition:color .15s;}
+.ls-pwd-toggle{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#5a6371;padding:4px;display:flex;align-items:center;justify-content:center;transition:color .15s;}
 .ls-pwd-toggle:hover{color:var(--accent);}
 .ls-pwd-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;}
 .ls-pwd-toggle svg{width:18px;height:18px;}
@@ -1270,9 +1264,18 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 
   <div class="ls-card">
     <div class="ls-brand">
-      <svg class="ls-logo-mark" viewBox="22 18 143 143" fill="none" aria-hidden="true"><rect x="93.2" y="79.8" width="67.6" height="17.4" fill="#00A0DF"/><path d="M135.7,115c-8.9,14.2-24.6,23.7-42.6,23.7c-27.7,0-50.2-22.5-50.2-50.2s22.5-50.2,50.2-50.2c17.9,0,33.7,9.5,42.6,23.7h19.6C145,37.9,121,20.9,93.2,20.9c-37.3,0-67.6,30.3-67.6,67.6s30.3,67.6,67.6,67.6c27.9,0,51.8-17,62.2-41.1C155.4,115,135.7,115,135.7,115z" fill="#00A0DF"/></svg>
-      <div class="ls-brand-name">GRANTT</div>
-      <div class="ls-brand-tag">Enciende tu energía</div>
+      <svg class="ls-logo-full" viewBox="0 0 469.8 207.5" xmlns="http://www.w3.org/2000/svg" aria-label="Grantt">
+        <g>
+          <path d="M205.1,78.5v19.5c-9.1-1.1-20.5,3-20.5,17.2v32.3h-17.4V79.8h17.4v11.6C188,82.3,196.6,78.5,205.1,78.5z"/>
+          <path d="M279.6,79.8v67.5h-17.4v-8c-4.9,6.1-12.2,9.9-22,9.9c-18,0-32.8-15.5-32.8-35.7S222.2,78,240.2,78c9.9,0,17.2,3.8,22,9.9v-8H279.6z M262.2,113.6c0-11.3-8-19-18.8-19c-10.7,0-18.6,7.7-18.6,19c0,11.3,8,19,18.6,19C254.2,132.7,262.2,125,262.2,113.6z"/>
+          <path d="M350.2,105.9v41.5h-17.4v-39.3c0-9.2-5.5-13.9-13.4-13.9c-8.5,0-14.9,5-14.9,16.8v36.5h-17.4V79.8h17.4v7.6c4.1-6.1,11.1-9.5,20.1-9.5C339,78,350.2,88,350.2,105.9z"/>
+          <path d="M437.6,97.2V79.8h-15.3V60.9l-17.4,5.3v13.6h-22.6V60.9l-17.4,5.3v13.6h-11.8v17.4h11.8v27.4c0,18.2,8.2,25.4,32.7,22.7v-15.8c-10,0.5-15.3,0.4-15.3-6.9V97.2h22.6v27.4c0,18.2,8.2,25.4,32.7,22.7v-15.8c-10,0.5-15.3,0.4-15.3-6.9V97.2H437.6z"/>
+        </g>
+        <g>
+          <rect x="93.2" y="79.8" fill="#00A0DF" width="67.6" height="17.4"/>
+          <path fill="#00A0DF" d="M135.7,115c-8.9,14.2-24.6,23.7-42.6,23.7c-27.7,0-50.2-22.5-50.2-50.2c0-27.7,22.5-50.2,50.2-50.2c17.9,0,33.7,9.5,42.6,23.7h19.6C145,37.9,121,20.9,93.2,20.9c-37.3,0-67.6,30.3-67.6,67.6s30.3,67.6,67.6,67.6c27.9,0,51.8-17,62.2-41.1H135.7z"/>
+        </g>
+      </svg>
     </div>
     <div class="ls-label">Dashboard Comercial</div>
     <div class="ls-divider"></div>
