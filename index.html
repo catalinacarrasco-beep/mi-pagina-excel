@@ -1779,9 +1779,27 @@ let currentVendedor='GENERAL', currentView='valores';
 function defaultMonths(v){return new Set([new Date().getMonth()]);}
 let selectedMonths=defaultMonths('GENERAL');
 
-
-
-
+// Save/restore de estado UI de Ventas para silent reload
+window.__ventasSaveState=function(){
+  try{sessionStorage.setItem('gs_ventas_state',JSON.stringify({
+    months:Array.from(selectedMonths),
+    expanded:Array.from(expandedCats),
+    view:currentView,
+    vendedor:currentVendedor
+  }));}catch(e){}
+};
+window.__ventasRestoreState=function(){
+  try{
+    var s=sessionStorage.getItem('gs_ventas_state');
+    if(!s)return;
+    sessionStorage.removeItem('gs_ventas_state');
+    var d=JSON.parse(s);
+    if(d.months&&d.months.length)selectedMonths=new Set(d.months);
+    if(d.expanded)expandedCats=new Set(d.expanded);
+    if(d.view)currentView=d.view;
+    if(d.vendedor)currentVendedor=d.vendedor;
+  }catch(e){}
+};
 
 let expandedCats=new Set();
 function fmt(n){if(!n||n===0)return'$-';const abs='$'+Math.abs(Math.round(n)).toLocaleString('es-CL');return n<0?'-'+abs:abs;}
@@ -4724,6 +4742,7 @@ function _saveScrollForReload(){
 }
 function _silentReload(){
   _saveScrollForReload();
+  if(typeof window.__ventasSaveState==='function')window.__ventasSaveState();
   // Fade rápido antes del hard reload — evita flash blanco brutal
   document.documentElement.style.transition='opacity .18s';
   document.documentElement.style.opacity='0';
@@ -4784,6 +4803,8 @@ function checkAndRefresh(btn){
     var vs=document.getElementById('ventasScreen');
     if(hs)hs.style.display='none';
     if(vs){vs.style.display='block';vs.style.opacity='1';}
+    // Restaurar mes activo + filas expandidas antes de renderizar
+    if(typeof window.__ventasRestoreState==='function')window.__ventasRestoreState();
     var tab=sessionStorage.getItem('gs_tab')||'GENERAL';
     var tabEl=document.querySelector('.tab[data-v="'+tab+'"]');
     if(tabEl&&typeof setMainTab==='function')setMainTab(tab,tabEl);
