@@ -5280,6 +5280,7 @@ function _closeCfgModal(){var m=document.getElementById('_cfgModalBg');if(m)m.st
       <button class="upd-btn-load" onclick="document.getElementById('upd-input-ventas').click()">
         <svg class="upd-folder" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Cargar Excel
       </button>
+      <div id="upd-newsku-panel" style="display:none;margin-top:.9rem;"></div>
     </div>
 
     <div class="upd-card">
@@ -5544,7 +5545,21 @@ function _updProcessFile(type,file){
           previewMeta='Cargado ahora · '+parsed.count.toLocaleString('es-CL')+' SKUs con stock';
         } else if(type==='ventas'){
           var nSkus=Object.keys(parsed.products).length;
-          previewMeta='Cargado ahora · '+nSkus.toLocaleString('es-CL')+' SKUs · mes detectado: '+_updMonthsFull[parsed.monthIdx];
+          // Detectar SKUs nuevos (no existen en DETAIL_GEN26)
+          var curGen=_updGetGlobal('DETAIL_GEN26')||{};
+          var existing={};
+          Object.keys(curGen).forEach(function(cat){(curGen[cat]||[]).forEach(function(it){existing[_updNorm(it.cod)]=1;});});
+          var newList=[];
+          Object.keys(parsed.products).forEach(function(codN){
+            if(!existing[codN]){var p=parsed.products[codN];newList.push({codN:codN,cod:p.cod,desc:p.desc,monto:p.monto,cat:null});}
+          });
+          _updStaged.ventas.newSkus=newList;
+          var newWarn='';
+          if(newList.length){
+            var newTot=newList.reduce(function(s,x){return s+(x.monto||0);},0);
+            newWarn=' · <span class="upd-warn">⚠ '+newList.length+' SKUs nuevos ('+newTot.toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0})+') — categorizá antes de publicar</span>';
+          }
+          previewMeta='Cargado ahora · '+nSkus.toLocaleString('es-CL')+' SKUs · mes detectado: '+_updMonthsFull[parsed.monthIdx]+newWarn;
         } else if(type==='margen'){
           var warn='';
           var unkKeys=Object.keys(parsed.vendorsUnknown);
@@ -5556,6 +5571,7 @@ function _updProcessFile(type,file){
         }
         if(drop){drop.classList.add('upd-loaded');drop.innerHTML='<span>✓</span> <code>'+file.name+'</code> — listo';}
         if(meta)meta.innerHTML=previewMeta;
+        if(type==='ventas')_updRenderNewSkus();
         _updUpdateFooter();
       } catch(err){
         console.error('Parse error',err);
@@ -5589,6 +5605,28 @@ function _updEnsure12(arr){
   var v=Array(12).fill(0);
   if(Array.isArray(arr))for(var i=0;i<12&&i<arr.length;i++)v[i]=arr[i]||0;
   return v;
+}
+// Panel de SKUs nuevos: lista + dropdown por categoría
+function _updRenderNewSkus(){
+  var panel=document.getElementById('upd-newsku-panel');if(!panel)return;
+  var st=_updStaged.ventas;
+  if(!st||!st.newSkus||!st.newSkus.length){panel.style.display='none';panel.innerHTML='';return;}
+  var curGen=_updGetGlobal('DETAIL_GEN26')||{};
+  var cats=Object.keys(curGen).filter(function(c){return c!=='SIN CATEGORIZAR';}).sort();
+  cats.push('SIN CATEGORIZAR');
+  var rows=st.newSkus.map(function(sku,i){
+    var opts='<option value="">— elegir —</option>'+cats.map(function(c){return'<option value="'+c+'"'+(sku.cat===c?' selected':'')+'>'+c+'</option>';}).join('');
+    return'<tr><td style="font-family:\'DM Sans\',sans-serif;font-weight:600;color:var(--text);white-space:nowrap;">'+sku.cod+'</td><td style="color:var(--muted);font-size:.72rem;">'+(sku.desc||'—')+'</td><td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--text);white-space:nowrap;">'+(sku.monto||0).toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0})+'</td><td><select onchange="_updSetNewSkuCat('+i+',this.value)" style="width:100%;padding:4px 6px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.72rem;">'+opts+'</select></td></tr>';
+  }).join('');
+  var assigned=st.newSkus.filter(function(x){return x.cat;}).length;
+  var total=st.newSkus.length;
+  panel.style.display='block';
+  panel.innerHTML='<div style="border:1px solid var(--border);border-radius:8px;background:var(--surface2);padding:.75rem .9rem;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.55rem;"><div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);">SKUs nuevos · asigná categoría</div><div style="font-size:.68rem;color:var(--muted);">'+assigned+'/'+total+' asignados</div></div><div style="max-height:220px;overflow-y:auto;border-radius:6px;background:var(--surface);"><table style="width:100%;border-collapse:collapse;font-size:.74rem;"><thead style="position:sticky;top:0;background:var(--surface2);z-index:1;"><tr><th style="text-align:left;padding:6px 8px;color:var(--muted);font-weight:600;letter-spacing:.06em;font-size:.65rem;">CÓDIGO</th><th style="text-align:left;padding:6px 8px;color:var(--muted);font-weight:600;letter-spacing:.06em;font-size:.65rem;">DESCRIPCIÓN</th><th style="text-align:right;padding:6px 8px;color:var(--muted);font-weight:600;letter-spacing:.06em;font-size:.65rem;">MONTO</th><th style="text-align:left;padding:6px 8px;color:var(--muted);font-weight:600;letter-spacing:.06em;font-size:.65rem;min-width:150px;">CATEGORÍA</th></tr></thead><tbody>'+rows+'</tbody></table></div><div style="font-size:.66rem;color:var(--muted);margin-top:.5rem;">Los SKUs sin categoría se publican como <b>SIN CATEGORIZAR</b>.</div></div>';
+}
+function _updSetNewSkuCat(idx,cat){
+  var st=_updStaged.ventas;if(!st||!st.newSkus||!st.newSkus[idx])return;
+  st.newSkus[idx].cat=cat||null;
+  _updRenderNewSkus();
 }
 // Setea vals[monthIdx] para un cod en un {cat:[{cod,desc,vals}]}. Retorna true si encontró.
 function _updSetInGroup(group,codNorm,monthIdx,newVal){
@@ -5709,11 +5747,20 @@ async function updPublish(){
       var mi=vp.monthIdx;
       // Resetear mes actual en todo gen26
       _updZeroMonth(newGen26,mi);
+      // Mapa de asignaciones de SKUs nuevos (codN → cat elegida)
+      var newSkuCat={};
+      (_updStaged.ventas.newSkus||[]).forEach(function(x){newSkuCat[x.codN]=x.cat||'SIN CATEGORIZAR';});
       // Aplicar montos del archivo
       Object.keys(vp.products).forEach(function(codN){
         var p=vp.products[codN];
         var ok=_updSetInGroup(newGen26,codN,mi,p.monto);
-        if(!ok)skipped.push('Ventas: '+p.cod+' (SKU no existe en dashboard actual)');
+        if(!ok){
+          // SKU nuevo — insertar en la categoría elegida (o SIN CATEGORIZAR)
+          var cat=newSkuCat[codN]||'SIN CATEGORIZAR';
+          if(!newGen26[cat])newGen26[cat]=[];
+          var vals=Array(12).fill(0);vals[mi]=p.monto;
+          newGen26[cat].push({cod:p.cod,desc:p.desc,vals:vals});
+        }
       });
     }
 
