@@ -1771,7 +1771,14 @@ const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','
 const MESES_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const CATS_VENDOR=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
 const CATS_GENERAL=['BLOQUEADO','BORNERAS','CANALETAS','EXTENSIONES','HERRAMIENTAS','ILUMINACION','INDUSTRIAL','OBSOLETO','PLACAS MURALES','PORTALAMPARAS','Proceso de Alimentos','SMART','VOLANTES'];
-function getCats(){return currentVendedor==='GENERAL'?CATS_GENERAL:CATS_VENDOR;}
+function getCats(){
+  if(currentVendedor!=='GENERAL')return CATS_VENDOR;
+  // GENERAL: union de las categorias fijas + cualquier categoria nueva presente en gen26/25
+  var seen={};CATS_GENERAL.forEach(function(c){seen[c]=1;});
+  try{if(typeof DETAIL_GEN26!=='undefined')Object.keys(DETAIL_GEN26).forEach(function(c){seen[c]=1;});}catch(e){}
+  try{if(typeof DETAIL_GEN25!=='undefined')Object.keys(DETAIL_GEN25).forEach(function(c){seen[c]=1;});}catch(e){}
+  return Object.keys(seen);
+}
 const COLORS={ALEJANDRA:'#00A0DF',MARCELO:'#00A0DF',JOEL:'#00A0DF',GENERAL:'#00A0DF',OSCAR:'#00A0DF',DIEGO:'#00A0DF',SANDRA:'#00A0DF'};
 const NAMES={ALEJANDRA:'Alejandra',MARCELO:'Marcelo',JOEL:'Joel',GENERAL:'General',OSCAR:'Oscar',DIEGO:'Diego',SANDRA:'Sandra'};
 
@@ -5667,7 +5674,11 @@ function _updRebuildResumen(vend26,vend25,gen26,gen25){
     });
   });
   out.GENERAL={v26:{},v25:{}};
-  ALL_CATS.forEach(function(cat){
+  // Union de ALL_CATS + cats presentes en gen26/25 (para incluir SIN CATEGORIZAR y cats nuevas)
+  var GEN_CATS={};ALL_CATS.forEach(function(c){GEN_CATS[c]=1;});
+  Object.keys(gen26||{}).forEach(function(c){GEN_CATS[c]=1;});
+  Object.keys(gen25||{}).forEach(function(c){GEN_CATS[c]=1;});
+  Object.keys(GEN_CATS).forEach(function(cat){
     var t26=Array(12).fill(0);(gen26[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t26[i]+=x;});});
     out.GENERAL.v26[cat]=t26;
     var t25=Array(12).fill(0);(gen25[cat]||[]).forEach(function(p){_updEnsure12(p.vals).forEach(function(x,i){t25[i]+=x;});});
