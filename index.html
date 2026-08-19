@@ -5459,7 +5459,8 @@ function _updParseMargen(wb){
     months[monthIdx]=true;
     var vCodeInt=parseInt(vCode);
     var vName=_updVendMap[vCodeInt];
-    if(!vName){vendorsUnknown[vCodeInt]=(vendorsUnknown[vCodeInt]||0)+1;continue;}
+    // Códigos 55 y 70 se ignoran por diseño (pedido de Catalina, no son vendedores válidos)
+    if(!vName){if(vCodeInt!==55&&vCodeInt!==70)vendorsUnknown[vCodeInt]=(vendorsUnknown[vCodeInt]||0)+1;continue;}
     vendorsFound[vName]=true;
     if(!byVendor[vName])byVendor[vName]={};
     var codN=_updNorm(cod);
