@@ -1544,7 +1544,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
           <select id="ms-filter-estado" onchange="msFilter()">
             <option value="">Todos</option>
             <option value="EN PROCESO">En proceso</option>
-            <option value="EN PREPARACION">En Preparación</option>
+            <option value="EN REVISION CALIDAD">Rev. calidad</option>
             <option value="EN CERTIFICACION">En Certificación</option>
             <option value="CERRADO">Cerrado</option>
           </select>
@@ -1597,7 +1597,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
         <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Estado</label>
         <select id="msModEst" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;">
           <option value="EN PROCESO">En proceso</option>
-          <option value="EN PREPARACION">En Preparación</option>
+          <option value="EN REVISION CALIDAD">Rev. calidad</option>
           <option value="EN CERTIFICACION">En Certificación</option>
           <option value="CERRADO">Cerrado</option>
         </select>
@@ -2454,7 +2454,7 @@ function msLoad(){try{return JSON.parse(localStorage.getItem(MS_KEY)||'[]');}cat
 function msSave(data){localStorage.setItem(MS_KEY,JSON.stringify(data));}
 function msId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function msDias(fCot,fEnt){if(!fCot||!fEnt)return'—';const d=Math.round((new Date(fEnt)-new Date(fCot))/86400000);return d>=0?d:'—';}
-function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN PREPARACION'?'prep':e==='EN CERTIFICACION'?'cert':e==='EN TRAMITE'?'tramite':'pendiente';}
+function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN REVISION CALIDAD'?'prep':e==='EN CERTIFICACION'?'cert':e==='EN TRAMITE'?'tramite':'pendiente';}
 function msFormatDate(d){if(!d)return'—';const[y,m,dd]=d.split('-');return dd+'-'+m+'-'+y;}
 function renderMuestras(){
   ['SEGUIMIENTO','TIPO_APROBACION'].forEach(function(tipo){
@@ -2966,7 +2966,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
     var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;"></div></div><div class="ms-dias-lbl">'+dias+' d\u00edas h\u00e1biles</div>':'<div class="ms-tramite">En tr\u00e1mite</div>';
-    var pillMap={'CERRADO':['cerr','Cerrado'],'EN PREPARACION':['prep','En Preparación'],'EN CERTIFICACION':['cert','En Certificación']};
+    var pillMap={'CERRADO':['cerr','Cerrado'],'EN REVISION CALIDAD':['prep','En Preparación'],'EN CERTIFICACION':['cert','En Certificación']};
     var pm=pillMap[r.est]||['proc','En proceso'];
     var pill='<span class="ms-pill ms-pill-'+pm[0]+'">'+pm[1]+'</span>';
     // Docs cell: si hay drive_url \u2192 \u00edcono folder link, sino "+" admin-only para agregar
