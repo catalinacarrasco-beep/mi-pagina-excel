@@ -1010,12 +1010,14 @@ html:not([data-theme="light"]) .ms-pill-tram{background:#1c3040;color:#4fb8e8;}
   background:oklch(0.915 0.014 250);
 }
 [data-theme="light"] #muestrasScreen .ms-kpi{
-  background:color-mix(in oklch, var(--kpi-color,var(--accent)) 12%, #fff);
-  border-color:color-mix(in oklch, var(--kpi-color,var(--accent)) 32%, transparent);
-  box-shadow:0 2px 8px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.05);
+  background:color-mix(in oklch, var(--kpi-color,var(--accent)) 22%, #fff);
+  border-color:color-mix(in oklch, var(--kpi-color,var(--accent)) 48%, transparent);
+  border-top:3px solid color-mix(in oklch, var(--kpi-color,var(--accent)) 65%, transparent);
+  box-shadow:0 2px 10px rgba(15,23,42,.10),0 1px 3px rgba(15,23,42,.06);
 }
 [data-theme="light"] #muestrasScreen .ms-kpi:hover{
-  box-shadow:0 6px 18px rgba(15,23,42,.13),0 2px 5px rgba(15,23,42,.07);
+  box-shadow:0 8px 22px rgba(15,23,42,.15),0 2px 6px rgba(15,23,42,.08);
+  transform:translateY(-1px);
 }
 /* Impeccable P0: los tokens semánticos a full están pensados para texto chico sobre
    superficie neutra. Sobre su propio tint al 12% el número héroe de 41.6px medía:
@@ -1025,14 +1027,19 @@ html:not([data-theme="light"]) .ms-pill-tram{background:#1c3040;color:#4fb8e8;}
    por encima de 4.5:1 (el piso de body, no solo el de large text) conservando el tono:
      accent 4.53  warning 5.08  negative 7.13  positive 7.47 */
 [data-theme="light"] #muestrasScreen .ms-kpi{
-  --kpi-ink:color-mix(in oklch, var(--kpi-color,var(--accent)) 80%, #000);
+  --kpi-ink:color-mix(in oklch, var(--kpi-color,var(--accent)) 65%, oklch(0.18 0 0));
 }
 [data-theme="light"] #muestrasScreen .ms-kpi .kv{
   color:var(--kpi-ink);
+  font-weight:700;
+}
+[data-theme="light"] #muestrasScreen .ms-kpi .kl{
+  color:color-mix(in oklch, var(--kpi-color,var(--accent)) 50%, oklch(0.25 0 0));
+  font-weight:600;
 }
 [data-theme="light"] #muestrasScreen .ms-kpi .kl::before{
   background:var(--kpi-ink);
-  box-shadow:0 0 0 3px color-mix(in oklch, var(--kpi-ink) 18%, transparent);
+  box-shadow:0 0 0 4px color-mix(in oklch, var(--kpi-ink) 25%, transparent);
 }
 [data-theme="light"] #muestrasScreen .ms-header{
   background:#fff;
@@ -1047,7 +1054,7 @@ html:not([data-theme="light"]) .ms-pill-tram{background:#1c3040;color:#4fb8e8;}
   box-shadow:0 4px 14px rgba(15,23,42,.10),0 1px 3px rgba(15,23,42,.05);
 }
 [data-theme="light"] #muestrasScreen .ms-tbl th{
-  background:#e4e9f2;color:#3d4a5c;
+  background:oklch(0.88 0.025 250);color:oklch(0.30 0.03 250);font-weight:700;
 }
 [data-theme="light"] #muestrasScreen .ms-tbl tr:nth-child(even) td{
   background:rgba(15,23,42,.045);
@@ -1061,28 +1068,28 @@ html:not([data-theme="light"]) .ms-pill-tram{background:#1c3040;color:#4fb8e8;}
    correcto, los tonos de warning y accent eran los que estaban demasiado claros.
    Solo tema claro: en oscuro estos tokens son claros sobre fondo oscuro y ya pasan. */
 [data-theme="light"] #muestrasScreen .ms-section-hdr{
-  color:#00658F;   /* 5.84:1 sobre --accent-soft */
+  color:oklch(0.45 0.14 230);font-weight:700;letter-spacing:0.03em;
 }
 [data-theme="light"] .ms-pill-proc{
-  color:#8A5F0F;   /* 4.85:1 sobre --warning-soft */
+  background:oklch(0.92 0.06 85);color:oklch(0.38 0.12 70);font-weight:600;
 }
 [data-theme="light"] .ms-pill-cerr{
-  color:#136240;   /* 6.05:1 — era 4.95:1, alineado con los otros dos */
+  background:oklch(0.92 0.06 155);color:oklch(0.35 0.12 155);font-weight:600;
 }
 [data-theme="light"] .ms-pill-tram{
-  color:#00658F;   /* 5.64:1 sobre --accent-soft */
+  background:oklch(0.92 0.06 230);color:oklch(0.35 0.10 230);font-weight:600;
 }
 /* "En trámite" en la columna de días hábiles — mismo tono que el pill de proceso */
 [data-theme="light"] .ms-tramite{
-  color:#8A5F0F;
+  color:oklch(0.45 0.14 70);font-weight:600;
 }
 /* Barra de días hábiles: fill --accent sobre track --accent-soft medía 2.68:1,
    bajo el piso de 3:1 para UI no textual. Se oscurece el fill, no se aclara el track. */
 [data-theme="light"] .ms-bar-fill{
-  background:color-mix(in oklch, var(--accent) 78%, #000);
+  background:oklch(0.55 0.15 230);border-radius:3px;
 }
 [data-theme="light"] .ms-bar-wrap{
-  background:rgba(15,23,42,.10);
+  background:oklch(0.90 0.025 230);
 }
 /* ── MÓDULO VENDEDORES ───────────────────── */
 #vendedoresScreen{
