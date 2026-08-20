@@ -905,6 +905,8 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 .ms-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
 .ms-pill-proc{background:var(--warning-soft);color:var(--warning);}
 .ms-pill-cerr{background:var(--positive-soft);color:var(--positive);}
+.ms-pill-prep{background:oklch(0.24 0.04 280);color:oklch(0.72 0.12 280);}
+.ms-pill-cert{background:oklch(0.22 0.04 230);color:oklch(0.70 0.12 230);}
 .ms-pill-tram{background:var(--accent-soft);color:var(--accent);}
 .ms-bar-wrap{height:6px;border-radius:3px;background:var(--accent-soft);min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;background:var(--accent);}
@@ -980,6 +982,8 @@ html:not([data-theme="light"]) #muestrasScreen .ms-tbl tr:nth-child(even) td{
   background:rgba(255,255,255,.030);
 }
 html:not([data-theme="light"]) .ms-pill-proc{background:#3a3324;color:#e0a24a;}
+html:not([data-theme="light"]) .ms-pill-prep{background:#2a2640;color:#b8a0e8;}
+html:not([data-theme="light"]) .ms-pill-cert{background:#1c2c40;color:#60b8e8;}
 html:not([data-theme="light"]) .ms-pill-cerr{background:#1e352c;color:#4cc08e;}
 html:not([data-theme="light"]) .ms-pill-tram{background:#1c3040;color:#4fb8e8;}
 /* ══ Light theme: elevation ladder + chromatic presence ═══════════════ */
@@ -1025,6 +1029,12 @@ html:not([data-theme="light"]) .ms-pill-tram{background:#1c3040;color:#4fb8e8;}
 }
 [data-theme="light"] .ms-pill-proc{
   background:oklch(0.92 0.06 85);color:oklch(0.38 0.12 70);font-weight:600;
+}
+[data-theme="light"] .ms-pill-prep{
+  background:oklch(0.92 0.05 280);color:oklch(0.38 0.12 280);font-weight:600;
+}
+[data-theme="light"] .ms-pill-cert{
+  background:oklch(0.92 0.06 230);color:oklch(0.35 0.12 230);font-weight:600;
 }
 [data-theme="light"] .ms-pill-cerr{
   background:oklch(0.92 0.06 155);color:oklch(0.35 0.12 155);font-weight:600;
@@ -1534,6 +1544,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
           <select id="ms-filter-estado" onchange="msFilter()">
             <option value="">Todos</option>
             <option value="EN PROCESO">En proceso</option>
+            <option value="EN PREPARACION">En Preparación</option>
+            <option value="EN CERTIFICACION">En Certificación</option>
             <option value="CERRADO">Cerrado</option>
           </select>
         </div>
@@ -1585,6 +1597,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
         <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Estado</label>
         <select id="msModEst" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;">
           <option value="EN PROCESO">En proceso</option>
+          <option value="EN PREPARACION">En Preparación</option>
+          <option value="EN CERTIFICACION">En Certificación</option>
           <option value="CERRADO">Cerrado</option>
         </select>
       </div>
@@ -2440,7 +2454,7 @@ function msLoad(){try{return JSON.parse(localStorage.getItem(MS_KEY)||'[]');}cat
 function msSave(data){localStorage.setItem(MS_KEY,JSON.stringify(data));}
 function msId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function msDias(fCot,fEnt){if(!fCot||!fEnt)return'—';const d=Math.round((new Date(fEnt)-new Date(fCot))/86400000);return d>=0?d:'—';}
-function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN TRAMITE'?'tramite':'pendiente';}
+function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN PREPARACION'?'prep':e==='EN CERTIFICACION'?'cert':e==='EN TRAMITE'?'tramite':'pendiente';}
 function msFormatDate(d){if(!d)return'—';const[y,m,dd]=d.split('-');return dd+'-'+m+'-'+y;}
 function renderMuestras(){
   ['SEGUIMIENTO','TIPO_APROBACION'].forEach(function(tipo){
@@ -2911,8 +2925,8 @@ function renderMuestrasScreen(){
     var th=document.getElementById('ms-th-'+t);if(th)th.style.display=admin?'':'none';
   });
   var days=d.map(function(r){return parseInt(r.dias)||0;}).filter(function(x){return x>0;});
-  var enProc=d.filter(function(r){return r.est==='EN PROCESO';}).length;
   var cerr=d.filter(function(r){return r.est==='CERRADO';}).length;
+  var enProc=d.length-cerr;
   var avg=days.length?Math.round(days.reduce(function(a,b){return a+b;},0)/days.length):0;
   var max=days.length?Math.max.apply(null,days):0;
   var el;
@@ -2952,7 +2966,9 @@ function msFillTable(tbodyId,rows,admin,maxDays){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
     var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;"></div></div><div class="ms-dias-lbl">'+dias+' d\u00edas h\u00e1biles</div>':'<div class="ms-tramite">En tr\u00e1mite</div>';
-    var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
+    var pillMap={'CERRADO':['cerr','Cerrado'],'EN PREPARACION':['prep','En Preparación'],'EN CERTIFICACION':['cert','En Certificación']};
+    var pm=pillMap[r.est]||['proc','En proceso'];
+    var pill='<span class="ms-pill ms-pill-'+pm[0]+'">'+pm[1]+'</span>';
     // Docs cell: si hay drive_url \u2192 \u00edcono folder link, sino "+" admin-only para agregar
     var docsCell;
     if(r.drive_url){
