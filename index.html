@@ -2966,7 +2966,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
     var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;"></div></div><div class="ms-dias-lbl">'+dias+' d\u00edas h\u00e1biles</div>':'<div class="ms-tramite">En tr\u00e1mite</div>';
-    var pillMap={'CERRADO':['cerr','Cerrado'],'EN REVISION CALIDAD':['prep','En Preparación'],'EN CERTIFICACION':['cert','En Certificación']};
+    var pillMap={'CERRADO':['cerr','Cerrado'],'EN REVISION CALIDAD':['prep','Rev. calidad'],'EN CERTIFICACION':['cert','En Certificación']};
     var pm=pillMap[r.est]||['proc','En proceso'];
     var pill='<span class="ms-pill ms-pill-'+pm[0]+'">'+pm[1]+'</span>';
     // Docs cell: si hay drive_url \u2192 \u00edcono folder link, sino "+" admin-only para agregar
