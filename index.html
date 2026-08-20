@@ -820,7 +820,12 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 #muestrasScreen .ms-kpi.ms-kpi-primary{--kpi-color:var(--warning);}
 #muestrasScreen .ms-kpi.ms-kpi-primary + .ms-kpi.ms-kpi-primary{--kpi-color:var(--positive);}
 #muestrasScreen .ms-kpi.ms-kpi-secondary{--kpi-color:var(--accent);}
-#muestrasScreen .ms-kpi.ms-kpi-secondary + .ms-kpi.ms-kpi-secondary{--kpi-color:var(--text-strong);}
+/* Impeccable: "días hábiles máximo" es el techo/peor caso → --negative, no un gris.
+   Con --text-strong el tile quedaba en L 0.930 contra un ground de L 0.942: más oscuro
+   que la página y a 0.012 de distancia, o sea leía como agujero en vez de tarjeta.
+   Ahora los 4 tiles cubren 4 clases semánticas distintas (proceso/cerrado/promedio/techo),
+   que es lo que habilita el dot indicador a clasificar de verdad (device #4, Phase 2.9). */
+#muestrasScreen .ms-kpi.ms-kpi-secondary + .ms-kpi.ms-kpi-secondary{--kpi-color:var(--negative);}
 /* Impeccable: filter bar — mismo lenguaje visual que KPI cards para coherencia */
 #muestrasScreen .ms-filter-bar{
   background:var(--surface);border:1px solid var(--border);border-radius:10px;
@@ -908,14 +913,25 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 .ms-pill-tram{background:var(--accent-soft);color:var(--accent);}
 .ms-bar-wrap{height:6px;border-radius:3px;background:var(--accent-soft);min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;background:var(--accent);}
+/* Impeccable: clases en lugar de estilos inline hardcodeados (ver render, ~línea 2950).
+   "En trámite" es un estado, así que toma el token de warning como los pills. */
+.ms-dias-lbl{font-size:.8rem;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums;}
+.ms-tramite{font-size:.8rem;color:var(--warning);font-weight:500;}
 .ms-obs{font-size:.8rem;color:var(--muted);line-height:1.5;}
 .ms-obs-cell{max-width:260px;font-size:.82rem;color:var(--muted);line-height:1.4;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;
   transition:background .18s ease,box-shadow .18s ease,color .18s ease;position:relative;}
-.ms-obs-cell:hover{
+/* Impeccable: la expansión no puede depender solo de hover (Phase 2) — el texto truncado
+   era inalcanzable por teclado y touch. Ahora el td es focusable (tabindex en el render)
+   y :focus-visible dispara la misma expansión. */
+.ms-obs-cell:hover,
+.ms-obs-cell:focus-visible{
   white-space:normal;overflow:visible;color:var(--text);
   background:var(--surface2);border-radius:6px;padding:.5rem .7rem;
   box-shadow:var(--shadow-md);z-index:10;
+}
+.ms-obs-cell:focus-visible{
+  outline:2px solid var(--accent);outline-offset:-2px;
 }
 .ms-row-edit,.ms-row-del{
   background:none;border:1px solid transparent;cursor:pointer;
@@ -947,23 +963,126 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
   #muestrasScreen .ms-admin-btn:active,#muestrasScreen #ms-add-seg:active,
   #muestrasScreen #ms-add-cerr:active,.ms-row-edit:active,.ms-row-del:active{transform:none;}
 }
-/* ponytail: muestras light-mode hierarchy — tinted KPI surfaces lift off white table */
+/* ══ Impeccable: correcciones de tema oscuro (medidas, preexistentes) ══════════
+   --muted (#8d97ac) sobre --surface2 (#28324f) = 4.31:1, apenas bajo el piso de 4.5.
+   Afectaba los 4 labels de KPI (11.5px/600) y los 12 headers de tabla (10.9px/700):
+   ninguno califica como large text, así que el piso es 4.5, no 3. #9aa4b8 → 5.05:1.
+   Scoped al módulo: --muted global lo usan los otros módulos y no es mi alcance acá.
+   OJO con el selector: el tema oscuro NO tiene atributo (la app setea data-theme=""
+   para oscuro, ver _setTheme ~línea 4733), así que no existe [data-theme="dark"].
+   Hay que negar el claro, o estas reglas se filtran a claro y lo rompen. */
+html:not([data-theme="light"]) #muestrasScreen .ms-kpi .kl,
+html:not([data-theme="light"]) #muestrasScreen .ms-tbl th{
+  color:#9aa4b8;
+}
+/* Zebra oscura: --row-even rgba(255,255,255,.015) daba Δ 0.0141, bajo el piso 0.02.
+   A .030 → Δ 0.028, visible sin convertir la fila en un bloque. */
+html:not([data-theme="light"]) #muestrasScreen .ms-tbl tr:nth-child(even) td{
+  background:rgba(255,255,255,.030);
+}
+/* Los pills usan fondo semitransparente, así que su contraste variaba según la paridad
+   de la fila: "Cerrado" daba 4.87:1 en fila impar y 4.46:1 sobre la zebra (bajo el piso).
+   Un fondo opaco lo vuelve independiente de la fila — un badge no debería medir distinto
+   según dónde cae. Los tres tonos verificados sobre su nuevo fondo opaco. */
+html:not([data-theme="light"]) .ms-pill-proc{background:#3a3324;color:#e0a24a;}
+html:not([data-theme="light"]) .ms-pill-cerr{background:#1e352c;color:#4cc08e;}
+html:not([data-theme="light"]) .ms-pill-tram{background:#1c3040;color:#4fb8e8;}
+
+/* ══ Impeccable: escalera de capas en tema claro (Pass A §5) ═══════════════════
+   Medido antes del fix — el problema no era falta de color, era falta de profundidad:
+     ground → KPI1  +0.0302 ✓   ground → KPI2      +0.0186 ✗ (bajo el piso 0.02)
+     ground → KPI3  +0.0319 ✓   ground → KPI4      -0.0119 ✗ (más oscuro que el fondo)
+     filterBar → tableWrap 0.0000 ✗ (dos paneles apilados, ambos blanco puro)
+     rowOdd → rowEven     -0.0157 ✗ (zebra invisible)
+   Tres superficies en blanco puro + un ground a solo 0.058 de distancia = la sensación
+   de "todo blanco". Se resuelve OSCURECIENDO EL GROUND, no aclarando las tarjetas:
+   las tarjetas quieren seguir siendo el plano claro, la separación viene de abajo.
+
+   Escalera comprometida (medida, no estimada):
+     ground     L 0.9151   ← scoped a #muestrasScreen, NO toca --bg global
+     tiles      L 0.940–0.960 (tint semántico 12%)   Δ vs ground +0.025 a +0.045 ✓
+     zebra      L 0.9704                             Δ vs blanco  -0.0296 ✓
+     th         L 0.9328                             Δ vs fila    +0.0672 ✓
+     panels     L 1.0 (blanco)                       Δ vs ground  +0.0849 ✓
+   filterBar y tableWrap siguen ambos en blanco, pero ahora se separan por rol:
+   la barra es chrome (borde, sin sombra), la tabla es contenido (sombra elevación 2). */
+[data-theme="light"] #muestrasScreen{
+  background:oklch(0.915 0.014 250);
+}
 [data-theme="light"] #muestrasScreen .ms-kpi{
-  background:color-mix(in oklch, var(--kpi-color,var(--accent)) 8%, #fff);
-  border-color:color-mix(in oklch, var(--kpi-color,var(--accent)) 20%, var(--border));
+  background:color-mix(in oklch, var(--kpi-color,var(--accent)) 12%, #fff);
+  border-color:color-mix(in oklch, var(--kpi-color,var(--accent)) 32%, transparent);
   box-shadow:0 2px 8px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.05);
 }
 [data-theme="light"] #muestrasScreen .ms-kpi:hover{
-  box-shadow:0 4px 14px rgba(15,23,42,.12),0 2px 4px rgba(15,23,42,.06);
+  box-shadow:0 6px 18px rgba(15,23,42,.13),0 2px 5px rgba(15,23,42,.07);
+}
+/* Impeccable P0: los tokens semánticos a full están pensados para texto chico sobre
+   superficie neutra. Sobre su propio tint al 12% el número héroe de 41.6px medía:
+     accent (promedio) 2.64:1 ✗   warning (en proceso) 3.00:1 ✗ (piso large text = 3:1)
+     negative (máximo) 4.53:1 ✓   positive (cerrados)  4.81:1 ✓
+   Oscurecer al 80% deriva del token en vez de hardcodear cuatro hex, y sube los cuatro
+   por encima de 4.5:1 (el piso de body, no solo el de large text) conservando el tono:
+     accent 4.53  warning 5.08  negative 7.13  positive 7.47 */
+[data-theme="light"] #muestrasScreen .ms-kpi{
+  --kpi-ink:color-mix(in oklch, var(--kpi-color,var(--accent)) 80%, #000);
+}
+[data-theme="light"] #muestrasScreen .ms-kpi .kv{
+  color:var(--kpi-ink);
+}
+[data-theme="light"] #muestrasScreen .ms-kpi .kl::before{
+  background:var(--kpi-ink);
+  box-shadow:0 0 0 3px color-mix(in oklch, var(--kpi-ink) 18%, transparent);
+}
+[data-theme="light"] #muestrasScreen .ms-header{
+  background:#fff;
+}
+/* Barra de filtros = chrome. Borde define, sin sombra: no compite con la tabla */
+[data-theme="light"] #muestrasScreen .ms-filter-bar{
+  box-shadow:none;
+  border-color:var(--border-strong);
+}
+/* Tabla = contenido. Única superficie con sombra real de la vista */
+[data-theme="light"] #muestrasScreen .ms-table-wrap{
+  box-shadow:0 4px 14px rgba(15,23,42,.10),0 1px 3px rgba(15,23,42,.05);
 }
 [data-theme="light"] #muestrasScreen .ms-tbl th{
   background:#e4e9f2;color:#3d4a5c;
 }
-[data-theme="light"] #muestrasScreen .ms-table-wrap{
-  box-shadow:0 2px 8px rgba(15,23,42,.07),0 1px 3px rgba(15,23,42,.04);
-}
 [data-theme="light"] #muestrasScreen .ms-tbl tr:nth-child(even) td{
-  background:rgba(15,23,42,.025);
+  background:rgba(15,23,42,.045);
+}
+/* ══ Impeccable P0: contraste de texto sobre tints propios ══════════════════════
+   Medido en tema claro antes del fix:
+     "PARA SEGUIMIENTO"  --accent #00A0DF sobre --accent-soft  → 2.68:1  ✗
+     pill "En proceso"   --warning #b8811a sobre --warning-soft → 3.05:1  ✗
+   Ambos son ≤12.5px (0.78rem / 0.72rem), así que NO califican como large text:
+   el piso es 4.5:1, no 3:1. El pill "Cerrado" ya pasaba (4.95:1) — el patrón era
+   correcto, los tonos de warning y accent eran los que estaban demasiado claros.
+   Solo tema claro: en oscuro estos tokens son claros sobre fondo oscuro y ya pasan. */
+[data-theme="light"] #muestrasScreen .ms-section-hdr{
+  color:#00658F;   /* 5.84:1 sobre --accent-soft */
+}
+[data-theme="light"] .ms-pill-proc{
+  color:#8A5F0F;   /* 4.85:1 sobre --warning-soft */
+}
+[data-theme="light"] .ms-pill-cerr{
+  color:#136240;   /* 6.05:1 — era 4.95:1, alineado con los otros dos */
+}
+[data-theme="light"] .ms-pill-tram{
+  color:#00658F;   /* 5.64:1 sobre --accent-soft */
+}
+/* "En trámite" en la columna de días hábiles — mismo tono que el pill de proceso */
+[data-theme="light"] .ms-tramite{
+  color:#8A5F0F;
+}
+/* Barra de días hábiles: fill --accent sobre track --accent-soft medía 2.68:1,
+   bajo el piso de 3:1 para UI no textual. Se oscurece el fill, no se aclara el track. */
+[data-theme="light"] .ms-bar-fill{
+  background:color-mix(in oklch, var(--accent) 78%, #000);
+}
+[data-theme="light"] .ms-bar-wrap{
+  background:rgba(15,23,42,.10);
 }
 /* ── MÓDULO VENDEDORES ───────────────────── */
 #vendedoresScreen{
@@ -2876,10 +2995,13 @@ function msFillTable(tbodyId,rows,admin,maxDays){
   tb.innerHTML=rows.map(function(r){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
-    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;background:#00A0DF;"></div></div><div style="font-size:.8rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.8rem;color:#d4a03c;">En tr\u00e1mite</div>';
+    /* Impeccable: los colores salen de tokens, no hardcodeados. #d4a03c era el \u00e1mbar de
+       tema oscuro aplicado tambi\u00e9n en claro \u2192 "En tr\u00e1mite" med\u00eda 2.17:1 (piso 4.5:1).
+       El #00A0DF del fill era redundante: .ms-bar-fill ya usa var(--accent). */
+    var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;"></div></div><div class="ms-dias-lbl">'+dias+' d\u00edas h\u00e1biles</div>':'<div class="ms-tramite">En tr\u00e1mite</div>';
     var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">En proceso</span>';
     var adminTd=admin?('<td><button class="ms-row-edit" data-id="'+r.id+'" data-tipo="'+tipo+'" onclick="openMsModal(this.dataset.id,this.dataset.tipo)">&#9998;</button>'+'<button class="ms-row-del" data-id="'+r.id+'" onclick="deleteMsRow(this.dataset.id)">&#10005;</button></td>'):'';
-    return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.78rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td class="ms-obs-cell" title="'+r.obs.replace(/"/g,'&quot;')+'">'+r.obs+'</td>'+adminTd+'</tr>';
+    return'<tr data-factura="'+r.fac.toLowerCase()+'" data-estado="'+r.est+'"><td><div style="font-weight:500;">'+r.fac+'</div><div style="font-size:.78rem;color:var(--muted);">Cot. '+r.cot+'</div></td><td>'+msFmtDate(r.ret)+'</td><td>'+msFmtDate(r.cert)+'</td><td>'+diasCell+'</td><td>'+pill+'</td><td class="ms-obs-cell" tabindex="0" title="'+r.obs.replace(/"/g,'&quot;')+'">'+r.obs+'</td>'+adminTd+'</tr>';
   }).join('');
 }
 function openMsModal(id,tipo){
