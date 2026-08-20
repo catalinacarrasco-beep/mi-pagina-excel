@@ -947,6 +947,24 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
   #muestrasScreen .ms-admin-btn:active,#muestrasScreen #ms-add-seg:active,
   #muestrasScreen #ms-add-cerr:active,.ms-row-edit:active,.ms-row-del:active{transform:none;}
 }
+/* ponytail: muestras light-mode hierarchy — tinted KPI surfaces lift off white table */
+[data-theme="light"] #muestrasScreen .ms-kpi{
+  background:color-mix(in oklch, var(--kpi-color,var(--accent)) 8%, #fff);
+  border-color:color-mix(in oklch, var(--kpi-color,var(--accent)) 20%, var(--border));
+  box-shadow:0 2px 8px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.05);
+}
+[data-theme="light"] #muestrasScreen .ms-kpi:hover{
+  box-shadow:0 4px 14px rgba(15,23,42,.12),0 2px 4px rgba(15,23,42,.06);
+}
+[data-theme="light"] #muestrasScreen .ms-tbl th{
+  background:#e4e9f2;color:#3d4a5c;
+}
+[data-theme="light"] #muestrasScreen .ms-table-wrap{
+  box-shadow:0 2px 8px rgba(15,23,42,.07),0 1px 3px rgba(15,23,42,.04);
+}
+[data-theme="light"] #muestrasScreen .ms-tbl tr:nth-child(even) td{
+  background:rgba(15,23,42,.025);
+}
 /* ── MÓDULO VENDEDORES ───────────────────── */
 #vendedoresScreen{
   position:fixed;top:0;left:0;width:100%;height:100%;
