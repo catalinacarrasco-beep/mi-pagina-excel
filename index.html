@@ -906,15 +906,6 @@ tr.cat-row.expanded .expand-icon{transform:rotate(180deg);background:var(--accen
 .ms-pill-proc{background:var(--warning-soft);color:var(--warning);}
 .ms-pill-cerr{background:var(--positive-soft);color:var(--positive);}
 .ms-pill-tram{background:var(--accent-soft);color:var(--accent);}
-.ms-pill-prep{background:oklch(0.24 0.04 280);color:oklch(0.72 0.12 280);}
-.ms-pill-cert{background:oklch(0.22 0.04 230);color:oklch(0.70 0.12 230);}
-.ms-pill-espera{background:oklch(0.24 0.04 55);color:oklch(0.72 0.12 55);}
-[data-theme="light"] .ms-pill-proc{background:oklch(0.92 0.06 85);color:oklch(0.38 0.12 70);font-weight:600;}
-[data-theme="light"] .ms-pill-prep{background:oklch(0.92 0.05 280);color:oklch(0.38 0.12 280);font-weight:600;}
-[data-theme="light"] .ms-pill-cert{background:oklch(0.92 0.06 230);color:oklch(0.35 0.12 230);font-weight:600;}
-[data-theme="light"] .ms-pill-cerr{background:oklch(0.92 0.06 155);color:oklch(0.35 0.12 155);font-weight:600;}
-[data-theme="light"] .ms-pill-espera{background:oklch(0.92 0.06 55);color:oklch(0.38 0.12 55);font-weight:600;}
-[data-theme="light"] .ms-pill-tram{background:oklch(0.92 0.06 230);color:oklch(0.35 0.10 230);font-weight:600;}
 .ms-bar-wrap{height:6px;border-radius:3px;background:var(--accent-soft);min-width:60px;}
 .ms-bar-fill{height:100%;border-radius:3px;background:var(--accent);}
 .ms-obs{font-size:.8rem;color:var(--muted);line-height:1.5;}
@@ -1474,10 +1465,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
           <span class="ms-flabel">Estado</span>
           <select id="ms-filter-estado" onchange="msFilter()">
             <option value="">Todos</option>
-            <option value="EN PROCESO">En proceso</option>
-            <option value="ESPERA LLEGADA CARGA">Espera llegada carga</option>
-            <option value="EN REVISION CALIDAD">Rev. calidad</option>
-            <option value="EN CERTIFICACION">En Certificación</option>
+            <option value="EN PROCESO">Espera llegada carga</option>
             <option value="CERRADO">Cerrado</option>
           </select>
         </div>
@@ -1528,10 +1516,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div style="display:flex;flex-direction:column;gap:.3rem;">
         <label style="font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Estado</label>
         <select id="msModEst" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;">
-          <option value="EN PROCESO">En proceso</option>
-          <option value="ESPERA LLEGADA CARGA">Espera llegada carga</option>
-          <option value="EN REVISION CALIDAD">Rev. calidad</option>
-          <option value="EN CERTIFICACION">En Certificación</option>
+          <option value="EN PROCESO">Espera llegada carga</option>
           <option value="CERRADO">Cerrado</option>
         </select>
       </div>
@@ -1819,11 +1804,9 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="ms-form-group">
         <label class="ms-form-label">Estado</label>
         <select class="ms-form-select" id="msEstado">
-          <option value="EN PROCESO">En proceso</option>
-          <option value="ESPERA LLEGADA CARGA">Espera llegada carga</option>
-          <option value="EN REVISION CALIDAD">Rev. calidad</option>
-          <option value="EN CERTIFICACION">En Certificación</option>
+          <option value="EN TRAMITE">En Trámite</option>
           <option value="CERRADO">Cerrado</option>
+          <option value="PENDIENTE">Pendiente</option>
         </select>
       </div>
       <div class="ms-form-group full">
@@ -2389,7 +2372,7 @@ function msLoad(){try{return JSON.parse(localStorage.getItem(MS_KEY)||'[]');}cat
 function msSave(data){localStorage.setItem(MS_KEY,JSON.stringify(data));}
 function msId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function msDias(fCot,fEnt){if(!fCot||!fEnt)return'—';const d=Math.round((new Date(fEnt)-new Date(fCot))/86400000);return d>=0?d:'—';}
-function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN REVISION CALIDAD'?'prep':e==='EN CERTIFICACION'?'cert':e==='ESPERA LLEGADA CARGA'?'espera':e==='EN TRAMITE'?'tramite':'pendiente';}
+function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN TRAMITE'?'tramite':'pendiente';}
 function msFormatDate(d){if(!d)return'—';const[y,m,dd]=d.split('-');return dd+'-'+m+'-'+y;}
 function renderMuestras(){
   ['SEGUIMIENTO','TIPO_APROBACION'].forEach(function(tipo){
@@ -2901,9 +2884,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
     var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;"></div></div><div style="font-size:.8rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.8rem;color:var(--warning);">En tr\u00e1mite</div>';
-    var pillMap={'CERRADO':['cerr','Cerrado'],'EN REVISION CALIDAD':['prep','Rev. calidad'],'EN CERTIFICACION':['cert','En Certificación'],'ESPERA LLEGADA CARGA':['espera','Espera llegada carga']};
-    var pm=pillMap[r.est]||['proc','En proceso'];
-    var pill='<span class="ms-pill ms-pill-'+pm[0]+'">'+pm[1]+'</span>';
+    var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':'<span class="ms-pill ms-pill-proc">Espera llegada carga</span>';
     // Docs cell: si hay drive_url \u2192 \u00edcono folder link, sino "+" admin-only para agregar
     var docsCell;
     if(r.drive_url){
@@ -3388,11 +3369,9 @@ function volverHomeFromMuestras(){
       <div class="ms-form-group">
         <label class="ms-form-label">Estado</label>
         <select class="ms-form-select" id="msEstado">
-          <option value="EN PROCESO">En proceso</option>
-          <option value="ESPERA LLEGADA CARGA">Espera llegada carga</option>
-          <option value="EN REVISION CALIDAD">Rev. calidad</option>
-          <option value="EN CERTIFICACION">En Certificación</option>
+          <option value="EN TRAMITE">En Trámite</option>
           <option value="CERRADO">Cerrado</option>
+          <option value="PENDIENTE">Pendiente</option>
         </select>
       </div>
       <div class="ms-form-group full">
@@ -3732,6 +3711,40 @@ function _ctUpdateStats(){
   sub.innerHTML=p.join('');
 }
 
+// Auto-transición: si ETD < hoy y estado sigue en 'en_origen', pasar a 'en_transito'
+// Solo admin/cargo-admin lo dispara. Bulk PATCH + audit log por cada uno.
+async function _ctAutoTransitEtd(){
+  if(!_ctIsAdmin())return 0;
+  var today=new Date();today.setHours(0,0,0,0);
+  var pending=_ctEmbarques.filter(function(e){
+    if(e.estado_embarque!=='en_origen'||!e.etd)return false;
+    var d=new Date(e.etd);
+    return !isNaN(d.getTime()) && d<today;
+  });
+  if(!pending.length)return 0;
+  // Update en memoria (usuario ya ve la tabla correcta aunque el PATCH tarde)
+  var ids={};pending.forEach(function(e){ids[e.id]=1;});
+  _ctEmbarques=_ctEmbarques.map(function(e){
+    return ids[e.id]?Object.assign({},e,{estado_embarque:'en_transito'}):e;
+  });
+  var authed=await _ctEnsureAuth();
+  if(!authed)return pending.length;
+  var idList=Object.keys(ids).join(',');
+  try{
+    var resp=await fetch(_CT_URL+'/rest/v1/embarques?id=in.('+idList+')',{
+      method:'PATCH',
+      headers:Object.assign(_ctHAuth(),{'Prefer':'return=minimal'}),
+      body:JSON.stringify({estado_embarque:'en_transito'})
+    });
+    if(!resp.ok){console.error('auto-transit failed',resp.status);}
+  }catch(err){console.error('auto-transit network error',err);}
+  // Audit log por cada fila (fire-and-forget, ya lo hace _logAudit)
+  pending.forEach(function(e){
+    _logAudit('cargo','update',e.id,{changes:{estado_embarque:'en_transito'},before:{estado_embarque:'en_origen'},auto:true,reason:'ETD vencido'});
+  });
+  return pending.length;
+}
+
 async function _ctUpdateField(id,patch,skipRender){
   var prev=_ctEmbarques.find(function(r){return r.id===id;});
   _ctEmbarques=_ctEmbarques.map(function(r){return r.id===id?Object.assign({},r,patch):r;});
@@ -3796,6 +3809,13 @@ async function loadCargo(){
     _ctUpdateStats();
     _ctRender();
     _ctStartSync();
+    // Auto-transición ETD vencido: en_origen → en_transito
+    _ctAutoTransitEtd().then(function(n){
+      if(n>0){
+        _ctUpdateStats();_ctRender();
+        _ctFeedback(true,n+' embarque'+(n>1?'s':'')+' movido'+(n>1?'s':'')+' a Tránsito (ETD vencido)');
+      }
+    });
   })
   .catch(function(err){
     console.error('cargo',err);
