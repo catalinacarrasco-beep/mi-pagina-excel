@@ -3201,7 +3201,7 @@ function _vdBdRenderTable(){
   var truncTxt=function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';};
   var fmtQr=function(v){if(!v)return'—';return'<span onclick="_vdBdShowQr(\''+_vdBdEsc(v)+'\')" style="color:var(--accent);cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px;font-variant-numeric:tabular-nums;" title="Click para ver QR">'+_vdBdEsc(v)+'</span>';};
   var cols=[
-    {k:'codigo',h:'Código',fmt:fmtCode,sticky:true,tab:true},
+    {k:'codigo',h:'Código',fmt:fmtCode,tab:true},
     {k:'sku',h:'SKU',fmt:fmtTxt,tab:true},
     {k:'descripcion',h:'Descripción',fmt:function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';}},
     {k:'proveedor',h:'Proveedor',fmt:truncTxt},
@@ -3216,7 +3216,7 @@ function _vdBdRenderTable(){
     var align=c.align==='right'?'right':'left';
     var stickyStyle=c.sticky?'position:sticky;left:0;background:var(--surface2);z-index:2;box-shadow:2px 0 4px -2px rgba(0,0,0,.35);':'';
     return'<th style="text-align:'+align+';padding:.7rem .9rem;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;'+stickyStyle+'">'+c.h+'</th>';
-  }).join('')+(isAdmin?'<th style="width:44px;padding:.7rem .5rem;border-bottom:1px solid var(--border);position:sticky;right:0;background:var(--surface2);z-index:2;box-shadow:-2px 0 4px -2px rgba(0,0,0,.35);"></th>':'');
+  }).join('')+(isAdmin?'<th style="width:44px;padding:.7rem .5rem;border-bottom:1px solid var(--border);"></th>':'');
   // Rows
   var trs=rows.map(function(r,rowIdx){
     var editBtn=isAdmin?'<button onclick="_vdBdOpenForm(\''+r.id+'\')" style="background:none;border:1px solid transparent;color:var(--muted);cursor:pointer;padding:3px 7px;border-radius:5px;font-size:.78rem;" onmouseover="this.style.color=\'var(--accent)\';this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.color=\'var(--muted)\';this.style.borderColor=\'transparent\'">✎</button>':'';
@@ -3227,11 +3227,11 @@ function _vdBdRenderTable(){
       var stickyStyle=c.sticky?'position:sticky;left:0;background:'+rowBg+';z-index:1;box-shadow:2px 0 4px -2px rgba(0,0,0,.35);':'';
       return'<td style="padding:.65rem .9rem;font-size:.78rem;color:var(--text);border-bottom:1px solid var(--border);text-align:'+align+';white-space:nowrap;'+tabStyle+stickyStyle+'">'+c.fmt(r[c.k])+'</td>';
     }).join('');
-    var editTd=isAdmin?'<td style="padding:.5rem;text-align:center;border-bottom:1px solid var(--border);position:sticky;right:0;background:'+rowBg+';z-index:1;box-shadow:-2px 0 4px -2px rgba(0,0,0,.35);">'+editBtn+'</td>':'';
+    var editTd=isAdmin?'<td style="padding:.5rem;text-align:center;border-bottom:1px solid var(--border);background:'+rowBg+';">'+editBtn+'</td>':'';
     return'<tr data-idx="'+rowIdx+'" style="background:'+rowBg+';">'+tds+editTd+'</tr>';
   }).join('');
   wrap.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);overflow:auto;max-height:70vh;">'
-    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:1100px;">'
+    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;">'
       +'<thead style="position:sticky;top:0;background:var(--surface2);z-index:3;"><tr>'+thHtml+'</tr></thead>'
       +'<tbody>'+trs+'</tbody></table></div>';
   // Hover consistente (mantiene sticky bg)
