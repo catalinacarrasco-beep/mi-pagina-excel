@@ -3198,53 +3198,41 @@ function _vdBdRenderTable(){
   var fmtTxt=function(v){return v?_vdBdEsc(v):'—';};
   var fmtDate=function(v){return v?_vdFmtDate(v):'—';};
   var fmtCode=function(v){return '<span style="font-weight:600;color:var(--accent);">'+_vdBdEsc(v)+'</span>';};
-  var truncTxt=function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';};
   var fmtQr=function(v){if(!v)return'—';return'<span onclick="_vdBdShowQr(\''+_vdBdEsc(v)+'\')" style="color:var(--accent);cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px;font-variant-numeric:tabular-nums;" title="Click para ver QR">'+_vdBdEsc(v)+'</span>';};
   var cols=[
-    {k:'codigo',h:'Código',fmt:fmtCode,tab:true},
-    {k:'sku',h:'SKU',fmt:fmtTxt,tab:true},
-    {k:'descripcion',h:'Descripción',fmt:function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';}},
-    {k:'proveedor',h:'Proveedor',fmt:truncTxt},
-    {k:'marca',h:'Marca',fmt:truncTxt},
-    {k:'qr_vigente',h:'QR',fmt:fmtQr,tab:true},
-    {k:'certifica_sec',h:'Certificación',fmt:fmtSec},
-    {k:'protocolo',h:'N° Protocolo',fmt:fmtTxt,tab:true},
-    {k:'cert_aprobacion',h:'N° Cert. Aprob.',fmt:fmtTxt,tab:true}
+    {k:'codigo',h:'Código',fmt:fmtCode,tab:true,w:'8%'},
+    {k:'sku',h:'SKU',fmt:fmtTxt,tab:true,w:'6%'},
+    {k:'descripcion',h:'Descripción',fmt:fmtTxt,w:'20%'},
+    {k:'proveedor',h:'Proveedor',fmt:fmtTxt,w:'16%'},
+    {k:'marca',h:'Marca',fmt:fmtTxt,w:'10%'},
+    {k:'qr_vigente',h:'QR',fmt:fmtQr,tab:true,w:'9%'},
+    {k:'certifica_sec',h:'Certificación',fmt:fmtSec,w:'9%'},
+    {k:'protocolo',h:'N° Protocolo',fmt:fmtTxt,tab:true,w:'11%'},
+    {k:'cert_aprobacion',h:'N° Cert. Aprob.',fmt:fmtTxt,tab:true,w:'11%'}
   ];
-  // Header
-  var thHtml=cols.map(function(c,i){
+  var thHtml=cols.map(function(c){
     var align=c.align==='right'?'right':'left';
-    var stickyStyle=c.sticky?'position:sticky;left:0;background:var(--surface2);z-index:2;box-shadow:2px 0 4px -2px rgba(0,0,0,.35);':'';
-    return'<th style="text-align:'+align+';padding:.7rem .9rem;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;'+stickyStyle+'">'+c.h+'</th>';
-  }).join('')+(isAdmin?'<th style="width:44px;padding:.7rem .5rem;border-bottom:1px solid var(--border);"></th>':'');
-  // Rows
+    return'<th style="width:'+c.w+';text-align:'+align+';padding:.7rem .9rem;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;">'+c.h+'</th>';
+  }).join('')+(isAdmin?'<th style="width:36px;padding:.7rem .3rem;border-bottom:1px solid var(--border);"></th>':'');
   var trs=rows.map(function(r,rowIdx){
     var editBtn=isAdmin?'<button onclick="_vdBdOpenForm(\''+r.id+'\')" style="background:none;border:1px solid transparent;color:var(--muted);cursor:pointer;padding:3px 7px;border-radius:5px;font-size:.78rem;" onmouseover="this.style.color=\'var(--accent)\';this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.color=\'var(--muted)\';this.style.borderColor=\'transparent\'">✎</button>':'';
     var rowBg=rowIdx%2===1?'var(--row-even)':'var(--surface)';
     var tds=cols.map(function(c){
       var align=c.align==='right'?'right':'left';
       var tabStyle=c.tab?'font-variant-numeric:tabular-nums;':'';
-      var stickyStyle=c.sticky?'position:sticky;left:0;background:'+rowBg+';z-index:1;box-shadow:2px 0 4px -2px rgba(0,0,0,.35);':'';
-      return'<td style="padding:.65rem .9rem;font-size:.78rem;color:var(--text);border-bottom:1px solid var(--border);text-align:'+align+';white-space:nowrap;'+tabStyle+stickyStyle+'">'+c.fmt(r[c.k])+'</td>';
+      return'<td style="padding:.65rem .9rem;font-size:.78rem;color:var(--text);border-bottom:1px solid var(--border);text-align:'+align+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'+tabStyle+'" title="'+(r[c.k]||'')+'">'+c.fmt(r[c.k])+'</td>';
     }).join('');
-    var editTd=isAdmin?'<td style="padding:.5rem;text-align:center;border-bottom:1px solid var(--border);background:'+rowBg+';">'+editBtn+'</td>':'';
+    var editTd=isAdmin?'<td style="padding:.5rem;text-align:center;border-bottom:1px solid var(--border);">'+editBtn+'</td>':'';
     return'<tr data-idx="'+rowIdx+'" style="background:'+rowBg+';">'+tds+editTd+'</tr>';
   }).join('');
-  wrap.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);overflow:auto;max-height:70vh;">'
-    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;">'
+  wrap.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);overflow:hidden;max-height:70vh;overflow-y:auto;">'
+    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;table-layout:fixed;">'
       +'<thead style="position:sticky;top:0;background:var(--surface2);z-index:3;"><tr>'+thHtml+'</tr></thead>'
       +'<tbody>'+trs+'</tbody></table></div>';
-  // Hover consistente (mantiene sticky bg)
   Array.from(wrap.querySelectorAll('tbody tr')).forEach(function(tr,i){
     var baseBg=i%2===1?'var(--row-even)':'var(--surface)';
-    tr.addEventListener('mouseenter',function(){
-      tr.style.background='var(--row-hover)';
-      Array.from(tr.children).forEach(function(td){if(td.style.position==='sticky')td.style.background='var(--row-hover)';});
-    });
-    tr.addEventListener('mouseleave',function(){
-      tr.style.background=baseBg;
-      Array.from(tr.children).forEach(function(td){if(td.style.position==='sticky')td.style.background=baseBg;});
-    });
+    tr.addEventListener('mouseenter',function(){tr.style.background='var(--row-hover)';});
+    tr.addEventListener('mouseleave',function(){tr.style.background=baseBg;});
   });
 }
 function _vdBdOpenForm(id){
