@@ -3199,34 +3199,17 @@ function _vdBdRenderTable(){
   var fmtDate=function(v){return v?_vdFmtDate(v):'—';};
   var fmtCode=function(v){return '<span style="font-weight:600;color:var(--accent);">'+_vdBdEsc(v)+'</span>';};
   var truncTxt=function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';};
+  var fmtQr=function(v){if(!v)return'—';return'<span onclick="_vdBdShowQr(\''+_vdBdEsc(v)+'\')" style="color:var(--accent);cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px;font-variant-numeric:tabular-nums;" title="Click para ver QR">'+_vdBdEsc(v)+'</span>';};
   var cols=[
     {k:'codigo',h:'Código',fmt:fmtCode,sticky:true,tab:true},
-    {k:'descripcion',h:'Descripción',fmt:function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';}},
     {k:'sku',h:'SKU',fmt:fmtTxt,tab:true},
+    {k:'descripcion',h:'Descripción',fmt:function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';}},
     {k:'proveedor',h:'Proveedor',fmt:truncTxt},
-    {k:'modelo_proveedor',h:'Modelo prov.',fmt:fmtTxt,tab:true},
-    {k:'modelo_certificado',h:'Modelo cert.',fmt:fmtTxt,tab:true},
     {k:'marca',h:'Marca',fmt:truncTxt},
-    {k:'amperaje',h:'Amp.',fmt:fmtTxt,tab:true},
-    {k:'certifica_sec',h:'SEC',fmt:fmtSec},
-    {k:'qr_vigente',h:'QR',fmt:fmtTxt,tab:true},
-    {k:'cert_tipo',h:'Cert. Tipo',fmt:fmtTxt,tab:true},
-    {k:'cert_aprobacion',h:'Cert. Aprob.',fmt:fmtTxt,tab:true},
-    {k:'protocolo',h:'Protocolo',fmt:truncTxt,tab:true},
-    {k:'cert_seguimiento_ultimo',h:'Cert. Seg.',fmt:fmtTxt,tab:true},
-    {k:'fecha_cert_ultimo',h:'Fecha cert.',fmt:fmtDate,tab:true},
-    {k:'informe_ensayo',h:'Inf. ensayo',fmt:fmtTxt,tab:true},
-    {k:'factura_cesmec',h:'Fact. CESMEC',fmt:fmtTxt,tab:true},
-    {k:'ultima_importacion_fecha',h:'Últ. imp.',fmt:fmtDate,tab:true},
-    {k:'ultima_importacion_din',h:'DIN',fmt:fmtTxt,tab:true},
-    {k:'ultima_importacion_invoice',h:'Invoice',fmt:fmtTxt,tab:true},
-    {k:'ultima_importacion_cotizacion',h:'Cotización',fmt:fmtTxt,tab:true},
-    {k:'ultima_importacion_oc',h:'OC',fmt:fmtTxt,tab:true},
-    {k:'ultima_importacion_guia',h:'Guía',fmt:fmtTxt,tab:true},
-    {k:'total_cantidad_importada',h:'Cant. total',fmt:fmtNum,tab:true,align:'right'},
-    {k:'cantidad_importaciones',h:'N° imp.',fmt:fmtNum,tab:true,align:'right'},
-    {k:'fuente',h:'Fuente',fmt:function(v){return v?'<span style="font-size:.68rem;color:var(--muted);">'+_vdBdEsc(v)+'</span>':'—';}},
-    {k:'notas',h:'Notas',fmt:truncTxt}
+    {k:'qr_vigente',h:'QR',fmt:fmtQr,tab:true},
+    {k:'certifica_sec',h:'Certificación',fmt:fmtSec},
+    {k:'protocolo',h:'N° Protocolo',fmt:fmtTxt,tab:true},
+    {k:'cert_aprobacion',h:'N° Cert. Aprob.',fmt:fmtTxt,tab:true}
   ];
   // Header
   var thHtml=cols.map(function(c,i){
@@ -3248,7 +3231,7 @@ function _vdBdRenderTable(){
     return'<tr data-idx="'+rowIdx+'" style="background:'+rowBg+';">'+tds+editTd+'</tr>';
   }).join('');
   wrap.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);overflow:auto;max-height:70vh;">'
-    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:2400px;">'
+    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:1100px;">'
       +'<thead style="position:sticky;top:0;background:var(--surface2);z-index:3;"><tr>'+thHtml+'</tr></thead>'
       +'<tbody>'+trs+'</tbody></table></div>';
   // Hover consistente (mantiene sticky bg)
@@ -3358,6 +3341,27 @@ function _vdBdDelete(){
       if(typeof _logAudit==='function')_logAudit('vendedores','delete',String(id),row?{codigo:row.codigo}:null);
       _vdBdCloseForm();_vdRender();
     }).catch(function(e){alert('Error al eliminar: '+e.message);});
+}
+function _vdBdShowQr(qr){
+  var modal=document.getElementById('vd-bd-modal');
+  if(!modal){modal=document.createElement('div');modal.id='vd-bd-modal';document.body.appendChild(modal);}
+  var imgUrl='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data='+encodeURIComponent(qr);
+  modal.style.cssText='display:flex;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3500;align-items:center;justify-content:center;padding:2rem;';
+  modal.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.8rem;text-align:center;max-width:340px;width:100%;box-shadow:var(--shadow-lg);">'
+    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--text);margin-bottom:1rem;">QR '+_vdBdEsc(qr)+'</div>'
+    +'<div style="background:#fff;border-radius:8px;padding:12px;display:inline-block;"><img src="'+imgUrl+'" alt="QR '+_vdBdEsc(qr)+'" style="width:220px;height:220px;" /></div>'
+    +'<div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:center;">'
+      +'<button onclick="_vdBdDownloadQr(\''+_vdBdEsc(qr)+'\')" style="padding:.45rem 1rem;border-radius:6px;border:none;background:var(--accent);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;">↓ Descargar</button>'
+      +'<button onclick="_vdBdCloseForm()" style="padding:.45rem 1rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.82rem;cursor:pointer;">Cerrar</button>'
+    +'</div>'
+  +'</div>';
+  modal.onclick=function(e){if(e.target===modal)_vdBdCloseForm();};
+}
+function _vdBdDownloadQr(qr){
+  var imgUrl='https://api.qrserver.com/v1/create-qr-code/?size=500x500&data='+encodeURIComponent(qr);
+  fetch(imgUrl).then(function(r){return r.blob();}).then(function(blob){
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='QR_'+qr+'.png';a.click();URL.revokeObjectURL(a.href);
+  }).catch(function(){window.open(imgUrl,'_blank');});
 }
 // ── /BD MAESTRA ───────────────────────────────────────────────────────────
 
