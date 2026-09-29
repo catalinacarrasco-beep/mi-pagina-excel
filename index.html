@@ -3192,43 +3192,76 @@ function _vdBdRenderTable(){
   if(cEl)cEl.textContent=rows.length+' de '+_vdBd.length+' registros';
   var isAdmin=(sessionStorage.getItem('gs_role')==='admin'||sessionStorage.getItem('gs_role')==='gerencia');
   if(!rows.length){wrap.innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:10px;">Sin resultados</div>';return;}
-  var trs=rows.map(function(r){
+  // Definición data-driven de todas las columnas
+  var fmtNum=function(v){return v?Number(v).toLocaleString('es-CL'):'—';};
+  var fmtSec=function(v){return v?'<span class="ms-pill ms-pill-cerr">'+_vdBdEsc(v)+'</span>':'—';};
+  var fmtTxt=function(v){return v?_vdBdEsc(v):'—';};
+  var fmtDate=function(v){return v?_vdFmtDate(v):'—';};
+  var fmtCode=function(v){return '<span style="font-weight:600;color:var(--accent);">'+_vdBdEsc(v)+'</span>';};
+  var truncTxt=function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';};
+  var cols=[
+    {k:'codigo',h:'Código',fmt:fmtCode,sticky:true,tab:true},
+    {k:'descripcion',h:'Descripción',fmt:function(v){var s=v?_vdBdEsc(v):'—';return '<span title="'+s+'" style="display:inline-block;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;">'+s+'</span>';}},
+    {k:'sku',h:'SKU',fmt:fmtTxt,tab:true},
+    {k:'proveedor',h:'Proveedor',fmt:truncTxt},
+    {k:'modelo_proveedor',h:'Modelo prov.',fmt:fmtTxt,tab:true},
+    {k:'modelo_certificado',h:'Modelo cert.',fmt:fmtTxt,tab:true},
+    {k:'marca',h:'Marca',fmt:truncTxt},
+    {k:'amperaje',h:'Amp.',fmt:fmtTxt,tab:true},
+    {k:'certifica_sec',h:'SEC',fmt:fmtSec},
+    {k:'qr_vigente',h:'QR',fmt:fmtTxt,tab:true},
+    {k:'cert_tipo',h:'Cert. Tipo',fmt:fmtTxt,tab:true},
+    {k:'cert_aprobacion',h:'Cert. Aprob.',fmt:fmtTxt,tab:true},
+    {k:'protocolo',h:'Protocolo',fmt:truncTxt,tab:true},
+    {k:'cert_seguimiento_ultimo',h:'Cert. Seg.',fmt:fmtTxt,tab:true},
+    {k:'fecha_cert_ultimo',h:'Fecha cert.',fmt:fmtDate,tab:true},
+    {k:'informe_ensayo',h:'Inf. ensayo',fmt:fmtTxt,tab:true},
+    {k:'factura_cesmec',h:'Fact. CESMEC',fmt:fmtTxt,tab:true},
+    {k:'ultima_importacion_fecha',h:'Últ. imp.',fmt:fmtDate,tab:true},
+    {k:'ultima_importacion_din',h:'DIN',fmt:fmtTxt,tab:true},
+    {k:'ultima_importacion_invoice',h:'Invoice',fmt:fmtTxt,tab:true},
+    {k:'ultima_importacion_cotizacion',h:'Cotización',fmt:fmtTxt,tab:true},
+    {k:'ultima_importacion_oc',h:'OC',fmt:fmtTxt,tab:true},
+    {k:'ultima_importacion_guia',h:'Guía',fmt:fmtTxt,tab:true},
+    {k:'total_cantidad_importada',h:'Cant. total',fmt:fmtNum,tab:true,align:'right'},
+    {k:'cantidad_importaciones',h:'N° imp.',fmt:fmtNum,tab:true,align:'right'},
+    {k:'fuente',h:'Fuente',fmt:function(v){return v?'<span style="font-size:.68rem;color:var(--muted);">'+_vdBdEsc(v)+'</span>':'—';}},
+    {k:'notas',h:'Notas',fmt:truncTxt}
+  ];
+  // Header
+  var thHtml=cols.map(function(c,i){
+    var align=c.align==='right'?'right':'left';
+    var stickyStyle=c.sticky?'position:sticky;left:0;background:var(--surface2);z-index:2;box-shadow:2px 0 4px -2px rgba(0,0,0,.35);':'';
+    return'<th style="text-align:'+align+';padding:.7rem .9rem;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;'+stickyStyle+'">'+c.h+'</th>';
+  }).join('')+(isAdmin?'<th style="width:44px;padding:.7rem .5rem;border-bottom:1px solid var(--border);position:sticky;right:0;background:var(--surface2);z-index:2;box-shadow:-2px 0 4px -2px rgba(0,0,0,.35);"></th>':'');
+  // Rows
+  var trs=rows.map(function(r,rowIdx){
     var editBtn=isAdmin?'<button onclick="_vdBdOpenForm(\''+r.id+'\')" style="background:none;border:1px solid transparent;color:var(--muted);cursor:pointer;padding:3px 7px;border-radius:5px;font-size:.78rem;" onmouseover="this.style.color=\'var(--accent)\';this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.color=\'var(--muted)\';this.style.borderColor=\'transparent\'">✎</button>':'';
-    return'<tr>'
-      +'<td style="font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;">'+_vdBdEsc(r.codigo)+'</td>'
-      +'<td style="max-width:280px;">'+_vdBdEsc(r.descripcion||'—')+'</td>'
-      +'<td>'+_vdBdEsc(r.proveedor||'—')+'</td>'
-      +'<td>'+_vdBdEsc(r.marca||'—')+'</td>'
-      +'<td style="font-variant-numeric:tabular-nums;">'+_vdBdEsc(r.qr_vigente||'—')+'</td>'
-      +'<td>'+(r.certifica_sec?'<span class="ms-pill ms-pill-cerr">'+_vdBdEsc(r.certifica_sec)+'</span>':'—')+'</td>'
-      +'<td style="font-variant-numeric:tabular-nums;">'+(r.ultima_importacion_fecha?_vdFmtDate(r.ultima_importacion_fecha):'—')+'</td>'
-      +'<td style="text-align:right;font-variant-numeric:tabular-nums;">'+(r.total_cantidad_importada?Number(r.total_cantidad_importada).toLocaleString('es-CL'):'—')+'</td>'
-      +'<td style="font-size:.7rem;color:var(--muted);">'+_vdBdEsc(r.fuente||'—')+'</td>'
-      +(isAdmin?'<td style="text-align:center">'+editBtn+'</td>':'')
-    +'</tr>';
+    var rowBg=rowIdx%2===1?'var(--row-even)':'var(--surface)';
+    var tds=cols.map(function(c){
+      var align=c.align==='right'?'right':'left';
+      var tabStyle=c.tab?'font-variant-numeric:tabular-nums;':'';
+      var stickyStyle=c.sticky?'position:sticky;left:0;background:'+rowBg+';z-index:1;box-shadow:2px 0 4px -2px rgba(0,0,0,.35);':'';
+      return'<td style="padding:.65rem .9rem;font-size:.78rem;color:var(--text);border-bottom:1px solid var(--border);text-align:'+align+';white-space:nowrap;'+tabStyle+stickyStyle+'">'+c.fmt(r[c.k])+'</td>';
+    }).join('');
+    var editTd=isAdmin?'<td style="padding:.5rem;text-align:center;border-bottom:1px solid var(--border);position:sticky;right:0;background:'+rowBg+';z-index:1;box-shadow:-2px 0 4px -2px rgba(0,0,0,.35);">'+editBtn+'</td>':'';
+    return'<tr data-idx="'+rowIdx+'" style="background:'+rowBg+';">'+tds+editTd+'</tr>';
   }).join('');
   wrap.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);overflow:auto;max-height:70vh;">'
-    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:1000px;">'
-      +'<thead style="position:sticky;top:0;background:var(--surface2);z-index:1;">'
-        +'<tr>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Código</th>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Descripción</th>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Proveedor</th>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Marca</th>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">QR</th>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">SEC</th>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Últ. importación</th>'
-          +'<th style="text-align:right;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Cant. total</th>'
-          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Fuente</th>'
-          +(isAdmin?'<th style="width:50px;padding:.7rem 1rem;border-bottom:1px solid var(--border);"></th>':'')
-        +'</tr>'
-      +'</thead><tbody>'+trs+'</tbody></table></div>';
-  // zebra + hover
+    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:2400px;">'
+      +'<thead style="position:sticky;top:0;background:var(--surface2);z-index:3;"><tr>'+thHtml+'</tr></thead>'
+      +'<tbody>'+trs+'</tbody></table></div>';
+  // Hover consistente (mantiene sticky bg)
   Array.from(wrap.querySelectorAll('tbody tr')).forEach(function(tr,i){
-    if(i%2===1)tr.style.background='var(--row-even)';
-    tr.addEventListener('mouseenter',function(){tr.style.background='var(--row-hover)';});
-    tr.addEventListener('mouseleave',function(){tr.style.background=(i%2===1)?'var(--row-even)':'';});
-    Array.from(tr.querySelectorAll('td')).forEach(function(td){td.style.padding='.7rem 1rem';td.style.borderBottom='1px solid var(--border)';td.style.color='var(--text)';});
+    var baseBg=i%2===1?'var(--row-even)':'var(--surface)';
+    tr.addEventListener('mouseenter',function(){
+      tr.style.background='var(--row-hover)';
+      Array.from(tr.children).forEach(function(td){if(td.style.position==='sticky')td.style.background='var(--row-hover)';});
+    });
+    tr.addEventListener('mouseleave',function(){
+      tr.style.background=baseBg;
+      Array.from(tr.children).forEach(function(td){if(td.style.position==='sticky')td.style.background=baseBg;});
+    });
   });
 }
 function _vdBdOpenForm(id){
