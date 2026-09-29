@@ -1410,8 +1410,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
         <circle cx="38" cy="18" r="4" stroke="#5bc0c4" stroke-width="1.2" opacity=".6"/>
         <circle cx="10" cy="18" r="4" stroke="#5bc0c4" stroke-width="1.2" opacity=".6"/>
       </svg>
-      <div class="hc-title">Vendedores</div>
-      <div class="hc-sub">Gestión comercial por vendedor</div>
+      <div class="hc-title">Base de Datos</div>
+      <div class="hc-sub">Catálogo de modelos y certificaciones</div>
     </div>
     <div class="home-card cargo" data-mod="cargo" onclick="enterCargoTracking()">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1552,7 +1552,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 <div id="vendedoresScreen">
   <div class="vd-header">
     <button class="vd-back" id="vd-back-btn" onclick="_vdBack()">← Volver</button>
-    <div class="vd-title">Vendedores</div>
+    <div class="vd-title">Base de Datos</div>
     <div style="width:80px"></div>
   </div>
   <div class="vd-body" id="vd-body"></div>
@@ -1630,7 +1630,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
         <option value="muestras">Muestras</option>
         <option value="cobranza">Cobranza</option>
         <option value="ventas">Ventas</option>
-        <option value="vendedores">Vendedores</option>
+        <option value="vendedores">Base de Datos</option>
       </select>
       <select id="audit-flt-role" onchange="_auditApplyFilters()">
         <option value="">Todos los usuarios</option>
@@ -3074,8 +3074,12 @@ function _vdFmtDate(d){if(!d)return'—';var p=d.split('-');return p[2]+'/'+p[1]
 
 function _vdRender(){
   var body=document.getElementById('vd-body');if(!body)return;
-  if(_vdView==='detail')return _vdRenderDetail(body);
-  if(_vdMainTab==='bdmaestra')return _vdRenderBdMaestra(body);
+  // El módulo es ahora "Base de Datos" — siempre renderiza BD Maestra.
+  // Cargar catálogo si aún no está en cache.
+  if(!_vdBdLoaded){body.innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted);">Cargando catálogo...</div>';_vdBdFetch(_vdRender);return;}
+  return _vdRenderBdMaestra(body);
+  // ponytail: código muerto abajo (vista General de vendedores) — se conserva sin ejecutar
+  // por compatibilidad con restore-session; puede eliminarse en pase posterior.
   var clients=_VD_SAMPLE_CLIENTS;
   var totalCli=clients.length;
   var now=new Date();var m=now.getMonth();var y=now.getFullYear();
@@ -3146,11 +3150,8 @@ function _vdRender(){
 // ── BD MAESTRA ────────────────────────────────────────────────────────────
 function _vdBdEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function _vdRenderBdMaestra(body){
-  var mainTabs='<div class="vd-tabs" style="margin-bottom:1rem">'
-    +'<button class="vd-tab" onclick="_vdBdSetTab(\'general\')">General</button>'
-    +'<button class="vd-tab active" onclick="_vdBdSetTab(\'bdmaestra\')">BD Maestra</button>'
-    +'</div>';
-  if(!_vdBdLoaded){body.innerHTML=mainTabs+'<div style="padding:2rem;text-align:center;color:var(--muted);">Cargando catálogo...</div>';return;}
+  var mainTabs='';
+  if(!_vdBdLoaded){body.innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted);">Cargando catálogo...</div>';return;}
   // KPIs simples
   var total=_vdBd.length;
   var conQr=_vdBd.filter(function(r){return r.qr_vigente;}).length;
@@ -5028,7 +5029,7 @@ function _auditRender(){
     else sub.textContent=rows.length+' de '+_auditData.length+' registros'+(rows.length<_auditData.length?' (filtrado)':'');
   }
   if(!rows.length){el.innerHTML='<div class="audit-empty">Sin resultados para los filtros aplicados.</div>';return;}
-  var MOD_LBL={cargo:'Cargo',muestras:'Muestras',cobranza:'Cobranza',ventas:'Ventas',vendedores:'Vendedores'};
+  var MOD_LBL={cargo:'Cargo',muestras:'Muestras',cobranza:'Cobranza',ventas:'Ventas',vendedores:'Base de Datos'};
   var ACT_LBL={update:'Editar',create:'Crear',delete:'Eliminar',upload_doc:'Subir doc',delete_doc:'Borrar doc',mark_paid:'Pagado',mark_unpaid:'Despagado',load_excel:'Cargar Excel'};
   var esc=function(s){return(s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
   var h='<table class="audit-tbl"><thead><tr>';
