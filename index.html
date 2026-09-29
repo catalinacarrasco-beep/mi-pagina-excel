@@ -2983,6 +2983,35 @@ function deleteMsRow(id){
 
 // ── VENDEDORES ─────────────────────────────────────────────────────────────
 var _vdView='general';
+var _vdMainTab='general'; // 'general' | 'bdmaestra'
+var _vdBd=[];             // cache local de vend_bd_maestra
+var _vdBdLoaded=false;
+var _vdBdFilters={q:'',proveedor:'',fuente:''};
+var _vdBdEditId=null;
+var _VD_BD_URL='https://bmxnqzfoskugnsdkytql.supabase.co';
+var _VD_BD_KEY='sb_publishable_rqhiObYXtBQWa4VhecKB6A_UAFFDrD0';
+function _vdBdH(){
+  var tok=(typeof _ctAuthToken!=='undefined'&&_ctAuthToken&&Date.now()<_ctAuthExp)?_ctAuthToken:_VD_BD_KEY;
+  return {'apikey':_VD_BD_KEY,'Authorization':'Bearer '+tok,'Content-Type':'application/json'};
+}
+function _vdBdFetch(cb){
+  fetch(_VD_BD_URL+'/rest/v1/vend_bd_maestra?select=*&order=codigo.asc',{headers:_vdBdH()})
+    .then(function(r){return r.ok?r.json():[];})
+    .then(function(rows){_vdBd=Array.isArray(rows)?rows:[];_vdBdLoaded=true;if(cb)cb();})
+    .catch(function(){_vdBd=[];_vdBdLoaded=true;if(cb)cb();});
+}
+function _vdBdSetTab(tab){_vdMainTab=tab;_vdRender();if(tab==='bdmaestra'&&!_vdBdLoaded)_vdBdFetch(_vdRender);}
+function _vdBdSetFilter(k,v){_vdBdFilters[k]=v;_vdBdRenderTable();}
+function _vdBdFiltered(){
+  var q=(_vdBdFilters.q||'').toLowerCase(),p=_vdBdFilters.proveedor,f=_vdBdFilters.fuente;
+  return _vdBd.filter(function(r){
+    if(p&&r.proveedor!==p)return false;
+    if(f&&r.fuente!==f)return false;
+    if(!q)return true;
+    var hay=[r.codigo,r.descripcion,r.modelo_proveedor,r.modelo_certificado,r.marca,r.qr_vigente,r.sku,r.ultima_importacion_din,r.ultima_importacion_invoice].filter(Boolean).join(' ').toLowerCase();
+    return hay.indexOf(q)>=0;
+  });
+}
 var _vdVendorKey=null;
 var _vdDetailTab='clientes';
 
@@ -3046,6 +3075,7 @@ function _vdFmtDate(d){if(!d)return'—';var p=d.split('-');return p[2]+'/'+p[1]
 function _vdRender(){
   var body=document.getElementById('vd-body');if(!body)return;
   if(_vdView==='detail')return _vdRenderDetail(body);
+  if(_vdMainTab==='bdmaestra')return _vdRenderBdMaestra(body);
   var clients=_VD_SAMPLE_CLIENTS;
   var totalCli=clients.length;
   var now=new Date();var m=now.getMonth();var y=now.getFullYear();
@@ -3089,7 +3119,11 @@ function _vdRender(){
       +'<td>'+_vdFmtDate(c.ingreso)+'</td><td>'+_vdFmtDate(c.ultima)+'</td></tr>';
   }).join('');
 
-  body.innerHTML=
+  var mainTabs='<div class="vd-tabs" style="margin-bottom:1rem">'
+    +'<button class="vd-tab active" onclick="_vdBdSetTab(\'general\')">General</button>'
+    +'<button class="vd-tab" onclick="_vdBdSetTab(\'bdmaestra\')">BD Maestra</button>'
+    +'</div>';
+  body.innerHTML=mainTabs+
     '<div class="vd-kpis">'
       +'<div class="vd-kpi"><div class="kv">'+totalCli+'</div><div class="kl">Clientes activos</div></div>'
       +'<div class="vd-kpi"><div class="kv">'+newCli+'</div><div class="kl">Nuevos este mes</div></div>'
@@ -3108,6 +3142,185 @@ function _vdRender(){
       +mobileCards
     +'</div>';
 }
+
+// ── BD MAESTRA ────────────────────────────────────────────────────────────
+function _vdBdEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function _vdRenderBdMaestra(body){
+  var mainTabs='<div class="vd-tabs" style="margin-bottom:1rem">'
+    +'<button class="vd-tab" onclick="_vdBdSetTab(\'general\')">General</button>'
+    +'<button class="vd-tab active" onclick="_vdBdSetTab(\'bdmaestra\')">BD Maestra</button>'
+    +'</div>';
+  if(!_vdBdLoaded){body.innerHTML=mainTabs+'<div style="padding:2rem;text-align:center;color:var(--muted);">Cargando catálogo...</div>';return;}
+  // KPIs simples
+  var total=_vdBd.length;
+  var conQr=_vdBd.filter(function(r){return r.qr_vigente;}).length;
+  var proveedores=Array.from(new Set(_vdBd.map(function(r){return r.proveedor;}).filter(Boolean))).sort();
+  var fuentes=Array.from(new Set(_vdBd.map(function(r){return r.fuente;}).filter(Boolean))).sort();
+  var kpis='<div class="vd-kpis">'
+    +'<div class="vd-kpi"><div class="kv">'+total+'</div><div class="kl">Modelos en catálogo</div></div>'
+    +'<div class="vd-kpi"><div class="kv">'+conQr+'</div><div class="kl">Con QR vigente</div></div>'
+    +'<div class="vd-kpi"><div class="kv">'+proveedores.length+'</div><div class="kl">Proveedores</div></div>'
+    +'<div class="vd-kpi"><div class="kv">'+fuentes.length+'</div><div class="kl">Fuentes de datos</div></div>'
+  +'</div>';
+  var isAdmin=(sessionStorage.getItem('gs_role')==='admin'||sessionStorage.getItem('gs_role')==='gerencia');
+  var filterBar='<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem;padding:.7rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);">'
+    +'<input id="vd-bd-q" type="text" placeholder="Buscar código, descripción, QR, DIN..." value="'+_vdBdEsc(_vdBdFilters.q)+'" oninput="_vdBdSetFilter(\'q\',this.value)" style="flex:1;min-width:220px;padding:.5rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:\'DM Sans\',sans-serif;font-size:.85rem;outline:none;">'
+    +'<select onchange="_vdBdSetFilter(\'proveedor\',this.value)" style="padding:.5rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.82rem;">'
+      +'<option value="">Proveedor: todos</option>'
+      +proveedores.map(function(p){return'<option value="'+_vdBdEsc(p)+'"'+(_vdBdFilters.proveedor===p?' selected':'')+'>'+_vdBdEsc(p)+'</option>';}).join('')
+    +'</select>'
+    +'<select onchange="_vdBdSetFilter(\'fuente\',this.value)" style="padding:.5rem .7rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.82rem;">'
+      +'<option value="">Fuente: todas</option>'
+      +fuentes.map(function(f){return'<option value="'+_vdBdEsc(f)+'"'+(_vdBdFilters.fuente===f?' selected':'')+'>'+_vdBdEsc(f)+'</option>';}).join('')
+    +'</select>'
+    +(isAdmin?'<button onclick="_vdBdOpenForm(null)" style="padding:.5rem 1rem;border-radius:6px;border:none;background:var(--accent);color:#fff;font-weight:600;font-size:.82rem;cursor:pointer;letter-spacing:.03em;">+ Nuevo modelo</button>':'')
+    +'<span id="vd-bd-count" style="margin-left:auto;font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;"></span>'
+  +'</div>';
+  body.innerHTML=mainTabs+kpis+filterBar+'<div id="vd-bd-tblwrap"></div>';
+  _vdBdRenderTable();
+}
+function _vdBdRenderTable(){
+  var wrap=document.getElementById('vd-bd-tblwrap');if(!wrap)return;
+  var rows=_vdBdFiltered();
+  var cEl=document.getElementById('vd-bd-count');
+  if(cEl)cEl.textContent=rows.length+' de '+_vdBd.length+' registros';
+  var isAdmin=(sessionStorage.getItem('gs_role')==='admin'||sessionStorage.getItem('gs_role')==='gerencia');
+  if(!rows.length){wrap.innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:10px;">Sin resultados</div>';return;}
+  var trs=rows.map(function(r){
+    var editBtn=isAdmin?'<button onclick="_vdBdOpenForm(\''+r.id+'\')" style="background:none;border:1px solid transparent;color:var(--muted);cursor:pointer;padding:3px 7px;border-radius:5px;font-size:.78rem;" onmouseover="this.style.color=\'var(--accent)\';this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.color=\'var(--muted)\';this.style.borderColor=\'transparent\'">✎</button>':'';
+    return'<tr>'
+      +'<td style="font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;">'+_vdBdEsc(r.codigo)+'</td>'
+      +'<td style="max-width:280px;">'+_vdBdEsc(r.descripcion||'—')+'</td>'
+      +'<td>'+_vdBdEsc(r.proveedor||'—')+'</td>'
+      +'<td>'+_vdBdEsc(r.marca||'—')+'</td>'
+      +'<td style="font-variant-numeric:tabular-nums;">'+_vdBdEsc(r.qr_vigente||'—')+'</td>'
+      +'<td>'+(r.certifica_sec?'<span class="ms-pill ms-pill-cerr">'+_vdBdEsc(r.certifica_sec)+'</span>':'—')+'</td>'
+      +'<td style="font-variant-numeric:tabular-nums;">'+(r.ultima_importacion_fecha?_vdFmtDate(r.ultima_importacion_fecha):'—')+'</td>'
+      +'<td style="text-align:right;font-variant-numeric:tabular-nums;">'+(r.total_cantidad_importada?Number(r.total_cantidad_importada).toLocaleString('es-CL'):'—')+'</td>'
+      +'<td style="font-size:.7rem;color:var(--muted);">'+_vdBdEsc(r.fuente||'—')+'</td>'
+      +(isAdmin?'<td style="text-align:center">'+editBtn+'</td>':'')
+    +'</tr>';
+  }).join('');
+  wrap.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);overflow:auto;max-height:70vh;">'
+    +'<table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:1000px;">'
+      +'<thead style="position:sticky;top:0;background:var(--surface2);z-index:1;">'
+        +'<tr>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Código</th>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Descripción</th>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Proveedor</th>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Marca</th>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">QR</th>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">SEC</th>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Últ. importación</th>'
+          +'<th style="text-align:right;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Cant. total</th>'
+          +'<th style="text-align:left;padding:.7rem 1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);">Fuente</th>'
+          +(isAdmin?'<th style="width:50px;padding:.7rem 1rem;border-bottom:1px solid var(--border);"></th>':'')
+        +'</tr>'
+      +'</thead><tbody>'+trs+'</tbody></table></div>';
+  // zebra + hover
+  Array.from(wrap.querySelectorAll('tbody tr')).forEach(function(tr,i){
+    if(i%2===1)tr.style.background='var(--row-even)';
+    tr.addEventListener('mouseenter',function(){tr.style.background='var(--row-hover)';});
+    tr.addEventListener('mouseleave',function(){tr.style.background=(i%2===1)?'var(--row-even)':'';});
+    Array.from(tr.querySelectorAll('td')).forEach(function(td){td.style.padding='.7rem 1rem';td.style.borderBottom='1px solid var(--border)';td.style.color='var(--text)';});
+  });
+}
+function _vdBdOpenForm(id){
+  var isAdmin=(sessionStorage.getItem('gs_role')==='admin'||sessionStorage.getItem('gs_role')==='gerencia');
+  if(!isAdmin){alert('Solo administración puede agregar/editar modelos.');return;}
+  _vdBdEditId=id;
+  var r=id?_vdBd.find(function(x){return String(x.id)===String(id);}):{};
+  if(!r)r={};
+  var fields=[
+    {k:'codigo',l:'Código *',req:true,placeholder:'Ej: HX-PLCE27-B'},
+    {k:'descripcion',l:'Descripción',placeholder:'Nombre del producto'},
+    {k:'proveedor',l:'Proveedor',placeholder:'Ej: FEISHUN ELECTRICAL APPLIANCES'},
+    {k:'modelo_proveedor',l:'Modelo proveedor'},
+    {k:'modelo_certificado',l:'Modelo certificado'},
+    {k:'marca',l:'Marca',placeholder:'Ej: HALUX / BOLT'},
+    {k:'certifica_sec',l:'Certifica SEC',placeholder:'SI / NO'},
+    {k:'qr_vigente',l:'QR vigente',placeholder:'Número de QR'},
+    {k:'sku',l:'SKU'},
+    {k:'cert_tipo',l:'N° Certificado Tipo'},
+    {k:'cert_aprobacion',l:'N° Certificado Aprobación'},
+    {k:'protocolo',l:'N° Protocolo certificación'},
+    {k:'cert_seguimiento_ultimo',l:'N° Certificado Seguimiento (último)'},
+    {k:'fecha_cert_ultimo',l:'Fecha cert. último',type:'date'},
+    {k:'informe_ensayo',l:'N° Informe ensayo'},
+    {k:'factura_cesmec',l:'N° Factura CESMEC'},
+    {k:'amperaje',l:'Amperaje',placeholder:'Ej: 10A / 16A'},
+    {k:'ultima_importacion_fecha',l:'Últ. importación · Fecha',type:'date'},
+    {k:'ultima_importacion_din',l:'Últ. importación · DIN'},
+    {k:'ultima_importacion_invoice',l:'Últ. importación · Invoice'},
+    {k:'ultima_importacion_cotizacion',l:'Últ. importación · Cotización'},
+    {k:'ultima_importacion_oc',l:'Últ. importación · OC'},
+    {k:'ultima_importacion_guia',l:'Últ. importación · Guía Pollmann'},
+    {k:'total_cantidad_importada',l:'Cantidad total importada',type:'number'},
+    {k:'cantidad_importaciones',l:'N° de importaciones',type:'number'},
+    {k:'notas',l:'Notas',placeholder:'Observaciones libres'}
+  ];
+  var body=fields.map(function(f){
+    var val=(r[f.k]!=null?String(r[f.k]):'');
+    return'<div style="display:flex;flex-direction:column;gap:.25rem;">'
+      +'<label style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">'+f.l+'</label>'
+      +'<input data-k="'+f.k+'" type="'+(f.type||'text')+'" value="'+_vdBdEsc(val)+'" placeholder="'+_vdBdEsc(f.placeholder||'')+'" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.82rem;font-family:\'DM Sans\',sans-serif;outline:none;">'
+    +'</div>';
+  }).join('');
+  var delBtn=id?'<button onclick="_vdBdDelete()" style="padding:.45rem 1rem;border-radius:5px;border:1px solid var(--negative);background:transparent;color:var(--negative);font-size:.82rem;cursor:pointer;margin-right:auto;">Eliminar</button>':'';
+  var modal=document.getElementById('vd-bd-modal');
+  if(!modal){modal=document.createElement('div');modal.id='vd-bd-modal';document.body.appendChild(modal);}
+  modal.style.cssText='display:flex;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3500;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;';
+  modal.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem 1.8rem;width:100%;max-width:820px;box-shadow:var(--shadow-lg);">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">'
+      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--text);">'+(id?'Editar modelo':'Nuevo modelo')+'</div>'
+      +'<button onclick="_vdBdCloseForm()" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;">×</button>'
+    +'</div>'
+    +'<div id="vd-bd-form-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.9rem;">'+body+'</div>'
+    +'<div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.4rem;align-items:center;">'+delBtn
+      +'<button onclick="_vdBdCloseForm()" style="padding:.45rem 1.1rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.82rem;cursor:pointer;">Cancelar</button>'
+      +'<button onclick="_vdBdSave()" style="padding:.45rem 1.1rem;border-radius:5px;border:none;background:var(--accent);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;">Guardar</button>'
+    +'</div>'
+  +'</div>';
+  modal.onclick=function(e){if(e.target===modal)_vdBdCloseForm();};
+}
+function _vdBdCloseForm(){var m=document.getElementById('vd-bd-modal');if(m){m.style.display='none';m.innerHTML='';}_vdBdEditId=null;}
+function _vdBdSave(){
+  var inputs=document.querySelectorAll('#vd-bd-form-body input[data-k]');
+  var payload={};
+  inputs.forEach(function(i){
+    var k=i.getAttribute('data-k'),v=i.value.trim();
+    if(v===''){payload[k]=null;return;}
+    if(i.type==='number'){var n=parseFloat(v);payload[k]=isNaN(n)?null:n;}
+    else payload[k]=v;
+  });
+  if(!payload.codigo){alert('El código es obligatorio.');return;}
+  var id=_vdBdEditId;
+  var url=_VD_BD_URL+'/rest/v1/vend_bd_maestra'+(id?'?id=eq.'+encodeURIComponent(id):'');
+  var method=id?'PATCH':'POST';
+  var hdr=Object.assign({},_vdBdH(),{'Prefer':'return=representation'});
+  fetch(url,{method:method,headers:hdr,body:JSON.stringify(payload)})
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+    .then(function(rows){
+      var saved=Array.isArray(rows)?rows[0]:rows;
+      if(id){_vdBd=_vdBd.map(function(x){return String(x.id)===String(id)?saved:x;});}
+      else{_vdBd.push(saved);_vdBd.sort(function(a,b){return(a.codigo||'').localeCompare(b.codigo||'');});}
+      if(typeof _logAudit==='function')_logAudit('vendedores',id?'update':'create',String(saved.id),{codigo:saved.codigo});
+      _vdBdCloseForm();_vdRender();
+    })
+    .catch(function(e){alert('Error al guardar: '+e.message);});
+}
+function _vdBdDelete(){
+  var id=_vdBdEditId;if(!id)return;
+  if(!confirm('¿Eliminar este modelo del catálogo?'))return;
+  var row=_vdBd.find(function(x){return String(x.id)===String(id);});
+  fetch(_VD_BD_URL+'/rest/v1/vend_bd_maestra?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:_vdBdH()})
+    .then(function(r){if(!r.ok)throw new Error(r.status);
+      _vdBd=_vdBd.filter(function(x){return String(x.id)!==String(id);});
+      if(typeof _logAudit==='function')_logAudit('vendedores','delete',String(id),row?{codigo:row.codigo}:null);
+      _vdBdCloseForm();_vdRender();
+    }).catch(function(e){alert('Error al eliminar: '+e.message);});
+}
+// ── /BD MAESTRA ───────────────────────────────────────────────────────────
 
 function _vdOpenDetail(key){
   _vdView='detail';_vdVendorKey=key;_vdDetailTab='clientes';_vdRender();
