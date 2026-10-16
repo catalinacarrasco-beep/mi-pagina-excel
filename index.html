@@ -1206,6 +1206,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 .ms-estado{display:inline-block;padding:3px 10px;border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:.04em;}
 .ms-estado.cerrado{background:rgba(46,158,106,.15);color:#2e9e6a;}
 .ms-estado.certificacion{background:rgba(59,130,246,.15);color:#3b82f6;}
+.ms-estado.revcalidad{background:rgba(168,85,247,.15);color:#a855f7;}
 .ms-estado.espera{background:rgba(210,160,60,.15);color:#d4a03c;}
 .ms-estado.pendiente{background:rgba(123,132,153,.15);color:#9ba3b5;}
 .ms-action-btn{background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:3px;font-size:.8rem;transition:background .12s;color:var(--muted);}
@@ -1458,6 +1459,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <div class="ms-kpis">
       <div class="ms-kpi ms-kpi-primary"><div class="kl">En espera arribo</div><div class="kv" id="ms-kpi-proc">—</div></div>
       <div class="ms-kpi ms-kpi-primary"><div class="kl">En certificación</div><div class="kv" id="ms-kpi-cert">—</div></div>
+      <div class="ms-kpi ms-kpi-primary"><div class="kl">En Rev. Calidad</div><div class="kv" id="ms-kpi-revc">—</div></div>
       <div class="ms-kpi ms-kpi-primary"><div class="kl">Cerrados</div><div class="kv" id="ms-kpi-cerr">—</div></div>
       <div class="ms-kpi ms-kpi-secondary"><div class="kl">Días hábiles promedio</div><div class="kv" id="ms-kpi-avg">—</div></div>
       <div class="ms-kpi ms-kpi-secondary"><div class="kl">Días hábiles máximo</div><div class="kv" id="ms-kpi-max">—</div></div>
@@ -1474,6 +1476,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
             <option value="">Todos</option>
             <option value="EN PROCESO">En espera arribo</option>
             <option value="EN CERTIFICACION">En certificación</option>
+            <option value="REV CALIDAD">En Rev. Calidad</option>
             <option value="CERRADO">Cerrado</option>
           </select>
         </div>
@@ -1526,6 +1529,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
         <select id="msModEst" style="padding:.45rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;">
           <option value="EN PROCESO">En espera arribo</option>
           <option value="EN CERTIFICACION">En certificación</option>
+          <option value="REV CALIDAD">En Rev. Calidad</option>
           <option value="CERRADO">Cerrado</option>
         </select>
       </div>
@@ -2381,7 +2385,7 @@ function msLoad(){try{return JSON.parse(localStorage.getItem(MS_KEY)||'[]');}cat
 function msSave(data){localStorage.setItem(MS_KEY,JSON.stringify(data));}
 function msId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function msDias(fCot,fEnt){if(!fCot||!fEnt)return'—';const d=Math.round((new Date(fEnt)-new Date(fCot))/86400000);return d>=0?d:'—';}
-function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN CERTIFICACION'?'certificacion':e==='EN PROCESO'?'espera':'pendiente';}
+function msEstadoClass(e){return e==='CERRADO'?'cerrado':e==='EN CERTIFICACION'?'certificacion':e==='REV CALIDAD'?'revcalidad':e==='EN PROCESO'?'espera':'pendiente';}
 function msFormatDate(d){if(!d)return'—';const[y,m,dd]=d.split('-');return dd+'-'+m+'-'+y;}
 function renderMuestras(){
   ['SEGUIMIENTO','TIPO_APROBACION'].forEach(function(tipo){
@@ -2854,12 +2858,14 @@ function renderMuestrasScreen(){
   var days=d.map(function(r){return parseInt(r.dias)||0;}).filter(function(x){return x>0;});
   var enProc=d.filter(function(r){return r.est==='EN PROCESO';}).length;
   var enCert=d.filter(function(r){return r.est==='EN CERTIFICACION';}).length;
+  var revCal=d.filter(function(r){return r.est==='REV CALIDAD';}).length;
   var cerr=d.filter(function(r){return r.est==='CERRADO';}).length;
   var avg=days.length?Math.round(days.reduce(function(a,b){return a+b;},0)/days.length):0;
   var max=days.length?Math.max.apply(null,days):0;
   var el;
   el=document.getElementById('ms-kpi-proc');if(el)el.textContent=enProc||'0';
   el=document.getElementById('ms-kpi-cert');if(el)el.textContent=enCert||'0';
+  el=document.getElementById('ms-kpi-revc');if(el)el.textContent=revCal||'0';
   el=document.getElementById('ms-kpi-cerr');if(el)el.textContent=cerr||'0';
   el=document.getElementById('ms-kpi-avg');if(el)el.textContent=avg||'\u2014';
   el=document.getElementById('ms-kpi-max');if(el)el.textContent=max||'\u2014';
@@ -2895,7 +2901,7 @@ function msFillTable(tbodyId,rows,admin,maxDays){
     var dias=parseInt(r.dias)||0;
     var bw=maxDays&&dias?Math.min(100,Math.round(dias/maxDays*100)):0;
     var diasCell=dias?'<div class="ms-bar-wrap"><div class="ms-bar-fill" style="width:'+bw+'%;"></div></div><div style="font-size:.8rem;color:var(--muted);margin-top:3px;">'+dias+' d\u00edas h\u00e1biles</div>':'<div style="font-size:.8rem;color:var(--warning);">En tr\u00e1mite</div>';
-    var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':r.est==='EN CERTIFICACION'?'<span class="ms-pill" style="background:rgba(59,130,246,.15);color:#3b82f6;">En certificación</span>':'<span class="ms-pill ms-pill-proc">En espera arribo</span>';
+    var pill=r.est==='CERRADO'?'<span class="ms-pill ms-pill-cerr">Cerrado</span>':r.est==='EN CERTIFICACION'?'<span class="ms-pill" style="background:rgba(59,130,246,.15);color:#3b82f6;">En certificación</span>':r.est==='REV CALIDAD'?'<span class="ms-pill" style="background:rgba(168,85,247,.15);color:#a855f7;">En Rev. Calidad</span>':'<span class="ms-pill ms-pill-proc">En espera arribo</span>';
     // Docs cell: si hay drive_url \u2192 \u00edcono folder link, sino "+" admin-only para agregar
     var docsCell;
     if(r.drive_url){
