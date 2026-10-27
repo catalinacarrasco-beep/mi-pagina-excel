@@ -1635,7 +1635,6 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
             <th style="padding:10px 12px;text-align:left;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;">QR</th>
             <th style="padding:10px 12px;text-align:left;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;">Cert. Aprobación</th>
             <th style="padding:10px 12px;text-align:left;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;">Protocolo</th>
-            <th style="padding:10px 12px;text-align:center;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;">Imp.</th>
           </tr>
         </thead>
         <tbody id="bd-tbody"></tbody>
@@ -4812,7 +4811,7 @@ function enterAudit(){
 // ── BASE DE DATOS ───────────────────────────────────────────────────
 var _BD_URL='https://skdrlqsoynkewfmdcggf.supabase.co';
 var _BD_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrZHJscXNveW5rZXdmbWRjZ2dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwMzkyMTYsImV4cCI6MjEwODYxNTIxNn0.Hm_vc4MmyJ0gMVF1NdYBmJ3kp8RftonG_rJ0qhnuqWo';
-var _bdData=[];var _bdFiltered=[];var _bdPage=0;var _bdPageSize=50;var _bdImportCounts={};
+var _bdData=[];var _bdFiltered=[];var _bdPage=0;var _bdPageSize=50;
 function _bdH(){return{apikey:_BD_KEY,Authorization:'Bearer '+_BD_KEY};}
 function enterBD(){
   sessionStorage.setItem('gs_screen','bd');
@@ -4830,21 +4829,15 @@ function volverHomeFromBD(){
 function _bdLoad(){
   var sub=document.getElementById('bd-subtitle');
   if(sub)sub.textContent='Cargando...';
-  Promise.all([
-    fetch(_BD_URL+'/rest/v1/productos?select=*&order=codigo.asc&limit=1000',{headers:_bdH()}).then(function(r){return r.json();}),
-    fetch(_BD_URL+'/rest/v1/importaciones?select=codigo',{headers:Object.assign({},_bdH(),{Prefer:'count=exact'})}).then(function(r){
-      var ct=r.headers.get('content-range');
-      return r.json().then(function(rows){return{rows:rows,total:ct?ct.split('/')[1]:'?'};});
-    })
-  ]).then(function(res){
-    _bdData=res[0];
-    _bdImportCounts={};
-    res[1].rows.forEach(function(r){_bdImportCounts[r.codigo]=(_bdImportCounts[r.codigo]||0)+1;});
-    if(sub)sub.textContent=_bdData.length+' productos · '+res[1].total+' importaciones registradas';
-    _bdFilter();
-  }).catch(function(e){
-    if(sub)sub.textContent='Error al cargar: '+e.message;
-  });
+  fetch(_BD_URL+'/rest/v1/productos?select=*&order=codigo.asc&limit=1000',{headers:_bdH()})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      _bdData=data;
+      if(sub)sub.textContent=_bdData.length+' productos registrados';
+      _bdFilter();
+    }).catch(function(e){
+      if(sub)sub.textContent='Error al cargar: '+e.message;
+    });
 }
 function _bdFilter(){
   var q=(document.getElementById('bd-search').value||'').toLowerCase();
@@ -4876,7 +4869,6 @@ function _bdRender(){
   page.forEach(function(p){
     var sec=p.certifica_sec?'<span class="bd-sec-yes">SI</span>':'<span class="bd-sec-no">NO</span>';
     var qr=p.qr_vigente?'<span class="bd-qr-link">'+_bdEsc(p.qr_vigente)+'</span>':'—';
-    var imp=_bdImportCounts[p.codigo]||0;
     html+='<tr class="bd-row" onclick="_bdShowDetail(\''+p.codigo.replace(/'/g,"\\'")+'\')">'
       +'<td style="font-weight:600;color:var(--accent);">'+_bdEsc(p.codigo)+'</td>'
       +'<td>'+_bdEsc(p.descripcion||'—')+'</td>'
@@ -4885,7 +4877,6 @@ function _bdRender(){
       +'<td>'+qr+'</td>'
       +'<td style="font-size:.78rem;">'+_bdEsc(p.nro_cert_aprobacion||'—')+'</td>'
       +'<td style="font-size:.78rem;">'+_bdEsc(p.protocolo_certificacion||'—')+'</td>'
-      +'<td style="text-align:center;font-variant-numeric:tabular-nums;">'+imp+'</td>'
       +'</tr>';
   });
   tb.innerHTML=html;
@@ -4915,8 +4906,7 @@ function _bdShowDetail(codigo){
     ['Marcas',p.marcas],['Certifica SEC',p.certifica_sec?'SI':'NO'],
     ['QR vigente',p.qr_vigente],['Nro. Cert. Tipo',p.nro_cert_tipo],
     ['Nro. Cert. Aprobación',p.nro_cert_aprobacion],
-    ['Protocolo certificación',p.protocolo_certificacion],['Amperaje',p.amperaje],
-    ['Importaciones',(_bdImportCounts[p.codigo]||0)+' registros']
+    ['Protocolo certificación',p.protocolo_certificacion],['Amperaje',p.amperaje]
   ];
   var html='<h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:1.5rem;letter-spacing:.03em;color:var(--accent);margin:0 0 18px;">'+_bdEsc(p.codigo)+'</h2>';
   html+='<div style="display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:.85rem;">';
@@ -4931,41 +4921,8 @@ function _bdShowDetail(codigo){
     html+='<span style="padding:6px 14px;border-radius:6px;background:rgba(45,180,160,.12);color:#2db4a0;font-size:.8rem;cursor:default;">QR '+_bdEsc(p.qr_vigente)+' (PDFs próximamente)</span>';
     html+='</div></div>';
   }
-  // Load import history
-  html+='<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">';
-  html+='<span style="font-size:.78rem;color:var(--muted);font-weight:600;">HISTORIAL DE IMPORTACIONES</span>';
-  html+='<div id="bd-detail-imports" style="margin-top:8px;font-size:.82rem;color:var(--muted);">Cargando...</div>';
-  html+='</div>';
   c.innerHTML=html;
   m.style.display='flex';
-  // Fetch imports for this product
-  fetch(_BD_URL+'/rest/v1/importaciones?codigo=eq.'+encodeURIComponent(p.codigo)+'&order=fecha_ingreso.desc&limit=50',{headers:_bdH()})
-    .then(function(r){return r.json();})
-    .then(function(imps){
-      var el=document.getElementById('bd-detail-imports');
-      if(!imps.length){el.textContent='Sin importaciones registradas.';return;}
-      var t='<table style="width:100%;border-collapse:collapse;font-size:.78rem;margin-top:4px;"><thead><tr style="border-bottom:1px solid var(--border);">'
-        +'<th style="padding:6px 8px;text-align:left;color:var(--muted);">Fecha</th>'
-        +'<th style="padding:6px 8px;text-align:right;color:var(--muted);">Cant.</th>'
-        +'<th style="padding:6px 8px;text-align:left;color:var(--muted);">Invoice</th>'
-        +'<th style="padding:6px 8px;text-align:left;color:var(--muted);">DIN</th>'
-        +'<th style="padding:6px 8px;text-align:left;color:var(--muted);">Seguimiento</th>'
-        +'</tr></thead><tbody>';
-      imps.forEach(function(im){
-        t+='<tr style="border-bottom:1px solid rgba(255,255,255,.04);">'
-          +'<td style="padding:5px 8px;color:var(--text);">'+(im.fecha_ingreso||'—')+'</td>'
-          +'<td style="padding:5px 8px;text-align:right;color:var(--text);font-variant-numeric:tabular-nums;">'+(im.cantidad!=null?im.cantidad.toLocaleString('es-CL'):'—')+'</td>'
-          +'<td style="padding:5px 8px;color:var(--text);">'+(im.nro_invoice||'—')+'</td>'
-          +'<td style="padding:5px 8px;color:var(--text);">'+(im.nro_din||'—')+'</td>'
-          +'<td style="padding:5px 8px;color:var(--text);">'+(im.nro_cert_seguimiento||'—')+'</td>'
-          +'</tr>';
-      });
-      t+='</tbody></table>';
-      el.innerHTML=t;
-    }).catch(function(){
-      var el=document.getElementById('bd-detail-imports');
-      if(el)el.textContent='Error al cargar historial.';
-    });
 }
 function _bdCloseDetail(){document.getElementById('bd-detail-modal').style.display='none';}
 function _bdExportCSV(){
