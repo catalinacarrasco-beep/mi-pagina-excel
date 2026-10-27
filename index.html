@@ -1430,6 +1430,16 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       <div class="hc-title">Muestras</div>
       <div class="hc-sub">Estado de certificaciones SEC</div>
     </div>
+    <div class="home-card" data-mod="vendedores" style="border-color:rgba(91,192,196,.25)" onclick="enterVendedores()">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="16" r="7" stroke="#5bc0c4" stroke-width="1.5"/>
+        <path d="M12 40c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#5bc0c4" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="38" cy="18" r="4" stroke="#5bc0c4" stroke-width="1.2" opacity=".6"/>
+        <circle cx="10" cy="18" r="4" stroke="#5bc0c4" stroke-width="1.2" opacity=".6"/>
+      </svg>
+      <div class="hc-title">Vendedores</div>
+      <div class="hc-sub">Gestión comercial por vendedor</div>
+    </div>
     <div class="home-card cargo" data-mod="cargo" onclick="enterCargoTracking()">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="6" y="18" width="26" height="18" rx="2" stroke="#d49a3b" stroke-width="1.5"/>
@@ -4908,7 +4918,16 @@ function _bdShowDetail(codigo){
     html+='<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">';
     html+='<span style="font-size:.78rem;color:var(--muted);font-weight:600;">DOCUMENTOS</span>';
     html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">';
-    html+='<span style="padding:6px 14px;border-radius:6px;background:rgba(45,180,160,.12);color:#2db4a0;font-size:.8rem;cursor:default;">QR '+_bdEsc(p.qr_vigente)+' (PDFs próximamente)</span>';
+    if(p.qr_pdf_url){
+      var urls=p.qr_pdf_url.split(' / ');
+      var qrs=p.qr_vigente.split('/');
+      urls.forEach(function(u,i){
+        var qLabel=qrs[i]?qrs[i].trim():('QR '+(i+1));
+        html+='<a href="'+_bdEsc(u.trim())+'" target="_blank" rel="noopener" style="padding:6px 14px;border-radius:6px;background:rgba(45,180,160,.15);color:#2db4a0;font-size:.8rem;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">&#128196; QR '+_bdEsc(qLabel)+'</a>';
+      });
+    }else{
+      html+='<span style="padding:6px 14px;border-radius:6px;background:rgba(120,120,120,.12);color:var(--muted);font-size:.8rem;">Sin PDF disponible</span>';
+    }
     html+='</div></div>';
   }
   c.innerHTML=html;
