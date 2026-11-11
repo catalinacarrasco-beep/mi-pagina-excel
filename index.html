@@ -1668,7 +1668,7 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <div id="ct-feedback" style="min-height:0;padding:2px 0 6px;"></div>
     <div class="ct-toolbar" style="flex-wrap:wrap;gap:8px;align-items:center;">
       <div style="display:flex;gap:8px;margin-left:auto;">
-        <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="_ctExportCSV()">↓ Exportar CSV</button>
+        <button class="ct-btn-export" id="ct-export" style="display:none;" onclick="_ctExportXLSX()">↓ Exportar Excel</button>
         <button class="ct-btn-add" id="ct-add" style="display:none;" onclick="_ctAddRow()">+ Nuevo embarque</button>
       </div>
     </div>
@@ -3850,7 +3850,7 @@ async function loadCargo(){
   .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
   .then(function(data){
     _ctEmbarques=data.map(function(e){if(e.estado_embarque==='en_bodega')e.estado_embarque='arribo';return e;});
-    var exp=document.getElementById('ct-export');if(exp)exp.style.display=data.length?'':'none';
+    var exp=document.getElementById('ct-export');if(exp)exp.style.display=(data.length&&sessionStorage.getItem('gs_role')!=='aga')?'':'none';
     _ctUpdateStats();
     _ctRender();
     _ctStartSync();
@@ -4080,7 +4080,7 @@ async function _ctAddRow(){
   if(row){
     _ctEmbarques=[row].concat(_ctEmbarques);
     _ctEditingId=row.id;
-    var exp=document.getElementById('ct-export');if(exp)exp.style.display='';
+    var exp=document.getElementById('ct-export');if(exp)exp.style.display=sessionStorage.getItem('gs_role')==='aga'?'none':'';
     _logAudit('cargo','create',row.id,null);
     _ctRender();
   }
@@ -4094,7 +4094,7 @@ async function _ctDeleteRow(id){
   _logAudit('cargo','delete',id,deleted?{oc:deleted.oc,proveedor:deleted.proveedor}:null);
   _ctEmbarques=_ctEmbarques.filter(function(r){return r.id!==id;});
   if(_ctEditingId===id)_ctEditingId=null;
-  var exp=document.getElementById('ct-export');if(exp)exp.style.display=_ctEmbarques.length?'':'none';
+  var exp=document.getElementById('ct-export');if(exp)exp.style.display=(_ctEmbarques.length&&sessionStorage.getItem('gs_role')!=='aga')?'':'none';
   _ctRender();
 }
 
@@ -4272,17 +4272,18 @@ async function _ctUploadDocType(embarqueId,tipo,input){
   _ctShowDocs(embarqueId);
 }
 
-function _ctExportCSV(){
+function _ctExportXLSX(){
   if(!_ctEmbarques.length)return;
-  var rows=[['Estado','Proveedor','OC','Invoice','Descripción','Tipo','BL/AWB','ETO','ETD','ETA','Certificable','Documentos']];
-  _ctEmbarques.forEach(function(e){
-    rows.push([_CT_ELBL[e.estado_embarque]||'',_ctProvAbrev(e.proveedor)||'',e.oc||'',e.invoice||'',e.descripcion||'',e.tipo_transporte||'',e.bl_awb||'',e.eto||'',e.etd||'',e.eta||'',e.certificable||'',_ctAllDocs(e).map(function(d){return d.tipo+': '+d.nombre;}).join(' | ')]);
+  _loadSheetJS(function(){
+    var rows=[['Estado','Proveedor','OC','Invoice','Descripción','Tipo','BL/AWB','ETO','ETD','ETA','Certificable','Documentos']];
+    _ctEmbarques.forEach(function(e){
+      rows.push([_CT_ELBL[e.estado_embarque]||'',_ctProvAbrev(e.proveedor)||'',e.oc||'',e.invoice||'',e.descripcion||'',e.tipo_transporte||'',e.bl_awb||'',e.eto||'',e.etd||'',e.eta||'',e.certificable||'',_ctAllDocs(e).map(function(d){return d.tipo+': '+d.nombre;}).join(' | ')]);
+    });
+    var ws=XLSX.utils.aoa_to_sheet(rows);
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Embarques');
+    XLSX.writeFile(wb,'embarques.xlsx');
   });
-  var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n');
-  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;a.download='embarques.csv';a.click();
-  URL.revokeObjectURL(url);
 }
 
 // ── Sync silencioso ──────────────────────────────────────────────────────────
