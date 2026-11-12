@@ -401,7 +401,7 @@ footer p{font-size:.75rem;color:var(--muted);}
   opacity:0;transition:opacity .35s ease;font-family:'DM Sans',sans-serif;
 }
 #bdScreen .bd-row{border-bottom:1px solid var(--border);transition:background .15s;}
-#bdScreen .bd-row:hover{background:var(--surface2);cursor:pointer;}
+#bdScreen .bd-row:hover{background:var(--surface2);}
 #bdScreen .bd-row td{padding:10px 12px;font-size:.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 #bdScreen .bd-row td:nth-child(2){white-space:normal;max-width:300px;}
 #bdScreen .bd-sec-yes{display:inline-block;padding:2px 8px;border-radius:4px;background:rgba(45,180,122,.15);color:#2db47a;font-size:.75rem;font-weight:600;}
@@ -1305,6 +1305,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
 </style>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Ventas Grantt">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+<script>var _appRole=null;var _supaClient=null;</script>
 </head>
 <body>
 <div id="loginScreen">
@@ -1375,6 +1377,8 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <div class="ls-label">Dashboard Comercial</div>
     <div class="ls-divider"></div>
     <form class="ls-form" onsubmit="lsSubmit(event)">
+      <label for="lsEmail" class="ls-field-label">Email</label>
+      <input type="email" id="lsEmail" class="ls-input" placeholder="tu@email.com" autocomplete="email" style="margin-bottom:.6rem;">
       <label for="lsPass" class="ls-field-label">Contraseña</label>
       <div class="ls-pwd-wrap">
         <input type="password" id="lsPass" class="ls-input" placeholder="Ingresa tu contraseña" autocomplete="current-password">
@@ -1623,12 +1627,6 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     </div>
     <div id="bd-pagination" style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;font-size:.82rem;color:var(--muted);"></div>
   </div>
-  <div id="bd-detail-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:5000;justify-content:center;align-items:center;padding:16px;">
-    <div style="background:var(--surface);border-radius:12px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;padding:28px;position:relative;">
-      <button onclick="_bdCloseDetail()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;">×</button>
-      <div id="bd-detail-content"></div>
-    </div>
-  </div>
 </div>
 <!-- CARGO TRACKING -->
 <div id="cargoScreen">
@@ -1707,9 +1705,9 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
       </select>
       <select id="audit-flt-role" onchange="_auditApplyFilters()">
         <option value="">Todos los usuarios</option>
-        <option value="cargo-admin">cargo-admin (gerenciaGrantt)</option>
-        <option value="cob-admin">cob-admin (cobranzasGrantt)</option>
-        <option value="viewer">viewer (grantt2026)</option>
+        <option value="cargo-admin">Cargo Admin</option>
+        <option value="cob-admin">Cobranzas</option>
+        <option value="viewer">Viewer</option>
       </select>
       <select id="audit-flt-action" onchange="_auditApplyFilters()">
         <option value="">Todas las acciones</option>
@@ -2854,7 +2852,7 @@ function volverHome(){
 // ── MUESTRAS ADMIN ─────────────────────────────────────────────────────────
 var GRANTT_MS='grantt_ms_v2';
 var _msData=null;var _msSyncTimer=null;var _msInitDone=false;
-function msIsAdmin(){return sessionStorage.getItem('gs_role')==='admin';}
+function msIsAdmin(){return _appRole==='admin';}
 function msDataLoad(){
   if(_msData)return _msData;
   try{_msData=JSON.parse(localStorage.getItem(GRANTT_MS)||'null');}catch(e){}
@@ -3706,16 +3704,15 @@ var _CT_PROVEEDORES=[
   {nombre:'Safeline Industrial Co. Ltd.',codigo:'270',productos:'Electricidad',abrev:'Safeline'}
 ];
 
-function _ctIsAdmin(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cargo-admin';}
-function _cobCanEdit(){var r=sessionStorage.getItem('gs_role');return r==='admin'||r==='cob-admin';}
+function _ctIsAdmin(){return _appRole==='admin'||_appRole==='cargo-admin';}
+function _cobCanEdit(){return _appRole==='admin'||_appRole==='cob-admin';}
 
 // ── AUDIT LOG ─────────────────────────────────────────────────────────────
 // ponytail: fire-and-forget. Skip si es admin (Catalina no se auto-registra).
 // Silencioso si la tabla no existe todavía (RLS/404 no rompen la UI).
 function _logAudit(module,action,target,detail){
-  var role=sessionStorage.getItem('gs_role');
-  if(!role||role==='admin')return;
-  var body={user_role:role,module:module,action:action,target_id:target?String(target):null,detail:detail||null};
+  if(!_appRole||_appRole==='admin')return;
+  var body={user_role:_appRole,module:module,action:action,target_id:target?String(target):null,detail:detail||null};
   var hdr=(_ctAuthToken&&Date.now()<_ctAuthExp)?_ctHAuth():{'apikey':_CT_KEY,'Authorization':'Bearer '+_CT_KEY,'Content-Type':'application/json'};
   hdr=Object.assign({},hdr,{'Prefer':'return=minimal'});
   fetch(_CT_URL+'/rest/v1/audit_log',{method:'POST',headers:hdr,body:JSON.stringify(body)}).catch(function(){});
@@ -3820,7 +3817,6 @@ async function _ctUpdateField(id,patch,skipRender){
     // si el token está muerto (401), forzar re-login e intentar 1 vez más
     if(resp.status===401){
       _ctAuthToken=null;_ctAuthExp=0;
-      sessionStorage.removeItem('gs_sb_tok');sessionStorage.removeItem('gs_sb_exp');
       var reauth=await _ctEnsureAuth();
       if(reauth){
         var retry=await fetch(_CT_URL+'/rest/v1/embarques?id=eq.'+id,{
@@ -3850,7 +3846,7 @@ async function loadCargo(){
   .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
   .then(function(data){
     _ctEmbarques=data.map(function(e){if(e.estado_embarque==='en_bodega')e.estado_embarque='arribo';return e;});
-    var exp=document.getElementById('ct-export');if(exp)exp.style.display=(data.length&&sessionStorage.getItem('gs_role')!=='aga')?'':'none';
+    var exp=document.getElementById('ct-export');if(exp)exp.style.display=(data.length&&_appRole!=='aga')?'':'none';
     _ctUpdateStats();
     _ctRender();
     _ctStartSync();
@@ -4080,7 +4076,7 @@ async function _ctAddRow(){
   if(row){
     _ctEmbarques=[row].concat(_ctEmbarques);
     _ctEditingId=row.id;
-    var exp=document.getElementById('ct-export');if(exp)exp.style.display=sessionStorage.getItem('gs_role')==='aga'?'none':'';
+    var exp=document.getElementById('ct-export');if(exp)exp.style.display=_appRole==='aga'?'none':'';
     _logAudit('cargo','create',row.id,null);
     _ctRender();
   }
@@ -4094,7 +4090,7 @@ async function _ctDeleteRow(id){
   _logAudit('cargo','delete',id,deleted?{oc:deleted.oc,proveedor:deleted.proveedor}:null);
   _ctEmbarques=_ctEmbarques.filter(function(r){return r.id!==id;});
   if(_ctEditingId===id)_ctEditingId=null;
-  var exp=document.getElementById('ct-export');if(exp)exp.style.display=(_ctEmbarques.length&&sessionStorage.getItem('gs_role')!=='aga')?'':'none';
+  var exp=document.getElementById('ct-export');if(exp)exp.style.display=(_ctEmbarques.length&&_appRole!=='aga')?'':'none';
   _ctRender();
 }
 
@@ -4106,17 +4102,12 @@ function _ctHAuth(){
 function _ctNeedAuth(){return!_ctAuthToken||Date.now()>=_ctAuthExp;}
 async function _ctEnsureAuth(){
   if(_ctAuthToken&&Date.now()<_ctAuthExp)return true;
-  var role=sessionStorage.getItem('gs_role');
-  if(!role)return false;
-  await _ctSilentLogin('gerenciaGrantt','cargo-admin');
-  return!!_ctAuthToken;
-}
-async function _ctSilentLogin(pw,role){
-  var email=role==='viewer'?'viewer@grantt-embarques.app':'catalina.carrasco@grantt.cl';
+  if(!_supaClient)return false;
   try{
-    var r=await fetch(_CT_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'apikey':_CT_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})});
-    if(r.ok){var d=await r.json();if(d.access_token){_ctAuthToken=d.access_token;_ctAuthExp=Date.now()+(d.expires_in||3600)*1000-60000;sessionStorage.setItem('gs_sb_tok',d.access_token);sessionStorage.setItem('gs_sb_exp',String(_ctAuthExp));}}
+    var s=await _supaClient.auth.getSession();
+    if(s.data.session){_ctAuthToken=s.data.session.access_token;_ctAuthExp=s.data.session.expires_at*1000-60000;return true;}
   }catch(e){}
+  return false;
 }
 
 // ── Storage operations ───────────────────────────────────────────────────────
@@ -4213,8 +4204,8 @@ function _ctShowDocs(id){
   var e=_ctEmbarques.find(function(r){return r.id===id;});if(!e)return;
   var m=document.getElementById('ct-docs-modal');if(!m)return;
   var isA=_ctIsAdmin();
-  var isViewer=sessionStorage.getItem('gs_role')==='viewer';
-  var isAga=sessionStorage.getItem('gs_role')==='aga';
+  var isViewer=_appRole==='viewer';
+  var isAga=_appRole==='aga';
   var _agaUpload=['DIN','AG AD','Otros Cargos 1','Otros Cargos 2','Otros Cargos 3'];
   var docs=_ctAllDocs(e);
   var html='<div class="ct-modal-card ct-docs-card">';
@@ -4759,7 +4750,7 @@ _applyTheme(_getTheme());
 // Chequea uso de DB y Storage bucket via RPC get_storage_usage.
 // Umbrales: 100 MB DB / 500 MB Storage (warning); 400 MB DB / 900 MB Storage (critical).
 async function _checkStorageAlert(){
-  if(sessionStorage.getItem('gs_role')!=='admin')return;
+  if(_appRole!=='admin')return;
   var el=document.getElementById('storage-alert');if(!el)return;
   try{
     var r=await fetch(_CT_URL+'/rest/v1/rpc/get_storage_usage',{method:'POST',headers:_ctH(),body:'{}'});
@@ -4786,7 +4777,7 @@ var _auditData=[];
 var _auditFilters={module:'',role:'',action:'',search:''};
 
 function enterAudit(){
-  if(sessionStorage.getItem('gs_role')!=='admin'){alert('Sólo admin puede ver la auditoría.');return;}
+  if(_appRole!=='admin'){alert('Sólo admin puede ver la auditoría.');return;}
   var hs=document.getElementById('homeScreen');var as=document.getElementById('auditScreen');
   if(hs)hs.style.display='none';
   if(as){as.style.display='flex';as.style.opacity='1';}
@@ -4854,14 +4845,21 @@ function _bdRender(){
   var html='';
   page.forEach(function(p){
     var sec=p.certifica_sec?'<span class="bd-sec-yes">SI</span>':'<span class="bd-sec-no">NO</span>';
-    var qr=p.qr_vigente?'<span class="bd-qr-link">'+_bdEsc(p.qr_vigente)+'</span>':'—';
-    html+='<tr class="bd-row" onclick="_bdShowDetail(\''+p.codigo.replace(/'/g,"\\'")+'\')">'
+    var qr='—';
+    if(p.qr_vigente){
+      if(p.qr_pdf_url){var qrUrls=p.qr_pdf_url.split(' / ');var qrNums=p.qr_vigente.split('/');qr='';qrNums.forEach(function(q,i){var u=qrUrls[i]?qrUrls[i].trim():'';if(qr)qr+=' / ';qr+=u?'<a href="'+_bdEsc(u)+'" target="_blank" rel="noopener" style="color:#2db4a0;text-decoration:underline;cursor:pointer;" onclick="event.stopPropagation()">'+_bdEsc(q.trim())+'</a>':'<span>'+_bdEsc(q.trim())+'</span>';});}
+      else{qr='<span>'+_bdEsc(p.qr_vigente)+'</span>';}
+    }
+    var cert=p.nro_cert_aprobacion||'—';
+    if(p.nro_cert_aprobacion&&p.cert_aprobacion_url){cert='<a href="'+_bdEsc(p.cert_aprobacion_url)+'" target="_blank" rel="noopener" style="color:#2db4a0;text-decoration:underline;cursor:pointer;font-size:.78rem;" onclick="event.stopPropagation()">'+_bdEsc(p.nro_cert_aprobacion)+'</a>';}
+    else{cert='<span style="font-size:.78rem;">'+_bdEsc(p.nro_cert_aprobacion||'—')+'</span>';}
+    html+='<tr class="bd-row">'
       +'<td style="font-weight:600;color:var(--accent);">'+_bdEsc(p.codigo)+'</td>'
       +'<td>'+_bdEsc(p.descripcion||'—')+'</td>'
       +'<td>'+_bdEsc(p.marcas||'—')+'</td>'
       +'<td style="text-align:center;">'+sec+'</td>'
       +'<td>'+qr+'</td>'
-      +'<td style="font-size:.78rem;">'+_bdEsc(p.nro_cert_aprobacion||'—')+'</td>'
+      +'<td>'+cert+'</td>'
       +'<td style="font-size:.78rem;">'+_bdEsc(p.protocolo_certificacion||'—')+'</td>'
       +'</tr>';
   });
@@ -4881,45 +4879,6 @@ function _bdRender(){
 }
 function _bdGoPage(n){_bdPage=n;_bdRender();document.getElementById('bdScreen').scrollTo(0,0);}
 function _bdEsc(s){if(!s)return'';var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-function _bdShowDetail(codigo){
-  var p=_bdData.find(function(x){return x.codigo===codigo;});
-  if(!p)return;
-  var m=document.getElementById('bd-detail-modal');
-  var c=document.getElementById('bd-detail-content');
-  var rows=[
-    ['Código',p.codigo],['Descripción',p.descripcion],['SKU',p.sku],
-    ['Proveedor',p.proveedor],['Modelo certificado',p.modelo_certificado],
-    ['Marcas',p.marcas],['Certifica SEC',p.certifica_sec?'SI':'NO'],
-    ['QR vigente',p.qr_vigente],['Nro. Cert. Tipo',p.nro_cert_tipo],
-    ['Nro. Cert. Aprobación',p.nro_cert_aprobacion],
-    ['Protocolo certificación',p.protocolo_certificacion],['Amperaje',p.amperaje]
-  ];
-  var html='<h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:1.5rem;letter-spacing:.03em;color:var(--accent);margin:0 0 18px;">'+_bdEsc(p.codigo)+'</h2>';
-  html+='<div style="display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:.85rem;">';
-  rows.forEach(function(r){
-    html+='<div style="color:var(--muted);font-weight:600;">'+r[0]+'</div><div style="color:var(--text);">'+_bdEsc(r[1]||'—')+'</div>';
-  });
-  html+='</div>';
-  if(p.qr_vigente){
-    html+='<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">';
-    html+='<span style="font-size:.78rem;color:var(--muted);font-weight:600;">DOCUMENTOS</span>';
-    html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">';
-    if(p.qr_pdf_url){
-      var urls=p.qr_pdf_url.split(' / ');
-      var qrs=p.qr_vigente.split('/');
-      urls.forEach(function(u,i){
-        var qLabel=qrs[i]?qrs[i].trim():('QR '+(i+1));
-        html+='<a href="'+_bdEsc(u.trim())+'" target="_blank" rel="noopener" style="padding:6px 14px;border-radius:6px;background:rgba(45,180,160,.15);color:#2db4a0;font-size:.8rem;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">&#128196; QR '+_bdEsc(qLabel)+'</a>';
-      });
-    }else{
-      html+='<span style="padding:6px 14px;border-radius:6px;background:rgba(120,120,120,.12);color:var(--muted);font-size:.8rem;">Sin PDF disponible</span>';
-    }
-    html+='</div></div>';
-  }
-  c.innerHTML=html;
-  m.style.display='flex';
-}
-function _bdCloseDetail(){document.getElementById('bd-detail-modal').style.display='none';}
 function _bdExportCSV(){
   var rows=[['Código','Descripción','SKU','Proveedor','Modelo Certificado','Marcas','Certifica SEC','QR Vigente','Cert Tipo','Cert Aprobación','Protocolo','Amperaje']];
   _bdFiltered.forEach(function(p){
@@ -5032,19 +4991,41 @@ function _auditRender(){
   el.innerHTML=h;
 }
 
-// ponytail: client-side password — change LS_PWD to update
-const LS_PWD='gerenciaGrantt';
-
 function _applyRoleVisibility(){
-  var role=sessionStorage.getItem('gs_role')||'';
+  var role=_appRole||'';
   var hide=role==='viewer'?['ventas','vendedores','cobranza','muestras','audit']:role==='cob-admin'?['ventas','vendedores','muestras','audit']:role==='cargo-admin'?['audit']:role==='aga'?['ventas','vendedores','cobranza','muestras','audit','bdatos']:[];
   document.querySelectorAll('#homeScreen [data-mod]').forEach(function(c){
     c.style.display=hide.indexOf(c.getAttribute('data-mod'))>-1?'none':'';
   });
-  // Audit sólo visible para admin
   var ac=document.getElementById('hc-audit');if(ac)ac.style.display=role==='admin'?'':'none';
 }
-var _lsEt;function lsSubmit(e){e.preventDefault();const inp=document.getElementById('lsPass');const err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':pw==='agaGrantt26'?'aga':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();_checkStorageAlert();const ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(()=>ls.style.display='none',420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(()=>err.style.opacity='0',2800);}setTimeout(()=>inp.classList.remove('ls-shake'),400);}}
+var _lsEt;async function lsSubmit(e){e.preventDefault();
+  var emailInp=document.getElementById('lsEmail');
+  var inp=document.getElementById('lsPass');
+  var err=document.getElementById('lsErr');
+  var email=emailInp.value.trim();var pw=inp.value;
+  if(!email||!pw){if(err){err.textContent='Ingresa email y contraseña';err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(function(){err.style.opacity='0';},2800);}return;}
+  var btn=document.querySelector('.ls-btn');if(btn){btn.disabled=true;btn.textContent='Ingresando...';}
+  try{
+    if(!_supaClient)_supaClient=window.supabase.createClient(_CT_URL,_CT_KEY);
+    var res=await _supaClient.auth.signInWithPassword({email:email,password:pw});
+    if(res.error)throw res.error;
+    _ctAuthToken=res.data.session.access_token;
+    _ctAuthExp=res.data.session.expires_at*1000-60000;
+    var prof=await _supaClient.from('user_profiles').select('role').eq('id',res.data.user.id).single();
+    if(prof.error||!prof.data)throw new Error('Perfil no encontrado');
+    _appRole=prof.data.role;
+    sessionStorage.setItem('gs_screen','home');
+    _applyRoleVisibility();_checkStorageAlert();
+    if(typeof _showXlsxBtn==='function')_showXlsxBtn();
+    var ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},420);
+  }catch(ex){
+    inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');
+    inp.value='';inp.focus();
+    if(err){err.textContent=ex.message==='Invalid login credentials'?'Email o contraseña incorrectos':ex.message||'Error de autenticación';err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(function(){err.style.opacity='0';},2800);}
+    setTimeout(function(){inp.classList.remove('ls-shake');},400);
+  }finally{if(btn){btn.disabled=false;btn.textContent='Ingresar';}}
+}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
@@ -5103,14 +5084,22 @@ function checkAndRefresh(btn){
       }
     }).catch(function(){btn.textContent=orig;btn.disabled=false;});
 }
-/* restaurar sesión tras reload — salta login y vuelve al módulo activo */
-(function(){
-  var sbTok=sessionStorage.getItem('gs_sb_tok');var sbExp=sessionStorage.getItem('gs_sb_exp');
-  if(sbTok&&sbExp&&Date.now()<+sbExp){_ctAuthToken=sbTok;_ctAuthExp=+sbExp;}
-  var a=sessionStorage.getItem('gs_auth');
-  if(!a)return;
+/* restaurar sesión tras reload — chequea Supabase Auth session */
+(async function(){
+  if(!window.supabase)return;
+  if(!_supaClient)_supaClient=window.supabase.createClient(_CT_URL,_CT_KEY);
+  try{
+    var s=await _supaClient.auth.getSession();
+    if(!s.data.session)return;
+    _ctAuthToken=s.data.session.access_token;
+    _ctAuthExp=s.data.session.expires_at*1000-60000;
+    var prof=await _supaClient.from('user_profiles').select('role').eq('id',s.data.session.user.id).single();
+    if(prof.error||!prof.data)return;
+    _appRole=prof.data.role;
+  }catch(e){return;}
   _applyRoleVisibility();
   if(typeof _checkStorageAlert==='function')_checkStorageAlert();
+  if(typeof _showXlsxBtn==='function')_showXlsxBtn();
   var ls=document.getElementById('loginScreen');
   if(ls){ls.style.transition='none';ls.style.opacity='0';ls.style.display='none';}
   var scr=sessionStorage.getItem('gs_screen')||'home';
@@ -5173,7 +5162,7 @@ function checkAndRefresh(btn){
 // ── ADMIN EXCEL UPLOAD ───────────────────────────────────────────────
 (function(){
   function showBtn(){
-    if(sessionStorage.getItem('gs_role')==='admin'){
+    if(_appRole==='admin'){
       document.querySelectorAll('#_cfgGear').forEach(function(b){b.style.display='';});
     }
   }
