@@ -1377,8 +1377,6 @@ main.stk-active>*:not(#stkBanner):not(#stkView){display:none!important;}
     <div class="ls-label">Dashboard Comercial</div>
     <div class="ls-divider"></div>
     <form class="ls-form" onsubmit="lsSubmit(event)">
-      <label for="lsEmail" class="ls-field-label">Email</label>
-      <input type="email" id="lsEmail" class="ls-input" placeholder="tu@email.com" autocomplete="email" style="margin-bottom:.6rem;">
       <label for="lsPass" class="ls-field-label">Contraseña</label>
       <div class="ls-pwd-wrap">
         <input type="password" id="lsPass" class="ls-input" placeholder="Ingresa tu contraseña" autocomplete="current-password">
@@ -4992,40 +4990,14 @@ function _auditRender(){
 }
 
 function _applyRoleVisibility(){
-  var role=_appRole||'';
+  var role=sessionStorage.getItem('gs_role')||'';
   var hide=role==='viewer'?['ventas','vendedores','cobranza','muestras','audit']:role==='cob-admin'?['ventas','vendedores','muestras','audit']:role==='cargo-admin'?['audit']:role==='aga'?['ventas','vendedores','cobranza','muestras','audit','bdatos']:[];
   document.querySelectorAll('#homeScreen [data-mod]').forEach(function(c){
     c.style.display=hide.indexOf(c.getAttribute('data-mod'))>-1?'none':'';
   });
   var ac=document.getElementById('hc-audit');if(ac)ac.style.display=role==='admin'?'':'none';
 }
-var _lsEt;async function lsSubmit(e){e.preventDefault();
-  var emailInp=document.getElementById('lsEmail');
-  var inp=document.getElementById('lsPass');
-  var err=document.getElementById('lsErr');
-  var email=emailInp.value.trim();var pw=inp.value;
-  if(!email||!pw){if(err){err.textContent='Ingresa email y contraseña';err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(function(){err.style.opacity='0';},2800);}return;}
-  var btn=document.querySelector('.ls-btn');if(btn){btn.disabled=true;btn.textContent='Ingresando...';}
-  try{
-    if(!_supaClient)_supaClient=window.supabase.createClient(_CT_URL,_CT_KEY);
-    var res=await _supaClient.auth.signInWithPassword({email:email,password:pw});
-    if(res.error)throw res.error;
-    _ctAuthToken=res.data.session.access_token;
-    _ctAuthExp=res.data.session.expires_at*1000-60000;
-    var prof=await _supaClient.from('user_profiles').select('role').eq('id',res.data.user.id).single();
-    if(prof.error||!prof.data)throw new Error('Perfil no encontrado');
-    _appRole=prof.data.role;
-    sessionStorage.setItem('gs_screen','home');
-    _applyRoleVisibility();_checkStorageAlert();
-    if(typeof _showXlsxBtn==='function')_showXlsxBtn();
-    var ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},420);
-  }catch(ex){
-    inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');
-    inp.value='';inp.focus();
-    if(err){err.textContent=ex.message==='Invalid login credentials'?'Email o contraseña incorrectos':ex.message||'Error de autenticación';err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(function(){err.style.opacity='0';},2800);}
-    setTimeout(function(){inp.classList.remove('ls-shake');},400);
-  }finally{if(btn){btn.disabled=false;btn.textContent='Ingresar';}}
-}
+var _lsEt;function lsSubmit(e){e.preventDefault();var inp=document.getElementById('lsPass');var err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':pw==='agaGrantt26'?'aga':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();_checkStorageAlert();if(typeof _showXlsxBtn==='function')_showXlsxBtn();var ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(function(){err.style.opacity='0';},2800);}setTimeout(function(){inp.classList.remove('ls-shake');},400);}}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
@@ -5084,19 +5056,10 @@ function checkAndRefresh(btn){
       }
     }).catch(function(){btn.textContent=orig;btn.disabled=false;});
 }
-/* restaurar sesión tras reload — chequea Supabase Auth session */
-(async function(){
-  if(!window.supabase)return;
-  if(!_supaClient)_supaClient=window.supabase.createClient(_CT_URL,_CT_KEY);
-  try{
-    var s=await _supaClient.auth.getSession();
-    if(!s.data.session)return;
-    _ctAuthToken=s.data.session.access_token;
-    _ctAuthExp=s.data.session.expires_at*1000-60000;
-    var prof=await _supaClient.from('user_profiles').select('role').eq('id',s.data.session.user.id).single();
-    if(prof.error||!prof.data)return;
-    _appRole=prof.data.role;
-  }catch(e){return;}
+/* restaurar sesión tras reload */
+(function(){
+  var a=sessionStorage.getItem('gs_auth');
+  if(!a)return;
   _applyRoleVisibility();
   if(typeof _checkStorageAlert==='function')_checkStorageAlert();
   if(typeof _showXlsxBtn==='function')_showXlsxBtn();
