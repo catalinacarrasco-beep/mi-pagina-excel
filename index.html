@@ -4131,12 +4131,16 @@ function _ctHAuth(){
 function _ctNeedAuth(){return!_ctAuthToken||Date.now()>=_ctAuthExp;}
 async function _ctEnsureAuth(){
   if(_ctAuthToken&&Date.now()<_ctAuthExp)return true;
-  if(!_supaClient)return false;
-  try{
-    var s=await _supaClient.auth.getSession();
-    if(s.data.session){_ctAuthToken=s.data.session.access_token;_ctAuthExp=s.data.session.expires_at*1000-60000;return true;}
-  }catch(e){}
-  return false;
+  if(!_supaClient&&typeof supabase!=='undefined')_supaClient=supabase.createClient(_CT_URL,_CT_KEY);
+  if(_supaClient){
+    try{
+      var s=await _supaClient.auth.getSession();
+      if(s.data&&s.data.session){_ctAuthToken=s.data.session.access_token;_ctAuthExp=s.data.session.expires_at*1000-60000;return true;}
+    }catch(e){}
+  }
+  // ponytail: anon-key fallback — matches _ctH() REST pattern; works if bucket allows anon role
+  _ctAuthToken=_CT_KEY;_ctAuthExp=Date.now()+3600000;
+  return true;
 }
 
 // ── Storage operations ───────────────────────────────────────────────────────
