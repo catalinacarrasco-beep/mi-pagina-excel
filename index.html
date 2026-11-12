@@ -5065,7 +5065,7 @@ function _applyRoleVisibility(){
   });
   var ac=document.getElementById('hc-audit');if(ac)ac.style.display=role==='admin'?'':'none';
 }
-var _lsEt;function lsSubmit(e){e.preventDefault();var inp=document.getElementById('lsPass');var err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':pw==='agaGrantt26'?'aga':null;if(role){sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');if(typeof _ctSilentLogin==='function')_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();_checkStorageAlert();if(typeof _showXlsxBtn==='function')_showXlsxBtn();var ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(function(){err.style.opacity='0';},2800);}setTimeout(function(){inp.classList.remove('ls-shake');},400);}}
+var _lsEt;function lsSubmit(e){e.preventDefault();var inp=document.getElementById('lsPass');var err=document.getElementById('lsErr');var pw=inp.value;var role=pw==='gerenciaGrantt'?'cargo-admin':pw==='adminGrantt26'?'admin':pw==='cobranzasGrantt'?'cob-admin':pw==='grantt2026'?'viewer':pw==='agaGrantt26'?'aga':null;if(role){_appRole=role;sessionStorage.setItem('gs_auth','1');sessionStorage.setItem('gs_role',role);sessionStorage.setItem('gs_screen','home');if(typeof _ctSilentLogin==='function')_ctSilentLogin('gerenciaGrantt','cargo-admin');_applyRoleVisibility();_checkStorageAlert();if(typeof _showXlsxBtn==='function')_showXlsxBtn();var ls=document.getElementById('loginScreen');ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},420);}else{inp.classList.remove('ls-shake');void inp.offsetWidth;inp.classList.add('ls-shake');inp.value='';inp.focus();if(err){err.style.opacity='1';clearTimeout(_lsEt);_lsEt=setTimeout(function(){err.style.opacity='0';},2800);}setTimeout(function(){inp.classList.remove('ls-shake');},400);}}
 </script>
 <script>
 /* auto-reload cuando Vercel publica nueva versión */
@@ -5128,6 +5128,7 @@ function checkAndRefresh(btn){
 (function(){
   var a=sessionStorage.getItem('gs_auth');
   if(!a)return;
+  _appRole=sessionStorage.getItem('gs_role')||null;
   _applyRoleVisibility();
   if(typeof _checkStorageAlert==='function')_checkStorageAlert();
   if(typeof _showXlsxBtn==='function')_showXlsxBtn();
